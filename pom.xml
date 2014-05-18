@@ -27,6 +27,7 @@
 
   <name>${project.artifactId}</name>
   <description>lmdbjni is a jni library for accessing lmdb.</description>
+  <url>http://lmdbjni.deephacks.org</url>
 
   <properties>
     <hawtjni-version>1.9</hawtjni-version>
