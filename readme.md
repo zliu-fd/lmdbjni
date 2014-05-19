@@ -4,8 +4,7 @@
 
 LMDB JNI gives you a Java interface to the 
 [OpenLDAP Lightning Memory-Mapped Database](http://symas.com/mdb/) library
-which is a fast key-value storage library written for OpenLDAP project
-that provides an ordered mapping from string keys to string values.
+which is a fast key-value storage library written for OpenLDAP project.
 
 This is a fork that build on the work found at https://github.com/chirino/lmdbjni.
 
@@ -15,11 +14,11 @@ The prebuilt binary jars only work on 64 bit OS X or Linux machines.
 
 ### License
 
-This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes the the `liblmdb` library of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
+This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes `liblmdb` library version 0.9.10 of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
 
 ### Using as a Maven Dependency
 
-Add one (or both) of the following dependency and repository to your Maven `pom.xml`.
+Add one (or both) of the following dependency to your Maven `pom.xml`.
 
 ```xml
 
