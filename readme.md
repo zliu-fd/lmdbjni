@@ -19,15 +19,22 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 
 ### Using as a Maven Dependency
 
-You just nee to add the following dependency and repository to your Maven `pom.xml`.
+Add one (or both) of the following dependency and repository to your Maven `pom.xml`.
 
-    <dependencies>
-      <dependency>
-        <groupId>org.deephacks.lmdbjni</groupId>
-        <artifactId>lmdbjni-all</artifactId>
-        <version>0.1.1</version>
-      </dependency>
-    </dependencies>
+```xml
+
+<dependency>
+    <groupId>org.deephacks.lmdbjni</groupId>
+    <artifactId>lmdbjni-linux64</artifactId>
+    <version>0.1.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.deephacks.lmdbjni</groupId>
+    <artifactId>lmdbjni-osx64</artifactId>
+    <version>0.1.1</version>
+</dependency>
+```
 
 ## API Usage:
 
