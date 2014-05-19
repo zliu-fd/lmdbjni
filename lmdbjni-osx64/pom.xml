@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.1</version>
   </parent>
 
   <artifactId>lmdbjni-osx64</artifactId>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.1.2-SNAPSHOT</version>
+      <version>0.1.1</version>
     </dependency>
   </dependencies>
 
