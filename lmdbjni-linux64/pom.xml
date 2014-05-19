@@ -37,11 +37,6 @@
   <dependencies>
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
-      <artifactId>lmdb</artifactId>
-      <version>0.9.11</version>
-    </dependency>
-    <dependency>
-      <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
       <version>0.1.2-SNAPSHOT</version>
     </dependency>
