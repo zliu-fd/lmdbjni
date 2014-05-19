@@ -7,6 +7,8 @@ LMDB JNI gives you a Java interface to the
 which is a fast key-value storage library written for OpenLDAP project
 that provides an ordered mapping from string keys to string values.
 
+This is a fork that build on the work found at https://github.com/chirino/lmdbjni.
+
 ## Using Prebuilt Jar
 
 The prebuilt binary jars only work on 64 bit OS X or Linux machines.
@@ -15,35 +17,19 @@ The prebuilt binary jars only work on 64 bit OS X or Linux machines.
 
 This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes the the `liblmdb` library of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
 
-### Downloading the Jar
-
-Just add the following jar to your java project:
-[lmdbjni-all-99-master-SNAPSHOT.jar](http://repo.fusesource.com/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.fusesource.lmdbjni&a=lmdbjni-all&v=99-master-SNAPSHOT&e=jar)
-
 ### Using as a Maven Dependency
 
 You just nee to add the following dependency and repository to your Maven `pom.xml`.
 
     <dependencies>
       <dependency>
-        <groupId>org.fusesource.lmdbjni</groupId>
+        <groupId>org.deephacks.lmdbjni</groupId>
         <artifactId>lmdbjni-all</artifactId>
-        <version>99-master-SNAPSHOT</version>
+        <version>0.1.1</version>
       </dependency>
     </dependencies>
-    ...
-    <repositories>
-        <repository>
-          <id>fusesource.nexus.snapshot</id>
-          <name>FuseSource Community Snapshot Repository</name>
-          <url>http://repo.fusesource.com/nexus/content/groups/public-snapshots</url>
-        </repository>
-    </repositories>
 
 ## API Usage:
-
-The [Javadocs](http://lmdbjni.fusesource.org/maven/99-master-SNAPSHOT/apidocs/org/fusesource/lmdbjni/package-summary.html) 
-dont' have too many details yet.  Please send patches to improve them!
 
 Recommended Package imports:
 
@@ -133,39 +119,4 @@ Using a memory pool to make native memory allocations more efficient:
     } finally {
         Env.popMemoryPool();
     }
-
-## Optional LevelDB API Facade
-
-This project provides an optional implementation of the [LevelDB APIs](https://github.com/dain/leveldb).
-The LevelDB API is simpler than the LMDB API.  If you can live with the restricted features the LevelDB API 
-provides you might want to use the LevelDB API instead. 
-
-The [Javadocs](http://lmdbjni.fusesource.org/maven/99-master-SNAPSHOT/apidocs/org/fusesource/lmdbjni/leveldb/package-summary.html) 
-dont' have too many details yet.  Please send patches to improve them!
-
-### Additional Maven Dependencies
-
-    <dependency>
-      <groupId>org.iq80.leveldb</groupId>
-      <artifactId>leveldb-api</artifactId>
-      <version>0.5</version>
-    </dependency>
-
-### Creating a Database using the LevelDB APIs:
-
-    import org.iq80.leveldb.*;
-    import static org.fusesource.lmdbjni.leveldb.LMDBFactory.*;
-    import java.io.*;
-    ...
-    Options options = new Options();
-    options.createIfMissing(true);
-    DB db = factory.open(new File("example"), options);
-    try {
-      // Use the db in here....
-    } finally {
-      // Make sure you close the db to shutdown the 
-      // database and avoid resource leaks.
-      db.close();
-    }
-
 
