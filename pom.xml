@@ -152,7 +152,7 @@
     <profile>
       <id>sign-artifacts</id>
       <modules>
-        <module>lmdbjni-linux64</module>
+        <module>lmdbjni-osx64</module>
       </modules>
       <build>
         <plugins>
