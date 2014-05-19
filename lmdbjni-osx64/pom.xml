@@ -25,11 +25,11 @@
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>lmdbjni-osx64</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <description>The lmdbjni OS X 64 bit native libraries</description>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.2-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
