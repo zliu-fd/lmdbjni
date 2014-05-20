@@ -31,7 +31,7 @@
 
   <properties>
     <hawtjni-version>1.9</hawtjni-version>
-    <leveldb-api-version>0.5</leveldb-api-version>
+    <lmdb-version>0.1.1</lmdb-version>
   </properties>
 
   <modules>
@@ -151,6 +151,7 @@
   <profiles>
     <profile>
       <id>sign-artifacts</id>
+      <!-- fix different platforms -->
       <modules>
         <module>lmdbjni-osx64</module>
       </modules>
