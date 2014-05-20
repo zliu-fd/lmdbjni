@@ -1,5 +1,7 @@
 # LMDB JNI
 
+[![Build Status](https://travis-ci.org/deephacks/lmdbjni.png?branch=master)](https://travis-ci.org/deephacks/lmdbjni)
+
 ## Description
 
 LMDB JNI gives you a Java interface to the 
