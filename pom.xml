@@ -22,7 +22,7 @@
 
   <groupId>org.deephacks.lmdbjni</groupId>
   <artifactId>lmdbjni-project</artifactId>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.1.2</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
