@@ -153,7 +153,7 @@
       <id>sign-artifacts</id>
       <!-- fix different platforms -->
       <modules>
-        <module>lmdbjni-linux64</module>
+        <module>lmdbjni-osx64</module>
       </modules>
       <build>
         <plugins>
