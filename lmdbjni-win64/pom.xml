@@ -126,10 +126,7 @@ limitations under the License.
             <classifier>native-src</classifier>
             <type>zip</type>
           </nativeSrcDependency>
-          <configureArgs>
-            <!-- unzipped before -->
-            <arg>--with-lmdb=${lmdb-home}</arg>
-          </configureArgs>
+          <packageDirectory>${basedir}/../lmdbjni/target/generated-sources/hawtjni/native-package</packageDirectory>
         </configuration>
       </plugin>
     </plugins>

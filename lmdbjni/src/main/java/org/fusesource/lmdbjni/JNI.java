@@ -209,10 +209,6 @@ class JNI {
     // Return Codes
     //====================================================//
     @JniField(flags = {CONSTANT})
-    static public int EINVAL;
-    @JniField(flags = {CONSTANT})
-    static public int EACCES;
-    @JniField(flags = {CONSTANT})
     static public int MDB_SUCCESS;
     @JniField(flags = {CONSTANT})
     static public int MDB_KEYEXIST;
