@@ -199,6 +199,7 @@
       <modules>
         <module>lmdbjni-osx64</module>
         <module>lmdbjni-linux64</module>
+        <module>lmdbjni-win64</module>
         <module>lmdbjni-all</module>
       </modules>
     </profile>
@@ -220,6 +221,13 @@
       <id>linux64</id>
       <modules>
         <module>lmdbjni-linux64</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>win64</id>
+      <modules>
+        <module>lmdbjni-win64</module>
       </modules>
     </profile>
   </profiles>

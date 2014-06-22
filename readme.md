@@ -35,6 +35,12 @@ Add one (or both) of the following dependency to your Maven `pom.xml`.
     <artifactId>lmdbjni-osx64</artifactId>
     <version>0.1.1</version>
 </dependency>
+
+<dependency>
+    <groupId>org.deephacks.lmdbjni</groupId>
+    <artifactId>lmdbjni-win64</artifactId>
+    <version>0.1.1</version>
+</dependency>
 ```
 
 ## API Usage:
