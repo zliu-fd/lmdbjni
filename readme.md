@@ -20,7 +20,7 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 
 ### Using as a Maven Dependency
 
-Add one (or both) of the following dependency to your Maven `pom.xml`.
+Add one (or all) of the following dependency to your Maven `pom.xml`.
 
 ```xml
 
@@ -33,6 +33,12 @@ Add one (or both) of the following dependency to your Maven `pom.xml`.
 <dependency>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-osx64</artifactId>
+    <version>0.1.1</version>
+</dependency>
+
+<dependency>
+    <groupId>org.deephacks.lmdbjni</groupId>
+    <artifactId>lmdbjni-win64</artifactId>
     <version>0.1.1</version>
 </dependency>
 ```

@@ -27,8 +27,6 @@ import static org.fusesource.hawtjni.runtime.FieldFlag.CONSTANT;
  */
 public class LMDBException extends RuntimeException {
 
-    public static final int EINVAL = JNI.EINVAL;
-    public static final int EACCES = JNI.EACCES;
     public static final int KEYEXIST = JNI.MDB_KEYEXIST;
     public static final int NOTFOUND = JNI.MDB_NOTFOUND;
     public static final int PAGE_NOTFOUND = JNI.MDB_PAGE_NOTFOUND;
