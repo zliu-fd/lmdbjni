@@ -160,9 +160,7 @@ public class Database extends NativeObject implements Closeable {
             return valueSlice.toByteArray();
         } else {
             // If the put failed, throw an exception..
-            if( rc != 0) {
-                throw new LMDBException("put failed", rc);
-            }
+            checkErrorCode(rc);
             return null;
         }
     }
