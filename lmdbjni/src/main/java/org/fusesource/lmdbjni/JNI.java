@@ -606,12 +606,52 @@ class JNI {
     /**
      * <a href="http://symas.com/mdb/doc/group__mdb.html#">details</a>
      */
-    @JniMethod
-    public static final native int mdb_cursor_get(
+    @JniMethod(accessor = "mdb_cursor_get")
+    public static final native int mdb_cursor_get_copy_in(
             @JniArg(cast = "MDB_cursor *") long cursor,
             @JniArg(cast = "MDB_val *") MDB_val key,
             @JniArg(cast = "MDB_val *") MDB_val data,
             @JniArg(cast = "MDB_cursor_op") int op);
+
+    /**
+     * <a href="http://symas.com/mdb/doc/group__mdb.html#">details</a>
+     */
+    @JniMethod(accessor = "mdb_cursor_get")
+    public static final native int mdb_cursor_get_no_copy_in(
+            @JniArg(cast = "MDB_cursor *") long cursor,
+            @JniArg(cast = "MDB_val *", flags = {NO_IN}) MDB_val key,
+            @JniArg(cast = "MDB_val *", flags = {NO_IN}) MDB_val data,
+            @JniArg(cast = "MDB_cursor_op") int op);
+
+    public static final int mdb_cursor_get(long cursor, MDB_val key, MDB_val data, int op) {
+        // In the current version of lmdb, only the following ops need to copy in:
+        //   MDB_GET_BOTH:
+        //   MDB_GET_BOTH_RANGE:
+        //   MDB_SET:
+        //   MDB_SET_KEY:
+        //   MDB_SET_RANGE:
+        // In order to be future proof, we assume that unknown ops all need to copy in.
+        boolean copyIn = !(op == MDB_FIRST ||
+                           op == MDB_FIRST_DUP ||
+                           op == MDB_GET_CURRENT ||
+                           op == MDB_GET_MULTIPLE ||
+                           op == MDB_LAST ||
+                           op == MDB_LAST_DUP ||
+                           op == MDB_NEXT ||
+                           op == MDB_NEXT_DUP ||
+                           op == MDB_NEXT_MULTIPLE ||
+                           op == MDB_NEXT_NODUP ||
+                           op == MDB_PREV ||
+                           op == MDB_PREV_DUP ||
+                           op == MDB_PREV_NODUP);
+        // On my machine we save about 15ns per call by avoiding the copy. The cost of checking
+        // whether the op needs a copy is trivial compared to the cost of the extra JNI calls!
+        if (copyIn) {
+            return mdb_cursor_get_copy_in(cursor, key, data, op);
+        } else {
+            return mdb_cursor_get_no_copy_in(cursor, key, data, op);
+        }
+    }
 
     /**
      * <a href="http://symas.com/mdb/doc/group__mdb.html#">details</a>
