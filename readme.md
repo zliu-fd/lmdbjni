@@ -27,19 +27,19 @@ Add one (or all) of the following dependency to your Maven `pom.xml`.
 <dependency>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-linux64</artifactId>
-    <version>0.1.1</version>
+    <version>${lmdbjni.version}</version>
 </dependency>
 
 <dependency>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-osx64</artifactId>
-    <version>0.1.1</version>
+    <version>${lmdbjni.version}</version>
 </dependency>
 
 <dependency>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-win64</artifactId>
-    <version>0.1.1</version>
+    <version>${lmdbjni.version}</version>
 </dependency>
 ```
 
