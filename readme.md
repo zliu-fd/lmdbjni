@@ -12,7 +12,7 @@ This is a fork that build on the work found at https://github.com/chirino/lmdbjn
 
 ## Using Prebuilt Jar
 
-The prebuilt binary jars only work on 64 bit OS X or Linux machines.
+The prebuilt binary jars work on 64 bit Linux, OSX and Windows machines.
 
 ### License
 
