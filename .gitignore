@@ -12,3 +12,4 @@ target
 .settings
 eclipse-classes
 test-data
+*.releaseBackup
