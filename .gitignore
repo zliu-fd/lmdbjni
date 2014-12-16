@@ -13,3 +13,4 @@ target
 eclipse-classes
 test-data
 *.releaseBackup
+release.properties
