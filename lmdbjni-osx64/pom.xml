@@ -33,7 +33,11 @@ limitations under the License.
 
   <name>${project.artifactId}</name>
   <description>The lmdbjni osx 64 bit native libraries</description>
-
+  <scm>
+    <connection>scm:git:git@github.com:deephacks/lmdbjni.git</connection>
+    <developerConnection>scm:git:git@github.com:deephacks/lmdbjni.git</developerConnection>
+    <url>scm:git:git@github.com/deephacks/lmdbjni</url>
+  </scm>
   <properties>
     <lmdb-home>${project.build.directory}/lmdb/META-INF/native/lmdb-osx64</lmdb-home>
   </properties>
