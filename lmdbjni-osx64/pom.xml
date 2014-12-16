@@ -47,7 +47,7 @@ limitations under the License.
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.2.3-SNAPSHOT</version>
+      <version>0.2.3</version>
     </dependency>
   </dependencies>
 
