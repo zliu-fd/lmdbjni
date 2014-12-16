@@ -36,7 +36,8 @@ Add one (or all) of the following dependency to your Maven `pom.xml`.
     <version>${lmdbjni.version}</version>
 </dependency>
 
-<!--  win64 not available in maven central but i'm happy to put it up: stoffe@gmail.com
+<!-- win64 not available in maven central atm 
+
 <dependency>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-win64</artifactId>
