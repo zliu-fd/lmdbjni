@@ -59,6 +59,7 @@ public class Env extends NativeObject implements Closeable {
         checkErrorCode(rc);
     }
 
+    @Override
     public void close() {
         if( self!=0 ) {
             mdb_env_close(self);
@@ -137,18 +138,20 @@ public class Env extends NativeObject implements Closeable {
 
     public Database openDatabase(Transaction tx, String name, int flags) {
         checkArgNotNull(tx, "tx");
-        checkArgNotNull(name, "name");
         long dbi[] = new long[1];
         checkErrorCode(mdb_dbi_open(tx.pointer(), name, flags, dbi));
         return new Database(this, dbi[0]);
     }
 
+    public Database openDatabase() {
+        return openDatabase(null, Constants.CREATE);
+    }
+
     public Database openDatabase(String name) {
-        checkArgNotNull(name, "name");
         return openDatabase(name, Constants.CREATE);
     }
+
     public Database openDatabase(String name, int flags) {
-        checkArgNotNull(name, "name");
         Transaction tx = createTransaction();
         try {
             return openDatabase(tx, name, flags);
