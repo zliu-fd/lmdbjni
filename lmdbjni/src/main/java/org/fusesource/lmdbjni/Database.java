@@ -37,6 +37,7 @@ public class Database extends NativeObject implements Closeable {
         this.env = env;
     }
 
+    @Override
     public void close() {
         if( self!=0 ) {
             mdb_dbi_close(env.pointer(), self);
@@ -46,7 +47,7 @@ public class Database extends NativeObject implements Closeable {
 
 
     public MDB_stat stat() {
-        Transaction tx = env.createTransaction();
+        Transaction tx = env.createTransaction(true);
         try {
             return stat(tx);
         } finally {
@@ -81,7 +82,7 @@ public class Database extends NativeObject implements Closeable {
 
     public byte[] get(byte[] key) {
         checkArgNotNull(key, "key");
-        Transaction tx = env.createTransaction();
+        Transaction tx = env.createTransaction(true);
         try {
             return get(tx, key);
         } finally {
