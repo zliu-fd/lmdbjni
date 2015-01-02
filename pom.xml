@@ -31,7 +31,7 @@
 
   <properties>
     <hawtjni-version>1.9</hawtjni-version>
-    <lmdb-version>0.1.1</lmdb-version>
+    <lmdb-version>0.1.2</lmdb-version>
   </properties>
 
   <modules>
