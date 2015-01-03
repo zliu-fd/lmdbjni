@@ -33,14 +33,17 @@ public class Entry implements Map.Entry<byte[], byte[]> {
         this.value = value;
     }
 
+    @Override
     public byte[] getKey() {
         return key;
     }
 
+    @Override
     public byte[] getValue() {
         return value;
     }
 
+    @Override
     public byte[] setValue(byte[] value) {
         throw new UnsupportedOperationException();
     }
