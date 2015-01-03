@@ -28,8 +28,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import static org.fusesource.lmdbjni.Constants.FIRST;
-import static org.fusesource.lmdbjni.Constants.NEXT;
 import static org.fusesource.lmdbjni.Constants.*;
 
 /**
@@ -51,7 +49,7 @@ public class EnvTest extends TestCase {
 
     @Test
     public void testCRUD() throws Exception {
-      addLibraryPath("/usr/local/lib" );
+        addLibraryPath("/usr/local/lib");
         String path = getTestDirectory(getName()).getCanonicalPath();
         Env env = new Env();
         env.open(path);
@@ -73,9 +71,9 @@ public class EnvTest extends TestCase {
         Cursor cursor = db.openCursor(tx);
 
         // Lets verify cursoring works..
-        LinkedList<String> keys = new LinkedList<String>();
-        LinkedList<String> values = new LinkedList<String>();
-        for( Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT) ) {
+        LinkedList<String> keys = new LinkedList<>();
+        LinkedList<String> values = new LinkedList<>();
+        for (Entry entry = cursor.get(FIRST); entry != null; entry = cursor.get(NEXT)) {
             keys.add(string(entry.getKey()));
             values.add(string(entry.getValue()));
         }
@@ -101,25 +99,24 @@ public class EnvTest extends TestCase {
         db.close();
         env.close();
     }
-  public static void addLibraryPath(String pathToAdd) throws Exception{
-    final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");
-    usrPathsField.setAccessible(true);
 
-    //get array of paths
-    final String[] paths = (String[])usrPathsField.get(null);
+    public static void addLibraryPath(String pathToAdd) throws Exception {
+        final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");
+        usrPathsField.setAccessible(true);
 
-    //check if the path to add is already present
-    for(String path : paths) {
-      if(path.equals(pathToAdd)) {
-        return;
-      }
+        //get array of paths
+        final String[] paths = (String[]) usrPathsField.get(null);
+
+        //check if the path to add is already present
+        for (String path : paths) {
+            if (path.equals(pathToAdd)) {
+                return;
+            }
+        }
+
+        //add the new path
+        final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
+        newPaths[newPaths.length - 1] = pathToAdd;
+        usrPathsField.set(null, newPaths);
     }
-
-    //add the new path
-    final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
-    newPaths[newPaths.length-1] = pathToAdd;
-    usrPathsField.set(null, newPaths);
-  }
-
-
 }
