@@ -49,7 +49,6 @@ public class EnvTest extends TestCase {
 
     @Test
     public void testCRUD() throws Exception {
-        addLibraryPath("/usr/local/lib");
         String path = getTestDirectory(getName()).getCanonicalPath();
         Env env = new Env();
         env.open(path);
@@ -98,25 +97,5 @@ public class EnvTest extends TestCase {
 
         db.close();
         env.close();
-    }
-
-    public static void addLibraryPath(String pathToAdd) throws Exception {
-        final Field usrPathsField = ClassLoader.class.getDeclaredField("usr_paths");
-        usrPathsField.setAccessible(true);
-
-        //get array of paths
-        final String[] paths = (String[]) usrPathsField.get(null);
-
-        //check if the path to add is already present
-        for (String path : paths) {
-            if (path.equals(pathToAdd)) {
-                return;
-            }
-        }
-
-        //add the new path
-        final String[] newPaths = Arrays.copyOf(paths, paths.length + 1);
-        newPaths[newPaths.length - 1] = pathToAdd;
-        usrPathsField.set(null, newPaths);
     }
 }
