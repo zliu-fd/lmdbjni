@@ -28,14 +28,6 @@ import static org.fusesource.lmdbjni.JNI.strlen;
  */
 class Util {
 
-    public  static int errno() {
-        return errno();
-    }
-
-    public  static String strerror() {
-        return string(JNI.strerror(errno()));
-    }
-
     public static String string(long ptr) {
         if( ptr == 0 )
             return null;
