@@ -18,16 +18,15 @@
 
 package org.fusesource.lmdbjni.test;
 
-import junit.framework.TestCase;
 import org.fusesource.lmdbjni.*;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static org.junit.Assert.*;
 import static org.fusesource.lmdbjni.Constants.*;
 
 /**
@@ -35,21 +34,14 @@ import static org.fusesource.lmdbjni.Constants.*;
  *
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
-public class EnvTest extends TestCase {
+public class EnvTest {
 
-    static public void assertEquals(byte[] arg1, byte[] arg2) {
-        assertTrue(Arrays.equals(arg1, arg2));
-    }
-
-    static File getTestDirectory(String name) throws IOException {
-        File rc = new File(new File("test-data"), name);
-        rc.mkdirs();
-        return rc;
-    }
+    @Rule
+    public TemporaryFolder tmp = new TemporaryFolder();
 
     @Test
     public void testCRUD() throws Exception {
-        String path = getTestDirectory(getName()).getCanonicalPath();
+        String path = tmp.newFolder().getCanonicalPath();
         Env env = new Env();
         env.open(path);
         Database db = env.openDatabase("foo");
@@ -59,11 +51,11 @@ public class EnvTest extends TestCase {
 
         assertNull(db.put(bytes("New York"), bytes("gray")));
         assertNull(db.put(bytes("New York"), bytes("blue")));
-        assertEquals(db.put(bytes("New York"), bytes("silver"), NOOVERWRITE), bytes("blue"));
+        assertArrayEquals(db.put(bytes("New York"), bytes("silver"), NOOVERWRITE), bytes("blue"));
 
-        assertEquals(db.get(bytes("Tampa")), bytes("green"));
-        assertEquals(db.get(bytes("London")), bytes("red"));
-        assertEquals(db.get(bytes("New York")), bytes("blue"));
+        assertArrayEquals(db.get(bytes("Tampa")), bytes("green"));
+        assertArrayEquals(db.get(bytes("London")), bytes("red"));
+        assertArrayEquals(db.get(bytes("New York")), bytes("blue"));
 
 
         Transaction tx = env.createTransaction();
