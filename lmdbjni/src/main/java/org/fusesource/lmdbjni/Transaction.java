@@ -26,11 +26,8 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  */
 public class Transaction extends NativeObject {
 
-    private final Env env;
-
-    Transaction(Env env, long self) {
+    Transaction(long self) {
         super(self);
-        this.env = env;
     }
 
     public void renew() {

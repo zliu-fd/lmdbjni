@@ -18,14 +18,12 @@
 
 package org.fusesource.lmdbjni;
 
-import org.fusesource.hawtjni.runtime.JniField;
-
-import static org.fusesource.hawtjni.runtime.FieldFlag.CONSTANT;
-
 /**
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class LMDBException extends RuntimeException {
+
+    private static final long serialVersionUID = 8823282287521553903L;
 
     public static final int KEYEXIST = JNI.MDB_KEYEXIST;
     public static final int NOTFOUND = JNI.MDB_NOTFOUND;
