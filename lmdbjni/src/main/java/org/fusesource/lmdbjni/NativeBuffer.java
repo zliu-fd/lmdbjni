@@ -177,7 +177,7 @@ class NativeBuffer extends NativeObject {
         if( at < 0 ) throw new IllegalArgumentException("at cannot be negative");
         if( at+length > capacity ) throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
         if( offset+length > source.length) throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the source buffer");
-        JNI.buffer_copy(source, offset, self, at, length);
+        Unsafe.UNSAFE.copyMemory(source, Unsafe.ARRAY_BASE_OFFSET, null, self + at, length);
     }
 
     public void read(long at, byte []target, int offset, int length) {
@@ -187,7 +187,7 @@ class NativeBuffer extends NativeObject {
         if( at < 0 ) throw new IllegalArgumentException("at cannot be negative");
         if( at+length > capacity ) throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
         if( offset+length > target.length) throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the target buffer");
-        JNI.buffer_copy(self, at, target, offset, length);
+        Unsafe.UNSAFE.copyMemory(null, self + at, target, Unsafe.ARRAY_BASE_OFFSET, length);
     }
 
     public byte[] toByteArray() {
