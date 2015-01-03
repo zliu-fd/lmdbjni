@@ -30,13 +30,11 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  */
 public class Cursor extends NativeObject implements Closeable {
 
-    private final Env env;
-
-    Cursor(Env env, long self) {
+    Cursor(long self) {
         super(self);
-        this.env = env;
     }
 
+    @Override
     public void close() {
         if( self!=0 ) {
             mdb_cursor_close(self);
