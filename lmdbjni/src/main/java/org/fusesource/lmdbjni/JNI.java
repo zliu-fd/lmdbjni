@@ -653,7 +653,7 @@ class JNI {
         }
     }
 
-    @JniMethod
+    @JniMethod(accessor = "mdb_cursor_get")
     public static final native int mdb_cursor_get_address(
       @JniArg(cast = "MDB_cursor *") long cursor,
       @JniArg(cast = "MDB_val *") long key,
