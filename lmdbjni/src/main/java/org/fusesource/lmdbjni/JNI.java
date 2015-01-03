@@ -653,6 +653,13 @@ class JNI {
         }
     }
 
+    @JniMethod
+    public static final native int mdb_cursor_get_address(
+      @JniArg(cast = "MDB_cursor *") long cursor,
+      @JniArg(cast = "MDB_val *") long key,
+      @JniArg(cast = "MDB_val *") long data,
+      @JniArg(cast = "MDB_cursor_op") int op);
+
     /**
      * <a href="http://symas.com/mdb/doc/group__mdb.html#">details</a>
      */
