@@ -142,10 +142,6 @@ class NativeBuffer extends NativeObject {
             return create(data, 0 , data.length);
         }
     }
-    
-    static public NativeBuffer create(String data) {
-        return create(cbytes(data));
-    }
 
     static public NativeBuffer create(byte[] data, int offset, int length) {
         NativeBuffer rc = create(length);
@@ -164,31 +160,6 @@ class NativeBuffer extends NativeObject {
         if( allocation!=null ) {
             allocation.retain();
         }
-    }
-
-    public NativeBuffer slice(long offset, long length) {
-        checkAllocated();
-        if( length < 0 ) throw new IllegalArgumentException("length cannot be negative");
-        if( offset < 0 ) throw new IllegalArgumentException("offset cannot be negative");
-        if( offset+length >= capacity) throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of this buffer");
-        return new NativeBuffer(allocation, PointerMath.add(self, offset), length);
-    }
-    
-    static byte[] cbytes(String strvalue) {
-        byte[] value = strvalue.getBytes();
-        // expand by 1 so we get a null at the end.
-        byte[] rc = new byte[value.length+1];
-        System.arraycopy(value, 0, rc, 0, value.length);
-        return rc;
-    }
-
-    public NativeBuffer head(long length) {
-        return slice(0, length);
-    }
-
-    public NativeBuffer tail(long length) {
-        if( capacity-length < 0) throw new ArrayIndexOutOfBoundsException("capacity-length cannot be less than zero");
-        return slice(capacity-length, length);
     }
 
     public void delete() {
