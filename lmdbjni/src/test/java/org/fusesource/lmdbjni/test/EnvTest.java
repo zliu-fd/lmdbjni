@@ -42,10 +42,15 @@ public class EnvTest {
     @Test
     public void testCRUD() throws Exception {
         String path = tmp.newFolder().getCanonicalPath();
-        Env env = new Env();
-        env.open(path);
-        Database db = env.openDatabase("foo");
+        try (Env env = new Env()) {
+            env.open(path);
+            try (Database db = env.openDatabase()) {
+                doTest(env, db);
+            }
+        }
+    }
 
+    private void doTest(Env env, Database db) {
         assertNull(db.put(bytes("Tampa"), bytes("green")));
         assertNull(db.put(bytes("London"), bytes("red")));
 
@@ -56,7 +61,6 @@ public class EnvTest {
         assertArrayEquals(db.get(bytes("Tampa")), bytes("green"));
         assertArrayEquals(db.get(bytes("London")), bytes("red"));
         assertArrayEquals(db.get(bytes("New York")), bytes("blue"));
-
 
         Transaction tx = env.createTransaction();
         Cursor cursor = db.openCursor(tx);
@@ -86,8 +90,5 @@ public class EnvTest {
         } catch (LMDBException e) {
             assertTrue(e.getErrorCode() > 0);
         }
-
-        db.close();
-        env.close();
     }
 }

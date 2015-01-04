@@ -10,6 +10,15 @@ which is a fast key-value storage library written for OpenLDAP project.
 
 This is a fork that build on the work found at https://github.com/chirino/lmdbjni.
 
+### References
+
+To develop a thorough understanding of the LMDB design, please study the following:
+
+ * [LMDB C API reference](http://symas.com/mdb/doc/group__internal.html)
+ * [LMDB paper](http://symas.com/mdb/20120829-LinuxCon-MDB-txt.pdf)
+ * [LMDB lecture by Howard Chu](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
+ * [LMDB source code](https://gitorious.org/mdb/mdb/source/libraries/liblmdb)
+
 ## Using Prebuilt Jar
 
 The prebuilt binary jars work on 64 bit Linux, OSX and Windows machines.
@@ -55,16 +64,11 @@ Recommended Package imports:
 
 Opening and closing the database.
 
-    Env env = new Env();
-    try {
+    try (Env env = new Env()) {
       env.open("/tmp/mydb");
-      Database db = env.openDatabase("foo");
-      
-      ... // use the db
-      db.close();
-    } finally {
-      // Make sure you close the env to avoid resource leaks.
-      env.close();
+      try (Database db = env.openDatabase()) {
+        ... // use the db
+      }
     }
 
 Putting, Getting, and Deleting key/values.
@@ -93,7 +97,7 @@ Performing Atomic/Transacted Updates:
 
 Working against a Snapshot view of the Database:
 
-    // cerate a read-only transaction...
+    // create a read-only transaction...
     Transaction tx = env.createTransaction(true);
     try {
       
