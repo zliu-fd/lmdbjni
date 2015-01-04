@@ -1,6 +1,8 @@
 language: java
 jdk:
   - oraclejdk8
-
+branches:
+  except:
+    - /.*test$/
 before_script: sudo apt-get install build-essential automake1.10 libtool
 script: "mvn install -P linux64"
