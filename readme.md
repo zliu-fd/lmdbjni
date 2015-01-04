@@ -64,16 +64,11 @@ Recommended Package imports:
 
 Opening and closing the database.
 
-    Env env = new Env();
-    try {
+    try (Env env = new Env()) {
       env.open("/tmp/mydb");
-      Database db = env.openDatabase("foo");
-      
-      ... // use the db
-      db.close();
-    } finally {
-      // Make sure you close the env to avoid resource leaks.
-      env.close();
+      try (Database db = env.openDatabase()) {
+        ... // use the db
+      }
     }
 
 Putting, Getting, and Deleting key/values.
