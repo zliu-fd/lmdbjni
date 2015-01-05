@@ -63,18 +63,22 @@ public class EnvTest {
         assertArrayEquals(db.get(bytes("New York")), bytes("blue"));
 
         Transaction tx = env.createTransaction();
-        Cursor cursor = db.openCursor(tx);
+        try {
+            // Lets verify cursoring works..
+            LinkedList<String> keys = new LinkedList<>();
+            LinkedList<String> values = new LinkedList<>();
 
-        // Lets verify cursoring works..
-        LinkedList<String> keys = new LinkedList<>();
-        LinkedList<String> values = new LinkedList<>();
-        for (Entry entry = cursor.get(FIRST); entry != null; entry = cursor.get(NEXT)) {
-            keys.add(string(entry.getKey()));
-            values.add(string(entry.getValue()));
+            try (Cursor cursor = db.openCursor(tx)) {
+                for (Entry entry = cursor.get(FIRST); entry != null; entry = cursor.get(NEXT)) {
+                    keys.add(string(entry.getKey()));
+                    values.add(string(entry.getValue()));
+                }
+            }
+            assertEquals(Arrays.asList(new String[] { "London", "New York", "Tampa" }), keys);
+            assertEquals(Arrays.asList(new String[] { "red", "blue", "green" }), values);
+        } finally {
+            tx.commit();
         }
-        tx.commit();
-        assertEquals(Arrays.asList(new String[]{"London", "New York", "Tampa"}), keys);
-        assertEquals(Arrays.asList(new String[]{"red", "blue", "green"}), values);
 
         assertTrue(db.delete(bytes("New York")));
         assertNull(db.get(bytes("New York")));

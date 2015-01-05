@@ -88,7 +88,7 @@ Performing Atomic/Transacted Updates:
       ok = true;
     } finally {
       // Make sure you either commit or rollback to avoid resource leaks.
-      if( ok ) {
+      if (ok) {
         tx.commit();
       } else {
         tx.abort();
@@ -115,18 +115,13 @@ Iterating key/values:
 
     Transaction tx = env.createTransaction(true);
     try {
-      Cursor cursor = db.openCursor(tx);
-      try {
-        for( Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT) ) {
+      try (Cursor cursor = db.openCursor(tx)) {
+        for (Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT)) {
             String key = string(entry.getKey());
             String value = string(entry.getValue());
-            System.out.println(key+" = "+value);
+            System.out.println(key + " = " + value);
         }
-      } finally {
-        // Make sure you close the cursor to avoid leaking reasources.
-        cursor.close();
       }
-
     } finally {
       // Make sure you commit the transaction to avoid resource leaks.
       tx.commit();
