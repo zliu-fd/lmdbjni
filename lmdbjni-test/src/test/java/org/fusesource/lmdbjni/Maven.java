@@ -1,6 +1,9 @@
 package org.fusesource.lmdbjni;
 
+import com.google.common.collect.Lists;
 import org.fusesource.hawtjni.runtime.Library;
+import org.iq80.leveldb.DBFactory;
+import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.rocksdb.RocksDB;
 
@@ -18,7 +21,11 @@ public class Maven {
         File lmdbjnilinux64 = Maven.findTargetJar("lmdbjni-linux64");
         File lmdbjniosx64 = Maven.findTargetJar("lmdbjni-osx64");
         File rocksdb = Maven.getClassPath(RocksDB.class);
-        classPath = Maven.createClassPath(hawtjni, jmh, lmdbjni, lmdbjnitest, lmdbjnilinux64, lmdbjniosx64, rocksdb);
+        File leveldb = Maven.getClassPath(Iq80DBFactory.class);
+        File dbfactory = Maven.getClassPath(DBFactory.class);
+        File guava = Maven.getClassPath(Lists.class);
+        classPath = Maven.createClassPath(hawtjni, jmh, lmdbjni, lmdbjnitest, lmdbjnilinux64,
+                lmdbjniosx64, rocksdb, leveldb, dbfactory, guava);
     }
 
     public static File getClassPath(Class<?> anyTestClass) {

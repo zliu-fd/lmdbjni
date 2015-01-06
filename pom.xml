@@ -110,6 +110,9 @@
             <include>**/*TestSuite.java</include>
             <include>**/*Test.java</include>
           </includes>
+          <excludes>
+            <exclude>**/*PerfTest*.java</exclude>
+          </excludes>
           <useFile>true</useFile>
         </configuration>
       </plugin>
