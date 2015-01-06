@@ -18,6 +18,8 @@
 
 package org.fusesource.lmdbjni;
 
+import java.nio.ByteBuffer;
+
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkErrorCode;
 
@@ -25,6 +27,7 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class Transaction extends NativeObject {
+    private DirectBuffer buffer;
 
     Transaction(long self) {
         super(self);
@@ -53,4 +56,10 @@ public class Transaction extends NativeObject {
         }
     }
 
+    long getBufferAddress() {
+        if (buffer == null) {
+            buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+        }
+        return buffer.addressOffset();
+    }
 }

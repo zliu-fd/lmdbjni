@@ -544,6 +544,13 @@ class JNI {
             @JniArg(cast = "MDB_val *", flags={NO_OUT}) MDB_val key,
             @JniArg(cast = "MDB_val *", flags={NO_IN}) MDB_val data);
 
+    @JniMethod(accessor = "mdb_get")
+    public static final native int mdb_get_address(
+            @JniArg(cast = "MDB_txn *") long txn,
+            @JniArg(cast = "unsigned int ") long dbi,
+            @JniArg(cast = "MDB_val *") long key,
+            @JniArg(cast = "MDB_val *") long data);
+
     /**
      * <a href="http://symas.com/mdb/doc/group__mdb.html#">details</a>
      */
@@ -553,6 +560,15 @@ class JNI {
             @JniArg(cast = "unsigned int ") long dbi,
             @JniArg(cast = "MDB_val *", flags={NO_OUT}) MDB_val key,
             @JniArg(cast = "MDB_val *") MDB_val data,
+            @JniArg(cast = "unsigned int") int flags);
+
+
+    @JniMethod(accessor = "mdb_put")
+    public static final native int mdb_put_address(
+            @JniArg(cast = "MDB_txn *") long txn,
+            @JniArg(cast = "unsigned int ") long dbi,
+            @JniArg(cast = "MDB_val *") long key,
+            @JniArg(cast = "MDB_val *") long data,
             @JniArg(cast = "unsigned int") int flags);
 
     /**
@@ -668,6 +684,14 @@ class JNI {
             @JniArg(cast = "MDB_cursor *") long cursor,
             @JniArg(cast = "MDB_val *", flags = {NO_OUT}) MDB_val key,
             @JniArg(cast = "MDB_val *", flags = {NO_OUT}) MDB_val data,
+            @JniArg(cast = "unsigned int ") int flags);
+
+
+    @JniMethod(accessor = "mdb_cursor_put")
+    public static final native int mdb_cursor_put_address(
+            @JniArg(cast = "MDB_cursor *") long cursor,
+            @JniArg(cast = "MDB_val *") long key,
+            @JniArg(cast = "MDB_val *") long data,
             @JniArg(cast = "unsigned int ") int flags);
 
     /**
