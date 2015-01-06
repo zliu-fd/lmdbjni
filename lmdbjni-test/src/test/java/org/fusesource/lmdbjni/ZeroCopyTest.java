@@ -11,12 +11,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Intellij: On linux these test fail with the following error:
- *
- * java.lang.UnsatisfiedLinkError: Could not load library. Reasons: [no lmdbjni in java.library.path, /tmp/liblmdbjni-64-2515206700199835722.so: liblmdb.so: cannot open shared object file: No such file or directory]
- *
- * One workaround is to add this maven module to the root pom, but
- * this is unacceptable in the long run.
+ * Known issue, https://github.com/deephacks/lmdbjni/issues/13
  */
 public class ZeroCopyTest {
     private File dir = new File("/tmp/test");
