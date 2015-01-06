@@ -2,6 +2,7 @@ package org.fusesource.lmdbjni;
 
 import org.fusesource.hawtjni.runtime.Library;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.rocksdb.RocksDB;
 
 import java.io.File;
 import java.net.URL;
@@ -16,7 +17,8 @@ public class Maven {
         File lmdbjnitest = Maven.getClassPath(PerfTest1.class);
         File lmdbjnilinux64 = Maven.findTargetJar("lmdbjni-linux64");
         File lmdbjniosx64 = Maven.findTargetJar("lmdbjni-osx64");
-        classPath = Maven.createClassPath(hawtjni, jmh, lmdbjni, lmdbjnitest, lmdbjnilinux64, lmdbjniosx64);
+        File rocksdb = Maven.getClassPath(RocksDB.class);
+        classPath = Maven.createClassPath(hawtjni, jmh, lmdbjni, lmdbjnitest, lmdbjnilinux64, lmdbjniosx64, rocksdb);
     }
 
     public static File getClassPath(Class<?> anyTestClass) {

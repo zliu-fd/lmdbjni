@@ -21,6 +21,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.rocksdb</groupId>
+      <artifactId>rocksdbjni</artifactId>
+      <version>3.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
       <version>0.2.6-SNAPSHOT</version>
