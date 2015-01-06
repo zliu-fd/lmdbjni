@@ -19,6 +19,18 @@ To develop a thorough understanding of the LMDB design, please study the followi
  * [LMDB lecture by Howard Chu](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
  * [LMDB source code](https://gitorious.org/mdb/mdb/source/libraries/liblmdb)
 
+Benchmarks
+
+* [In-Memory Microbenchmark] (http://symas.com/mdb/inmem), June 2014
+
+   Multithreaded read performance for a purely in-memory database.
+
+* [On-Disk Microbenchmark](http://symas.com/mdb/ondisk), November 2014
+
+   Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
+
+
+
 ## Using Prebuilt Jar
 
 The prebuilt binary jars work on 64 bit Linux, OSX and Windows machines.
