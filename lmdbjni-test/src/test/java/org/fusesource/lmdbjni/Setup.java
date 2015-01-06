@@ -2,6 +2,8 @@ package org.fusesource.lmdbjni;
 
 import java.io.File;
 
+import static org.fusesource.lmdbjni.Constants.APPEND;
+
 public class Setup {
     public static File dir = new File("/tmp/test");
     public static Database database;
@@ -16,9 +18,11 @@ public class Setup {
         env.open(dir.getAbsolutePath());
         env.setMapSize(4_294_967_296L);
         database = env.openDatabase("test");
-        for (int i = 0; i < 1000; i++) {
+        Transaction tx = env.createTransaction();
+        for (int i = 0; i < 100000; i++) {
             long v = Long.reverseBytes(i);
-            database.put(Bytes.fromLong(i), Bytes.fromLong(v));
+            database.put(tx, Bytes.fromLong(i), Bytes.fromLong(v), APPEND);
         }
+        tx.commit();
     }
 }
