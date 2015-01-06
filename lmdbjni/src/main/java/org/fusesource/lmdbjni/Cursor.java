@@ -74,10 +74,7 @@ public class Cursor extends NativeObject implements Closeable {
             return rc;
         }
         checkErrorCode(rc);
-        int keySize = (int) Unsafe.getLong(bufferAddress, 0);
-        key.wrap(Unsafe.getAddress(bufferAddress, 1), keySize);
-        int valSize = (int) Unsafe.getLong(bufferAddress, 2);
-        value.wrap(Unsafe.getAddress(bufferAddress, 3), valSize);
+        wrapBufferAddress(key, value);
         return rc;
     }
 
@@ -97,13 +94,16 @@ public class Cursor extends NativeObject implements Closeable {
             return rc;
         }
         checkErrorCode(rc);
+        wrapBufferAddress(key, value);
+        return rc;
+    }
+
+    private void wrapBufferAddress(DirectBuffer key, DirectBuffer value) {
         int keySize = (int) Unsafe.getLong(bufferAddress, 0);
         key.wrap(Unsafe.getAddress(bufferAddress, 1), keySize);
         int valSize = (int) Unsafe.getLong(bufferAddress, 2);
         value.wrap(Unsafe.getAddress(bufferAddress, 3), valSize);
-        return rc;
     }
-
 
     public Entry seek(SeekOp op, byte[] key) {
         checkArgNotNull(key, "key");
