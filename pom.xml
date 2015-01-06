@@ -197,6 +197,7 @@
         <module>lmdbjni-linux64</module>
         <module>lmdbjni-win64</module>
         <module>lmdbjni-all</module>
+        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -204,12 +205,14 @@
       <id>all</id>
       <modules>
         <module>lmdbjni-all</module>
+        <module>lmdbjni-test</module>
       </modules>
     </profile>
     <profile>
       <id>osx64</id>
       <modules>
         <module>lmdbjni-osx64</module>
+        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -217,6 +220,7 @@
       <id>linux64</id>
       <modules>
         <module>lmdbjni-linux64</module>
+        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -224,6 +228,7 @@
       <id>win64</id>
       <modules>
         <module>lmdbjni-win64</module>
+        <module>lmdbjni-test</module>
       </modules>
     </profile>
   </profiles>
