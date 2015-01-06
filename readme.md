@@ -8,8 +8,6 @@ LMDB JNI gives you a Java interface to the
 [OpenLDAP Lightning Memory-Mapped Database](http://symas.com/mdb/) library
 which is a fast key-value storage library written for OpenLDAP project.
 
-This is a fork that build on the work found at https://github.com/chirino/lmdbjni.
-
 ### References
 
 To develop a thorough understanding of the LMDB design, please study the following:
