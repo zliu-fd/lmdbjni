@@ -16,7 +16,6 @@
   <description>lmdbjni-test</description>
 
   <properties>
-    <lmdb-version>0.1.2</lmdb-version>
     <lmdb-linux64-home>${project.build.directory}/lmdb/META-INF/native/lmdb-linux64</lmdb-linux64-home>
     <lmdb-osx64-home>${project.build.directory}/lmdb/META-INF/native/lmdb-osx64</lmdb-osx64-home>
   </properties>
