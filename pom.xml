@@ -74,6 +74,24 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.rocksdb</groupId>
+      <artifactId>rocksdbjni</artifactId>
+      <version>3.8.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.iq80.leveldb</groupId>
+      <artifactId>leveldb</artifactId>
+      <version>0.7</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -199,7 +217,6 @@
         <module>lmdbjni-linux64</module>
         <module>lmdbjni-win64</module>
         <module>lmdbjni-all</module>
-        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -207,14 +224,12 @@
       <id>all</id>
       <modules>
         <module>lmdbjni-all</module>
-        <module>lmdbjni-test</module>
       </modules>
     </profile>
     <profile>
       <id>osx64</id>
       <modules>
         <module>lmdbjni-osx64</module>
-        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -222,7 +237,6 @@
       <id>linux64</id>
       <modules>
         <module>lmdbjni-linux64</module>
-        <module>lmdbjni-test</module>
       </modules>
     </profile>
 
@@ -230,7 +244,6 @@
       <id>win64</id>
       <modules>
         <module>lmdbjni-win64</module>
-        <module>lmdbjni-test</module>
       </modules>
     </profile>
   </profiles>

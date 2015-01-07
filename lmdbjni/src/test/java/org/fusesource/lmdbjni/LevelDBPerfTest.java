@@ -1,5 +1,9 @@
 package org.fusesource.lmdbjni;
 
+import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
+import org.iq80.leveldb.ReadOptions;
+import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
@@ -11,21 +15,20 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
-public class PerfTest4 extends Setup {
-    static Transaction tx;
+public class LevelDBPerfTest extends Setup {
     static {
-        tx = env.createTransaction();
+        initLevelDb();
     }
 
     @Test
     public void test() throws RunnerException {
         Options options = new OptionsBuilder()
-                .include(".*" + PerfTest4.class.getSimpleName() + ".*")
+                .include(".*" + LevelDBPerfTest.class.getSimpleName() + ".*")
                 .warmupIterations(10)
                 .measurementIterations(10)
                 .forks(1)
@@ -36,12 +39,19 @@ public class PerfTest4 extends Setup {
         new Runner(options).run();
     }
 
-    public static AtomicLong counter = new AtomicLong(0);
+    static DBIterator iterator;
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void mdb_cursor_put() throws IOException {
-        database.put(tx, Bytes.fromLong(counter.incrementAndGet()), Bytes.fromLong(counter.get()));
+    public void leveldb_iterate() throws IOException {
+        if (iterator == null) {
+            iterator = leveldb.iterator();
+        }
+        if (iterator.hasNext()) {
+            Map.Entry<byte[], byte[]> next = iterator.next();
+        } else {
+            iterator.seekToFirst();
+        }
     }
 }

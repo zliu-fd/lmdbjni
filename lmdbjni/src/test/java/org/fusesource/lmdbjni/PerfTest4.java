@@ -16,21 +16,12 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class PerfTest3 extends Setup {
-    static Cursor cursor;
-    static Transaction tx;
-
-    static {
-        tx = env.createTransaction();
-        cursor = database.openCursor(tx);
-    }
-    public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
-    public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
+public class PerfTest4 extends Setup {
 
     @Test
     public void test() throws RunnerException {
         Options options = new OptionsBuilder()
-                .include(".*" + PerfTest3.class.getSimpleName() + ".*")
+                .include(".*" + PerfTest4.class.getSimpleName() + ".*")
                 .warmupIterations(10)
                 .measurementIterations(10)
                 .forks(1)
@@ -41,14 +32,22 @@ public class PerfTest3 extends Setup {
         new Runner(options).run();
     }
 
+    static {
+        initLMDB();
+    }
+
     public static AtomicLong counter = new AtomicLong(0);
+    public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
+    public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
+    public static Transaction tx;
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void mdb_cursor_put_address() throws IOException {
-        key.putLong(0, counter.incrementAndGet());
-        value.putLong(0, counter.get());
-        database.put(tx, key, value);
+    public void mdb_cursor_put() throws IOException {
+        if (tx == null) {
+            tx = env.createTransaction();
+        }
+        database.put(tx, Bytes.fromLong(counter.incrementAndGet()), Bytes.fromLong(counter.get()));
     }
 }

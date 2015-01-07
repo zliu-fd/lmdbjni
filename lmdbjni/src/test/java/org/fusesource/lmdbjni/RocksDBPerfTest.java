@@ -10,29 +10,15 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.rocksdb.RocksDB;
-import org.rocksdb.RocksDBException;
 import org.rocksdb.RocksIterator;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class RocksDBPerfTest extends Setup {
-    static RocksDB rocksDb;
-    static {
-        Maven.recreateDir(new File("/tmp/rocks"));
-        org.rocksdb.Options options = new org.rocksdb.Options();
-        options.setCreateIfMissing(true);
-        try {
-            rocksDb = RocksDB.open(options, "/tmp/rocks");
-            for (int i = 0; i < 100000; i++) {
-                rocksDb.put(Bytes.fromLong(i), Bytes.fromLong(i));
-            }
 
-        } catch (RocksDBException e) {
-            e.printStackTrace();
-        }
+    static {
+        initRocksDB();
     }
 
     @Test

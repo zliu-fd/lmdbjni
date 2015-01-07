@@ -28,20 +28,21 @@ public class PerfTest1 extends Setup {
                 .build();
         new Runner(options).run();
     }
-    static Cursor cursor;
-
     static {
-        Transaction tx = env.createTransaction();
-        cursor = database.openCursor(tx);
+        initLMDB();
     }
 
     public static int rc = JNI.MDB_NOTFOUND;
-
+    static Cursor cursor;
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void mdb_cursor_get_with_deserialization() throws IOException {
+        if (cursor == null) {
+            Transaction tx = env.createTransaction();
+            cursor = database.openCursor(tx);
+        }
         if (rc == JNI.MDB_NOTFOUND) {
             Entry entry = cursor.get(GetOp.FIRST);
             // de-serialize key/value to make the test more realistic

@@ -17,14 +17,6 @@ import java.nio.ByteOrder;
 import java.util.concurrent.TimeUnit;
 
 public class PerfTest2 extends Setup {
-    static Cursor cursor;
-    static {
-        Transaction tx = env.createTransaction();
-        cursor = database.openCursor(tx);
-    }
-
-    public static DirectBuffer key = new DirectBuffer(0, 0);
-    public static DirectBuffer value = new DirectBuffer(0, 0);
 
     @Test
     public void test() throws RunnerException {
@@ -40,12 +32,24 @@ public class PerfTest2 extends Setup {
         new Runner(options).run();
     }
 
+    static {
+        initLMDB();
+    }
+
     public static int rc = JNI.MDB_NOTFOUND;
+    static Cursor cursor;
+
+    public static DirectBuffer key = new DirectBuffer(0, 0);
+    public static DirectBuffer value = new DirectBuffer(0, 0);
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void mdb_cursor_get_address() throws IOException {
+        if (cursor == null) {
+            Transaction tx = env.createTransaction();
+            cursor = database.openCursor(tx);
+        }
         if (rc == JNI.MDB_NOTFOUND) {
             rc = cursor.position(key, value, GetOp.FIRST);
             // de-serialize key/value to make the test more realistic

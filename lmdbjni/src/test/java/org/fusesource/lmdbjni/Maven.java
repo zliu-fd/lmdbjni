@@ -51,6 +51,7 @@ public class Maven {
         File root = new File(Maven.getClassPath(Maven.class)
                 .getParentFile()
                 .getParentFile()
+                .getParentFile()
                 .getParentFile(), subProject + "/target");
         String[] list = root.list();
         if (list == null) {

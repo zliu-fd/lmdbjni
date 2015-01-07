@@ -1,9 +1,5 @@
 package org.fusesource.lmdbjni;
 
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.ReadOptions;
-import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
@@ -15,30 +11,17 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class LevelDBPerfTest extends Setup {
-    static DB leveldb;
-    static {
-        File dir = new File("/tmp/leveldb");
-        Maven.recreateDir(dir);
-        try {
-            leveldb = Iq80DBFactory.factory.open(dir, new org.iq80.leveldb.Options());
-            for (int i = 0; i < 100000; i++) {
-                leveldb.put(Bytes.fromLong(i), Bytes.fromLong(i));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+public class PerfTest3 extends Setup {
 
     @Test
     public void test() throws RunnerException {
         Options options = new OptionsBuilder()
-                .include(".*" + LevelDBPerfTest.class.getSimpleName() + ".*")
+                .include(".*" + PerfTest3.class.getSimpleName() + ".*")
                 .warmupIterations(10)
                 .measurementIterations(10)
                 .forks(1)
@@ -49,19 +32,24 @@ public class LevelDBPerfTest extends Setup {
         new Runner(options).run();
     }
 
-    static DBIterator iterator;
+    static {
+        initLMDB();
+    }
+
+    public static AtomicLong counter = new AtomicLong(0);
+    public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
+    public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
+    public static Transaction tx;
 
     @GenerateMicroBenchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void leveldb_iterate() throws IOException {
-        if (iterator == null) {
-            iterator = leveldb.iterator();
+    public void mdb_cursor_put_address() throws IOException {
+        if (tx == null) {
+            tx = env.createTransaction();
         }
-        if (iterator.hasNext()) {
-            Map.Entry<byte[], byte[]> next = iterator.next();
-        } else {
-            iterator.seekToFirst();
-        }
+        key.putLong(0, counter.incrementAndGet());
+        value.putLong(0, counter.get());
+        database.put(tx, key, value);
     }
 }

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.fusesource.lmdbjni.test;
+package org.fusesource.lmdbjni;
 
 import org.fusesource.lmdbjni.*;
 import org.junit.Rule;
@@ -35,6 +35,9 @@ import static org.fusesource.lmdbjni.Constants.*;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class EnvTest {
+    static {
+        Setup.setLmdbLibraryPath();
+    }
 
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();

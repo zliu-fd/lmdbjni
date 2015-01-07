@@ -14,6 +14,9 @@ import static org.junit.Assert.assertThat;
  * Known issue, https://github.com/deephacks/lmdbjni/issues/13
  */
 public class ZeroCopyTest {
+    static {
+        Setup.setLmdbLibraryPath();
+    }
     private File dir = new File("/tmp/test");
     private Database db;
     private Env env;
