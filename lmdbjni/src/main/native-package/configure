@@ -11408,7 +11408,7 @@ if test "${with_lmdb+set}" = set; then :
       CFLAGS="$CFLAGS -I${withval}"
       CXXFLAGS="$CXXFLAGS -I${withval}"
 
-      LDFLAGS="$LDFLAGS ${withval}/liblmdb.a"
+      # LDFLAGS="$LDFLAGS ${withval}/liblmdb.a"
 
 
 
