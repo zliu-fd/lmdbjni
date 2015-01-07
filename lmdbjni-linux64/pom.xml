@@ -80,9 +80,7 @@ limitations under the License.
             <type>zip</type>
           </nativeSrcDependency>
           <configureArgs>
-            <!-- 
-            <arg>[[double-dash]]with-lmdb=${lmdb-home}</arg>
-            -->
+            <arg>--with-lmdb=${basedir}/../lmdbjni/src/main/native-package/src</arg>
           </configureArgs>
         </configuration>
       </plugin>
