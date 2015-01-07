@@ -25,7 +25,7 @@ limitations under the License.
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.2.4-SNAPSHOT</version>
+    <version>0.2.5</version>
   </parent>
 
   <artifactId>lmdbjni-osx64</artifactId>
@@ -47,7 +47,7 @@ limitations under the License.
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.2.4-SNAPSHOT</version>
+      <version>0.2.5</version>
     </dependency>
   </dependencies>
 
