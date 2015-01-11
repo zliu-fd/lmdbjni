@@ -1,1 +1,0 @@
-/* Stub header file for compability of lmdb codebase in VS builds */
