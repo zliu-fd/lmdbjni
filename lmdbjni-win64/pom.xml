@@ -20,11 +20,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.deephacks.lmdb</groupId>
-      <artifactId>lmdb-win64</artifactId>
-      <version>0.1.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
       <version>0.2.6</version>
