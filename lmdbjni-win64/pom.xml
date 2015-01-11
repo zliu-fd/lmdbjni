@@ -20,6 +20,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.deephacks.lmdb</groupId>
+      <artifactId>lmdb-win64</artifactId>
+      <version>0.1.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
       <version>0.2.6</version>
@@ -46,7 +52,7 @@
                 <artifactItem>
                   <groupId>org.deephacks.lmdb</groupId>
                   <artifactId>lmdb-win64</artifactId>
-                  <version>${lmdb-version}</version>
+                  <version>0.1.2</version>
                   <type>jar</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/lmdb</outputDirectory>
