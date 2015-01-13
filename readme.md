@@ -27,6 +27,9 @@ Benchmarks
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
 
+## Google groups
+
+* https://groups.google.com/forum/#!forum/lmdbjni
 
 
 ## Using Prebuilt Jar
