@@ -1,23 +1,26 @@
 package org.fusesource.lmdbjni;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Known issue, https://github.com/deephacks/lmdbjni/issues/13
- */
 public class ZeroCopyTest {
     static {
         Setup.setLmdbLibraryPath();
     }
-    private File dir = new File("/tmp/test");
+
+    @Rule
+    public TemporaryFolder dir = new TemporaryFolder();
+
     private Database db;
     private Env env;
 
@@ -27,17 +30,16 @@ public class ZeroCopyTest {
     private DirectBuffer v2 = new DirectBuffer(ByteBuffer.allocateDirect(8));
 
     @Before
-    public void before() {
+    public void before() throws IOException {
+        String path = dir.newFolder().getCanonicalPath();
         if (db != null) {
             db.close();
         }
         if (env != null) {
             env.close();
         }
-
-        Maven.recreateDir(dir);
         env = new Env();
-        env.open(dir.getAbsolutePath());
+        env.open(path);
         db = env.openDatabase("test");
     }
 
