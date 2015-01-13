@@ -108,16 +108,16 @@ public class Env extends NativeObject implements Closeable {
         checkErrorCode(mdb_env_set_flags(pointer(), flags, 0));
     }
 
-    public MDB_envinfo info() {
+    public EnvInfo info() {
         MDB_envinfo rc = new MDB_envinfo();
         mdb_env_info(pointer(), rc);
-        return rc;
+       return new EnvInfo(rc);
     }
 
-    public MDB_stat stat() {
+    public Stat stat() {
         MDB_stat rc = new MDB_stat();
         mdb_env_stat(pointer(), rc);
-        return rc;
+        return new Stat(rc);
     }
 
     public Transaction createTransaction() {

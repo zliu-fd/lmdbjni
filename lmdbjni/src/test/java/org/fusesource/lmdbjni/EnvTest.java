@@ -25,6 +25,7 @@ import org.junit.rules.TemporaryFolder;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.fusesource.lmdbjni.Constants.*;
 
@@ -41,6 +42,9 @@ public class EnvTest {
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
 
+    @Rule
+    public TemporaryFolder backup = new TemporaryFolder();
+
     @Test
     public void testCRUD() throws Exception {
         String path = tmp.newFolder().getCanonicalPath();
@@ -51,6 +55,56 @@ public class EnvTest {
             }
         }
     }
+
+    @Test
+    public void testBackup() throws Exception {
+        String path = tmp.newFolder().getCanonicalPath();
+        String backupPath = backup.newFolder().getCanonicalPath();
+        try (Env env = new Env()) {
+            env.open(path);
+            try (Database db = env.openDatabase()) {
+                db.put(new byte[] {1}, new byte[] {1});
+                env.copy(backupPath);
+            }
+        }
+        try (Env env = new Env()) {
+            env.open(backupPath);
+            try (Database db = env.openDatabase()) {
+                byte[] value = db.get(new byte[]{1});
+                assertThat((int) value[0], is(1));
+            }
+        }
+    }
+
+    @Test
+    public void testEnvInfo() throws Exception {
+        String path = tmp.newFolder().getCanonicalPath();
+        try (Env env = new Env()) {
+            env.open(path);
+            env.setMapSize(1048576L);
+            try (Database db = env.openDatabase()) {
+                db.put(new byte[] {1}, new byte[] {1});
+                EnvInfo info = env.info();
+                assertThat(info.getMapSize(), is(1048576L));
+            }
+        }
+    }
+
+    @Test
+    public void testStat() throws Exception {
+        String path = tmp.newFolder().getCanonicalPath();
+        try (Env env = new Env()) {
+            env.open(path);
+            env.setMapSize(1048576L);
+            try (Database db = env.openDatabase()) {
+                db.put(new byte[] {1}, new byte[] {1});
+                db.put(new byte[] {2}, new byte[] {1});
+                Stat stat = env.stat();
+                assertThat(stat.getEntries(), is(2L));
+            }
+        }
+    }
+
 
     private void doTest(Env env, Database db) {
         assertNull(db.put(bytes("Tampa"), bytes("green")));
