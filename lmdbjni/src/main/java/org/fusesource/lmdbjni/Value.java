@@ -51,7 +51,11 @@ class Value extends JNI.MDB_val {
             throw new ArrayIndexOutOfBoundsException("Native slice is larger than the maximum Java array");
         }
         byte[] rc = new byte[(int) mv_size];
-        Unsafe.getBytes(mv_data, 0, rc);
+        if (Unsafe.UNSAFE != null) {
+            Unsafe.getBytes(mv_data, 0, rc);
+        } else {
+            JNI.buffer_copy(mv_data, 0, rc, 0, rc.length);
+        }
         return rc;
     }
 

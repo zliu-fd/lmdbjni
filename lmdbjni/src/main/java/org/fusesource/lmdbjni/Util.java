@@ -27,6 +27,7 @@ import static org.fusesource.lmdbjni.JNI.strlen;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 class Util {
+    public static final boolean isAndroid = isAndroid();
 
     public static String string(long ptr) {
         if( ptr == 0 )
@@ -47,4 +48,12 @@ class Util {
         }
     }
 
+    private static boolean isAndroid() {
+        try {
+            Class.forName("android.os.Process");
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
 }
