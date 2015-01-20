@@ -216,6 +216,7 @@
       <modules>
         <module>lmdbjni-osx64</module>
         <module>lmdbjni-linux64</module>
+        <module>lmdbjni-android</module>
         <module>lmdbjni-win64</module>
         <module>lmdbjni-all</module>
       </modules>
@@ -238,6 +239,13 @@
       <id>linux64</id>
       <modules>
         <module>lmdbjni-linux64</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>android</id>
+      <modules>
+        <module>lmdbjni-android</module>
       </modules>
     </profile>
 

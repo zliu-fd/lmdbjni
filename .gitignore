@@ -5,6 +5,7 @@
 *.iml
 *.ipr
 *.iws
+*.log
 target
 .DS_Store
 .project
