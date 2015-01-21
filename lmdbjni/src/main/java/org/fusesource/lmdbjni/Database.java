@@ -60,7 +60,7 @@ public class Database extends NativeObject implements Closeable {
         checkArgNotNull(tx, "tx");
         MDB_stat rc = new MDB_stat();
         mdb_stat(tx.pointer(), pointer(), rc);
-        return rc;
+        return rc;  
     }
 
     public void drop(boolean delete) {

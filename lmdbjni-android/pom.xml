@@ -59,6 +59,28 @@ limitations under the License.
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.3.1</version>
+        <executions>
+          <execution>
+            <id>android_ndk_path_must_be_set</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireEnvironmentVariable>
+                  <message>Android NDK path must be set!</message>
+                  <variableName>NDK</variableName>
+                </requireEnvironmentVariable>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.fusesource.hawtjni</groupId>
         <artifactId>maven-hawtjni-plugin</artifactId>
         <version>${hawtjni-version}</version>
