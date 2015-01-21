@@ -34,7 +34,7 @@ Benchmarks
 
 ## Using Prebuilt Jar
 
-The prebuilt binary jars work on 64 bit Linux, OSX and Windows machines.
+The prebuilt binary jars work on 64 bit Linux, OSX, Windows and Android.
 
 ### License
 
