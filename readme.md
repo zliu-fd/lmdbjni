@@ -4,16 +4,16 @@
 
 LMDB JNI gives you a Java interface to [LMDB](http://symas.com/mdb/) which is an ultra-fast, ultra-compact key-value embedded data store developed by Symas for the OpenLDAP Project. It uses memory-mapped files, so it has the read performance of a pure in-memory database while still offering the persistence of standard disk-based databases, and is only limited to the size of the virtual address space, (it is not limited to the size of physical RAM).
 
-### References
+LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
-To develop a thorough understanding of the LMDB design, please study the following:
+### References
 
  * [LMDB C API reference](http://symas.com/mdb/doc/group__internal.html)
  * [LMDB paper](http://symas.com/mdb/20120829-LinuxCon-MDB-txt.pdf)
  * [LMDB lecture by Howard Chu](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
  * [LMDB source code](https://gitorious.org/mdb/mdb/source/libraries/liblmdb)
 
-Benchmarks
+### Benchmarks
 
 * [In-Memory Microbenchmark] (http://symas.com/mdb/inmem), June 2014
 
@@ -23,22 +23,15 @@ Benchmarks
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
 
-## Google groups
+### Google groups
 
 * https://groups.google.com/forum/#!forum/lmdbjni
-
-
-## Using Prebuilt Jar
-
-The prebuilt binary jars work on 64 bit Linux, OSX, Windows and Android.
 
 ### License
 
 This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes `liblmdb` library version 0.9.14 of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
 
-### Using as a Maven Dependency
-
-Add one (or all) of the following dependency to your Maven `pom.xml`.
+### Maven
 
 ```xml
 
@@ -68,7 +61,7 @@ Add one (or all) of the following dependency to your Maven `pom.xml`.
 
 ```
 
-## API Usage:
+### Usage
 
 Recommended Package imports:
 
