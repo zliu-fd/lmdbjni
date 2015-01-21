@@ -64,6 +64,12 @@ Add one (or all) of the following dependency to your Maven `pom.xml`.
     <version>${lmdbjni.version}</version>
 </dependency>
 
+<dependency>
+    <groupId>org.deephacks.lmdbjni</groupId>
+    <artifactId>lmdbjni-android</artifactId>
+    <version>${lmdbjni.version}</version>
+</dependency>
+
 ```
 
 ## API Usage:
