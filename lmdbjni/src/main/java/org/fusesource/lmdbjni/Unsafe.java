@@ -3,7 +3,6 @@ package org.fusesource.lmdbjni;
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Optional;
 
 class Unsafe {
     /** unsafe may be null on android devices */
