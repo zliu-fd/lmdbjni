@@ -44,29 +44,38 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 ### Maven
 
 ```xml
+<!-- required -->
 
 <dependency>
-    <groupId>org.deephacks.lmdbjni</groupId>
-    <artifactId>lmdbjni-linux64</artifactId>
-    <version>${lmdbjni.version}</version>
+  <groupId>org.deephacks.lmdbjni</groupId>
+  <artifactId>lmdbjni</artifactId>
+  <version>${lmdbjni.version}</version>
+</dependency>
+
+<!-- pick one or more platforms below -->
+
+<dependency>
+  <groupId>org.deephacks.lmdbjni</groupId>
+  <artifactId>lmdbjni-linux64</artifactId>
+  <version>${lmdbjni.version}</version>
 </dependency>
 
 <dependency>
-    <groupId>org.deephacks.lmdbjni</groupId>
-    <artifactId>lmdbjni-osx64</artifactId>
-    <version>${lmdbjni.version}</version>
+  <groupId>org.deephacks.lmdbjni</groupId>
+  <artifactId>lmdbjni-osx64</artifactId>
+  <version>${lmdbjni.version}</version>
 </dependency>
 
 <dependency>
-    <groupId>org.deephacks.lmdbjni</groupId>
-    <artifactId>lmdbjni-win64</artifactId>
-    <version>${lmdbjni.version}</version>
+  <groupId>org.deephacks.lmdbjni</groupId>
+  <artifactId>lmdbjni-win64</artifactId>
+  <version>${lmdbjni.version}</version>
 </dependency>
 
 <dependency>
-    <groupId>org.deephacks.lmdbjni</groupId>
-    <artifactId>lmdbjni-android</artifactId>
-    <version>${lmdbjni.version}</version>
+  <groupId>org.deephacks.lmdbjni</groupId>
+  <artifactId>lmdbjni-android</artifactId>
+  <version>${lmdbjni.version}</version>
 </dependency>
 
 ```
