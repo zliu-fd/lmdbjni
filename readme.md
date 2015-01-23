@@ -23,6 +23,16 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
 
+* LMDB JNI iteration speed compared to <code>org.rocksdb.rocksdbjni</code> and <code>org.iq80.leveldb</code> ([full report](http://pastebin.com/gPFVcakL)).
+   ```bash
+   Benchmark                    Mode  Cnt         Score         Error  Units
+   Iteration.leveldb           thrpt   10   7624941.049 ±  995999.362  ops/s
+   Iteration.lmdb_buffer_copy  thrpt   10   3066605.928 ±  610793.399  ops/s
+   Iteration.lmdb_zero_copy    thrpt   10  15029604.092 ± 1309367.614  ops/s
+   Iteration.rocksdb           thrpt   10   1505814.770 ±  420279.355  ops/s
+   ```
+   
+
 ### Google groups
 
 * https://groups.google.com/forum/#!forum/lmdbjni
