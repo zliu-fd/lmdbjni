@@ -287,18 +287,6 @@ public class DirectBuffer {
         return UNSAFE.compareAndSwapLong(byteArray, addressOffset + index, expectedValue, updateValue);
     }
 
-    public long getAndSetLong(final int index, final long value) {
-        boundsCheck(index, SIZE_OF_LONG);
-
-        return UNSAFE.getAndSetLong(byteArray, addressOffset + index, value);
-    }
-
-    public long getAndAddLong(final int index, final long delta) {
-        boundsCheck(index, SIZE_OF_LONG);
-
-        return UNSAFE.getAndAddLong(byteArray, addressOffset + index, delta);
-    }
-
     ///////////////////////////////////////////////////////////////////////////
 
     public int getInt(final int index, final ByteOrder byteOrder) {
@@ -366,18 +354,6 @@ public class DirectBuffer {
         boundsCheck(index, SIZE_OF_INT);
 
         return UNSAFE.compareAndSwapInt(byteArray, addressOffset + index, expectedValue, updateValue);
-    }
-
-    public int getAndSetInt(final int index, final int value) {
-        boundsCheck(index, SIZE_OF_INT);
-
-        return UNSAFE.getAndSetInt(byteArray, addressOffset + index, value);
-    }
-
-    public int getAndAddInt(final int index, final int delta) {
-        boundsCheck(index, SIZE_OF_INT);
-
-        return UNSAFE.getAndAddInt(byteArray, addressOffset + index, delta);
     }
 
     ///////////////////////////////////////////////////////////////////////////
