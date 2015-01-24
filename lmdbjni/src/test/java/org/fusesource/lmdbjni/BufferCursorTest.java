@@ -11,7 +11,9 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class BufferCursorTest {
   static {
@@ -49,25 +51,24 @@ public class BufferCursorTest {
   @Test
   public void testBufferCursor() throws IOException {
     try (BufferCursor cursor = db.bufferCursor(key, value)) {
-      cursor.first();
+      assertTrue(cursor.first());
       assertThat(key.getByte(0), is((byte) 0));
-      cursor.next();
+      assertTrue(cursor.next());
       assertThat(key.getByte(0), is((byte) 1));
-      cursor.prev();
+      assertTrue(cursor.prev());
       assertThat(key.getByte(0), is((byte) 0));
       // go to far
-      cursor.prev();
-      cursor.prev();
-      cursor.prev();
+      assertFalse(cursor.prev());
+      assertFalse(cursor.prev());
       assertThat(key.getByte(0), is((byte) 0));
 
-      cursor.last();
+      assertTrue(cursor.last());
       assertThat(key.getByte(0), is((byte) 9));
-      cursor.prev();
+      assertTrue(cursor.prev());
       assertThat(key.getByte(0), is((byte) 8));
       // go too far
-      cursor.next();
-      cursor.next();
+      assertTrue(cursor.next());
+      assertFalse(cursor.next());
       assertThat(key.getByte(0), is((byte) 9));
     }
   }

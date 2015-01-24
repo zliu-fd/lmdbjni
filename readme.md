@@ -178,7 +178,7 @@ try (EntryIterator it = db.seekBackward(key))) {
 }
 ```
 
-Zero-copy cursor:
+Zero-copy cursor (not available on Android).
 
 ```java
 DirectBuffer k = new DirectBuffer(ByteBuffer.allocateDirect(511));

@@ -3,6 +3,9 @@ package org.fusesource.lmdbjni;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ * Do not use BufferCursor on Android.
+ */
 public class BufferCursor implements Closeable {
   private final Cursor cursor;
   private final Transaction tx;
@@ -16,20 +19,20 @@ public class BufferCursor implements Closeable {
     this.value = value;
   }
 
-  public void first() {
-    cursor.position(key, value, GetOp.FIRST);
+  public boolean first() {
+    return cursor.position(key, value, GetOp.FIRST) == 0;
   }
 
-  public void last() {
-    cursor.position(key, value, GetOp.LAST);
+  public boolean last() {
+    return cursor.position(key, value, GetOp.LAST) == 0;
   }
 
-  public void next() {
-    cursor.position(key, value, GetOp.NEXT);
+  public boolean next() {
+    return cursor.position(key, value, GetOp.NEXT) == 0;
   }
 
-  public void prev() {
-    cursor.position(key, value, GetOp.PREV);
+  public boolean prev() {
+    return cursor.position(key, value, GetOp.PREV) == 0;
   }
 
   @Override
