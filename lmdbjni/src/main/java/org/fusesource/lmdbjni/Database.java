@@ -163,6 +163,12 @@ public class Database extends NativeObject implements Closeable {
     return new EntryIterator(cursor, tx, key, type);
   }
 
+  public BufferCursor bufferCursor(DirectBuffer key, DirectBuffer value) {
+    Transaction tx = env.createTransaction(true);
+    Cursor cursor = openCursor(tx);
+    return new BufferCursor(cursor, tx, key, value);
+  }
+
   public int put(DirectBuffer key, DirectBuffer value) {
     return put(key, value, 0);
   }

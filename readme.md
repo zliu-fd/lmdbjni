@@ -178,18 +178,28 @@ try (EntryIterator it = db.seekBackward(key))) {
 }
 ```
 
-Zero-copy iterating key/values:
+Zero-copy cursor:
 
 ```java
-Transaction tx = env.createTransaction();
-try (Cursor c = db.openCursor(tx)) {
-  DirectBuffer k = new DirectBuffer(byteBuffer);
-  DirectBuffer v = new DirectBuffer(0, 0);
-  for (int rc = c.position(k, v, FIRST); rc != NOTFOUND; rc = c.position(k, v, NEXT)) {
-    // do something with key and value buffers
-  }
-} finally {
-  tx.commit();
+DirectBuffer k = new DirectBuffer(ByteBuffer.allocateDirect(511));
+DirectBuffer v = new DirectBuffer(0, 0);
+
+try (BufferCursor cursor = db.bufferCursor(key, value)) {
+  cursor.first();
+  k.getByte(0);
+  v.getByte(0);
+
+  cursor.next();
+  k.getByte(0);
+  v.getByte(0);
+
+  cursor.last();
+  k.getByte(0);
+  v.getByte(0);
+
+  cursor.prev();
+  k.getByte(0);
+  v.getByte(0);
 }
 ```
 
