@@ -72,6 +72,11 @@ public class Env extends NativeObject implements Closeable {
         checkErrorCode(mdb_env_copy(pointer(), path));
     }
 
+    public void copyCompact(String path) {
+        checkArgNotNull(path, "path");
+        checkErrorCode(mdb_env_copy2(pointer(), path, 1));
+    }
+
     public void sync(boolean force) {
         checkErrorCode(mdb_env_sync(pointer(), force ? 1 : 0));
     }

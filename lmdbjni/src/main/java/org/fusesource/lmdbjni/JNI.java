@@ -352,6 +352,13 @@ class JNI {
             @JniArg(cast = "MDB_env *") long env,
             @JniArg(cast = "const char *") String path);
 
+    @JniMethod
+    public static final native int mdb_env_copy2(
+            @JniArg(cast = "MDB_env *") long env,
+            @JniArg(cast = "const char *") String path,
+            @JniArg(cast = "unsigned int") int flags);
+
+
     /**
      * <a href="http://symas.com/mdb/doc/group__mdb.html#gaf881dca452050efbd434cd16e4bae255">details</a>
      */
