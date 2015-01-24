@@ -1,6 +1,10 @@
 # LMDB JNI
 
 [![Build Status](https://travis-ci.org/deephacks/lmdbjni.png?branch=master)](https://travis-ci.org/deephacks/lmdbjni)
+<a href="https://scan.coverity.com/projects/4017">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/4017/badge.svg"/>
+</a>
 
 LMDB JNI gives you a Java interface to [LMDB](http://symas.com/mdb/) which is an ultra-fast, ultra-compact key-value embedded data store developed by Symas for the OpenLDAP Project. It uses memory-mapped files, so it has the read performance of a pure in-memory database while still offering the persistence of standard disk-based databases, and is only limited to the size of the virtual address space, (it is not limited to the size of physical RAM).
 
