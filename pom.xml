@@ -190,6 +190,10 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <groupId>org.apache.maven.plugins</groupId>
             <version>2.8</version>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+              <failOnError>false</failOnError>
+            </configuration>
             <executions>
               <execution>
                 <id>attach-javadocs</id>

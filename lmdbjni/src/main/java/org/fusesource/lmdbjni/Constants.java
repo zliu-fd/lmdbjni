@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 import static org.fusesource.lmdbjni.JNI.*;
 
 /**
- * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
+ * Mostly flags and options used throughout the API.
  */
 public class Constants {
   //====================================================//
@@ -154,7 +154,7 @@ public class Constants {
    */
   public static final GetOp GET_MULTIPLE = GetOp.GET_MULTIPLE;
 
-  /** < Position at last key/data item */
+  /** Position at last key/data item */
   public static final GetOp LAST = GetOp.LAST;
 
   /**

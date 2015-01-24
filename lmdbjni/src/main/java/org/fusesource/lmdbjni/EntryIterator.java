@@ -2,6 +2,9 @@ package org.fusesource.lmdbjni;
 
 import java.util.Iterator;
 
+/**
+ * Iterator for entries.
+ */
 public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   private final Cursor cursor;
   private final IteratorType type;
@@ -62,6 +65,9 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Close the cursor and the transaction.
+   */
   @Override
   public void close() {
     if (tx != null) {

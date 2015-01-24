@@ -26,6 +26,8 @@ import static org.fusesource.lmdbjni.Util.checkArgNotNull;
 import static org.fusesource.lmdbjni.Util.checkErrorCode;
 
 /**
+ * A cursor handle.
+ *
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class Cursor extends NativeObject implements AutoCloseable {

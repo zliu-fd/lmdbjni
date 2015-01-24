@@ -21,6 +21,8 @@ package org.fusesource.lmdbjni;
 import java.util.Map;
 
 /**
+ * Key and value.
+ *
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class Entry implements Map.Entry<byte[], byte[]> {

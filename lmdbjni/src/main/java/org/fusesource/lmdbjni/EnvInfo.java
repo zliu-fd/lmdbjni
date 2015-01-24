@@ -1,7 +1,7 @@
 package org.fusesource.lmdbjni;
 
 /**
- * Information about the environment.
+ * Information about the LMDB environment.
  */
 public class EnvInfo {
   private final long mapAddr;

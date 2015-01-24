@@ -2,7 +2,7 @@ package org.fusesource.lmdbjni;
 
 
 /**
- * Statistics for a database in the environment.
+ * Statistics about the LMDB environment.
  */
 public class Stat {
   private final long psize;

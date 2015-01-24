@@ -21,6 +21,8 @@ package org.fusesource.lmdbjni;
 import static org.fusesource.lmdbjni.JNI.*;
 
 /**
+ * Cursor Seek operations.
+ *
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public enum SeekOp {
