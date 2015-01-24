@@ -134,7 +134,6 @@ public class EnvTest {
     }
   }
 
-
   private void doTest(Env env, Database db) {
     assertNull(db.put(bytes("Tampa"), bytes("green")));
     assertNull(db.put(bytes("London"), bytes("red")));

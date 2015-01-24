@@ -31,6 +31,13 @@ public class Env extends NativeObject implements Closeable {
   public static String version() {
     return string(JNI.MDB_VERSION_STRING);
   }
+  private boolean open = false;
+
+  public Env(String path) {
+    super(create());
+    setMaxDbs(1);
+    open(path);
+  }
 
   public Env() {
     super(create());
@@ -57,6 +64,7 @@ public class Env extends NativeObject implements Closeable {
       close();
     }
     checkErrorCode(rc);
+    open = true;
   }
 
   /**
@@ -220,6 +228,7 @@ public class Env extends NativeObject implements Closeable {
    * @note Cursors may not span transactions.
    */
   public Transaction createTransaction(Transaction parent, boolean readOnly) {
+    checkOpen();
     long txpointer[] = new long[1];
     checkErrorCode(mdb_txn_begin(pointer(), parent == null ? 0 : parent.pointer(), readOnly ? MDB_RDONLY : 0, txpointer));
     return new Transaction(txpointer[0]);
@@ -286,6 +295,7 @@ public class Env extends NativeObject implements Closeable {
    * @return A database handle.
    */
   public Database openDatabase(Transaction tx, String name, int flags) {
+    checkOpen();
     checkArgNotNull(tx, "tx");
     long dbi[] = new long[1];
     checkErrorCode(mdb_dbi_open(tx.pointer(), name, flags, dbi));
@@ -328,5 +338,11 @@ public class Env extends NativeObject implements Closeable {
 
   public long getMaxKeySize() {
     return mdb_env_get_maxkeysize(pointer());
+  }
+
+  private void checkOpen() {
+    if (!open) {
+      throw new LMDBException("Environment not open yet.");
+    }
   }
 }

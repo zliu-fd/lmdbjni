@@ -19,6 +19,8 @@
 package org.fusesource.lmdbjni;
 
 
+import org.fusesource.lmdbjni.EntryIterator.IteratorType;
+
 import java.io.Closeable;
 
 import static org.fusesource.lmdbjni.JNI.*;
@@ -137,6 +139,28 @@ public class Database extends NativeObject implements Closeable {
     }
     checkErrorCode(rc);
     return value.toByteArray();
+  }
+
+  public EntryIterator seek(byte[] key) {
+    return iterate(key, IteratorType.FORWARD);
+  }
+
+  public EntryIterator seekBackward(byte[] key) {
+    return iterate(key, IteratorType.BACKWARD);
+  }
+
+  public EntryIterator iterate() {
+    return iterate(null, IteratorType.FORWARD);
+  }
+
+  public EntryIterator iterateBackward() {
+    return iterate(null, IteratorType.BACKWARD);
+  }
+
+  private EntryIterator iterate(byte[] key, IteratorType type) {
+    Transaction tx = env.createTransaction(true);
+    Cursor cursor = openCursor(tx);
+    return new EntryIterator(cursor, tx, key, type);
   }
 
   public int put(DirectBuffer key, DirectBuffer value) {

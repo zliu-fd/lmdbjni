@@ -149,22 +149,39 @@ Working against a Snapshot view of the Database:
  }
 ```
 
-Buffer copy iterating key/values:
+Buffer copy iterating key/values forward and backward.
 
 ```java
-Transaction tx = env.createTransaction(true);
-try {
-   try (Cursor cursor = db.openCursor(tx)) {
-     for (Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT)) {
-         String key = string(entry.getKey());
-         String value = string(entry.getValue());
-         System.out.println(key + " = " + value);
-     }
-   }
- } finally {
-   // Make sure you commit the transaction to avoid resource leaks.
-   tx.commit();
- }
+try (EntryIterator it = db.iterate()) {
+  while (it.hasNext()) {
+    Entry entry = it.next();
+  }
+}
+
+try (EntryIterator it = db.iterateBackward()) {
+  while (it.hasNext()) {
+    Entry entry = it.next();
+  }
+}
+
+```
+
+Buffer copy seek key/values forward and backward.
+
+```java
+byte[] key = bytes("London");
+try (EntryIterator it = db.seek(key)) {
+  while (it.hasNext()) {
+    Entry entry = it.next();
+  }
+}
+
+byte[] key = bytes("London");
+try (EntryIterator it = db.seekBackward(key)) {
+  while (it.hasNext()) {
+    Entry entry = it.next();
+  }
+}
 ```
 
 Zero-copy iterating key/values:
