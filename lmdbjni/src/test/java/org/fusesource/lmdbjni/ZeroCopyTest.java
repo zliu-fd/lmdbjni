@@ -148,7 +148,6 @@ public class ZeroCopyTest {
     try (Cursor cursor = db.openCursor(tx)) {
       DirectBuffer k = new DirectBuffer(byteBuffer);
       DirectBuffer v = new DirectBuffer(0, 0);
-      cursor.position(k, v, FIRST);
       for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
         result.add(k.getLong(0, ByteOrder.BIG_ENDIAN));
       }
