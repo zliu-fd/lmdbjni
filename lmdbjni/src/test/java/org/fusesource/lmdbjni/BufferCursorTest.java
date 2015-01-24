@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,11 +27,13 @@ public class BufferCursorTest {
   Database db;
   LinkedList<byte[]> keys;
 
-  DirectBuffer key = new DirectBuffer();
-  DirectBuffer value = new DirectBuffer();
+  DirectBuffer key;
+  DirectBuffer value;
 
   @Before
   public void before() throws IOException {
+    key = new DirectBuffer();
+    value = new DirectBuffer();
     String path = tmp.newFolder().getCanonicalPath();
     env = new Env(path);
     db = env.openDatabase();
@@ -109,4 +113,30 @@ public class BufferCursorTest {
       }
     }
   }
+
+  @Test
+  public void testTooSmallBuffers() {
+    byte[] key1 = "key1".getBytes();
+    byte[] val1 = "val1".getBytes();
+    db.put(key1, val1);
+    byte[] key2 = "key2".getBytes();
+    byte[] val2 = "val2".getBytes();
+    db.put(key2, val2);
+    byte[] bytes = new byte[key1.length];
+    key = new DirectBuffer(ByteBuffer.allocateDirect(1));
+    value = new DirectBuffer(ByteBuffer.allocateDirect(1));
+    try (BufferCursor cursor = db.bufferCursor(key, value)) {
+      assertTrue(cursor.seek(key1));
+      key.getBytes(0, bytes);
+      assertThat(new String(bytes), is("key1"));
+      value.getBytes(0, bytes);
+      assertThat(new String(bytes), is("val1"));
+
+      assertTrue(cursor.next());
+      key.getBytes(0, bytes);
+      assertThat(new String(bytes), is("key2"));
+      value.getBytes(0, bytes);
+      assertThat(new String(bytes), is("val2"));
+    }
+}
 }

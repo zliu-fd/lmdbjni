@@ -1,13 +1,11 @@
 package org.fusesource.lmdbjni;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
  * Do not use BufferCursor on Android.
  */
-public class BufferCursor implements Closeable {
+public class BufferCursor implements AutoCloseable {
   private final Cursor cursor;
   private final Transaction tx;
   private final DirectBuffer key;
@@ -70,7 +68,7 @@ public class BufferCursor implements Closeable {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     if (tx != null) {
       tx.commit();
     }

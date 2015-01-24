@@ -1,10 +1,8 @@
 package org.fusesource.lmdbjni;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.Iterator;
 
-public class EntryIterator implements Iterator<Entry>, Closeable {
+public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   private final Cursor cursor;
   private final IteratorType type;
   private final Transaction tx;
@@ -65,7 +63,7 @@ public class EntryIterator implements Iterator<Entry>, Closeable {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     if (tx != null) {
       tx.commit();
     }

@@ -21,8 +21,6 @@ package org.fusesource.lmdbjni;
 
 import org.fusesource.lmdbjni.EntryIterator.IteratorType;
 
-import java.io.Closeable;
-
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkArgNotNull;
 import static org.fusesource.lmdbjni.Util.checkErrorCode;
@@ -30,7 +28,7 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
 /**
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
-public class Database extends NativeObject implements Closeable {
+public class Database extends NativeObject implements AutoCloseable {
 
   private final Env env;
 

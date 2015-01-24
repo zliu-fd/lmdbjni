@@ -18,15 +18,13 @@
 
 package org.fusesource.lmdbjni;
 
-import java.io.Closeable;
-
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.*;
 
 /**
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
-public class Env extends NativeObject implements Closeable {
+public class Env extends NativeObject implements AutoCloseable {
 
   public static String version() {
     return string(JNI.MDB_VERSION_STRING);

@@ -19,7 +19,6 @@
 package org.fusesource.lmdbjni;
 
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
 
 import static org.fusesource.lmdbjni.JNI.*;
@@ -29,7 +28,7 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
 /**
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
-public class Cursor extends NativeObject implements Closeable {
+public class Cursor extends NativeObject implements AutoCloseable {
   DirectBuffer buffer;
   long bufferAddress;
 
