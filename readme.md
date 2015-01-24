@@ -85,81 +85,90 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 ### Usage
 
 Recommended Package imports:
-
-    import org.fusesource.lmdbjni.*;
-    import static org.fusesource.lmdbjni.Constants.*;
+```java
+ import org.fusesource.lmdbjni.*;
+ import static org.fusesource.lmdbjni.Constants.*;
+```
 
 Opening and closing the database.
-
-    try (Env env = new Env()) {
-      env.open("/tmp/mydb");
-      try (Database db = env.openDatabase()) {
-        ... // use the db
-      }
-    }
+```java
+ try (Env env = new Env()) {
+   env.open("/tmp/mydb");
+   try (Database db = env.openDatabase()) {
+     ... // use the db
+   }
+ }
+```
 
 Putting, Getting, and Deleting key/values.
-
-    db.put(bytes("Tampa"), bytes("rocks"));
-    String value = string(db.get(bytes("Tampa")));
-    db.delete(bytes("Tampa"));
+```java
+ db.put(bytes("Tampa"), bytes("rocks"));
+ String value = string(db.get(bytes("Tampa")));
+ db.delete(bytes("Tampa"));
+```
 
 Performing Atomic/Transacted Updates:
-
-    Transaction tx = env.createTransaction();
-    boolean ok = false;
-    try {
-      db.delete(tx, bytes("Denver"));
-      db.put(tx, bytes("Tampa"), bytes("green"));
-      db.put(tx, bytes("London"), bytes("red"));
-      ok = true;
-    } finally {
-      // Make sure you either commit or rollback to avoid resource leaks.
-      if (ok) {
-        tx.commit();
-      } else {
-        tx.abort();
-      }
-    }
+```java
+ Transaction tx = env.createTransaction();
+ boolean ok = false;
+ try {
+   db.delete(tx, bytes("Denver"));
+   db.put(tx, bytes("Tampa"), bytes("green"));
+   db.put(tx, bytes("London"), bytes("red"));
+   ok = true;
+ } finally {
+   // Make sure you either commit or rollback to avoid resource leaks.
+   if (ok) {
+     tx.commit();
+   } else {
+     tx.abort();
+   }
+ }
+```
 
 Working against a Snapshot view of the Database:
 
-    // create a read-only transaction...
-    Transaction tx = env.createTransaction(true);
-    try {
-      
-      // All read operations will now use the same 
-      // consistent view of the data.
-      ... = db.db.openCursor(tx);
-      ... = db.get(tx, bytes("Tampa"));
+```java
+ // create a read-only transaction...
+ Transaction tx = env.createTransaction(true);
+ try {
+   
+   // All read operations will now use the same 
+   // consistent view of the data.
+   ... = db.db.openCursor(tx);
+   ... = db.get(tx, bytes("Tampa"));
 
-    } finally {
-      // Make sure you commit the transaction to avoid resource leaks.
-      tx.commit();
-    }
+ } finally {
+   // Make sure you commit the transaction to avoid resource leaks.
+   tx.commit();
+ }
+```
 
 Iterating key/values:
 
-    Transaction tx = env.createTransaction(true);
-    try {
-      try (Cursor cursor = db.openCursor(tx)) {
-        for (Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT)) {
-            String key = string(entry.getKey());
-            String value = string(entry.getValue());
-            System.out.println(key + " = " + value);
-        }
-      }
-    } finally {
-      // Make sure you commit the transaction to avoid resource leaks.
-      tx.commit();
-    }
+```java
+ Transaction tx = env.createTransaction(true);
+try {
+   try (Cursor cursor = db.openCursor(tx)) {
+     for (Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT)) {
+         String key = string(entry.getKey());
+         String value = string(entry.getValue());
+         System.out.println(key + " = " + value);
+     }
+   }
+ } finally {
+   // Make sure you commit the transaction to avoid resource leaks.
+   tx.commit();
+ }
+```
 
 Using a memory pool to make native memory allocations more efficient:
 
-    Env.pushMemoryPool(1024 * 512);
-    try {
-        // .. work with the DB in here, 
-    } finally {
-        Env.popMemoryPool();
-    }
-
+```java
+ Env.pushMemoryPool(1024 * 512);
+ try {
+     // .. work with the DB in here, 
+ } finally {
+     Env.popMemoryPool();
+ }
+```
