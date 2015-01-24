@@ -7,7 +7,7 @@
 </a>
 [![Coverage Status](https://coveralls.io/repos/deephacks/lmdbjni/badge.png?branch=master)](https://coveralls.io/r/deephacks/lmdbjni?branch=master)
 
-LMDB JNI gives you a Java interface to [LMDB](http://symas.com/mdb/) which is an ultra-fast, ultra-compact key-value embedded data store developed by Symas for the OpenLDAP Project. It uses memory-mapped files, so it has the read performance of a pure in-memory database while still offering the persistence of standard disk-based databases, and is only limited to the size of the virtual address space, (it is not limited to the size of physical RAM).
+LMDB JNI provide a Java API to [LMDB](http://symas.com/mdb/) which is an ultra-fast, ultra-compact key-value embedded data store developed by Symas for the OpenLDAP Project. It uses memory-mapped files, so it has the read performance of a pure in-memory database while still offering the persistence of standard disk-based databases, and is only limited to the size of the virtual address space, (it is not limited to the size of physical RAM).
 
 LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
