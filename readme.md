@@ -151,7 +151,7 @@ Working against a Snapshot view of the Database:
 Iterating key/values:
 
 ```java
- Transaction tx = env.createTransaction(true);
+Transaction tx = env.createTransaction(true);
 try {
    try (Cursor cursor = db.openCursor(tx)) {
      for (Entry entry = cursor.get(FIRST); entry !=null; entry = cursor.get(NEXT)) {
