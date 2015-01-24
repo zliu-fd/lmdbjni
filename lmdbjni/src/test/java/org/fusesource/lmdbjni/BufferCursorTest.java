@@ -132,11 +132,18 @@ public class BufferCursorTest {
       value.getBytes(0, bytes);
       assertThat(new String(bytes), is("val1"));
 
+      assertTrue(cursor.seek(new byte[] {10}));
       assertTrue(cursor.next());
       key.getBytes(0, bytes);
       assertThat(new String(bytes), is("key2"));
       value.getBytes(0, bytes);
       assertThat(new String(bytes), is("val2"));
+
+      assertTrue(cursor.prev());
+      key.getBytes(0, bytes);
+      assertThat(new String(bytes), is("key1"));
+      value.getBytes(0, bytes);
+      assertThat(new String(bytes), is("val1"));
     }
 }
 }
