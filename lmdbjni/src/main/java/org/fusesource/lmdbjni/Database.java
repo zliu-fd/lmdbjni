@@ -163,6 +163,18 @@ public class Database extends NativeObject implements Closeable {
     return new EntryIterator(cursor, tx, key, type);
   }
 
+  /**
+   * <p>
+   *   Creates a cursor and a read transaction for doing zero copy seeking.
+   * </p>
+   *
+   * Key and value buffers are updated as the cursor moves. The transaction
+   * is closed along with the cursor.
+   *
+   * @param key A DirectBuffer must be backed by a direct ByteBuffer.
+   * @param value No particular requirements on the value buffer.
+   * @return a cursor handle.
+   */
   public BufferCursor bufferCursor(DirectBuffer key, DirectBuffer value) {
     Transaction tx = env.createTransaction(true);
     Cursor cursor = openCursor(tx);

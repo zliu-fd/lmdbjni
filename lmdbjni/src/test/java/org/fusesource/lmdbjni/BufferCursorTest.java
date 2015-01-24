@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +24,7 @@ public class BufferCursorTest {
   Env env;
   Database db;
   LinkedList<byte[]> keys;
+
   DirectBuffer key = new DirectBuffer();
   DirectBuffer value = new DirectBuffer();
 
@@ -33,8 +34,14 @@ public class BufferCursorTest {
     env = new Env(path);
     db = env.openDatabase();
     keys = new LinkedList<>();
-    for (int i = 0; i < 10; i++) {
+    for (int i = 1; i < 10; i++) {
       byte[] bytes = new byte[]{(byte) i};
+      keys.add(bytes);
+      db.put(bytes, bytes);
+    }
+
+    for (int i = 0; i < 10; i++) {
+      byte[] bytes = Bytes.fromLong(i);
       keys.add(bytes);
       db.put(bytes, bytes);
     }
@@ -50,15 +57,24 @@ public class BufferCursorTest {
   public void testBufferCursor() throws IOException {
     try (BufferCursor cursor = db.bufferCursor(key, value)) {
       assertTrue(cursor.first());
-      assertThat(key.getByte(0), is((byte) 0));
-      assertTrue(cursor.next());
-      assertThat(key.getByte(0), is((byte) 1));
-      assertTrue(cursor.prev());
-      assertThat(key.getByte(0), is((byte) 0));
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
       // go to far
       assertFalse(cursor.prev());
       assertFalse(cursor.prev());
-      assertThat(key.getByte(0), is((byte) 0));
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+
+      assertTrue(cursor.seek(new byte[]{1}));
+      assertThat(key.getByte(0), is((byte) 1));
+
+      assertTrue(cursor.seek(Bytes.fromLong(1)));
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+
+      assertTrue(cursor.seek(new byte[]{1}));
+      assertThat(key.getByte(0), is((byte) 1));
+      assertTrue(cursor.next());
+      assertThat(key.getByte(0), is((byte) 2));
+      assertTrue(cursor.prev());
+      assertThat(key.getByte(0), is((byte) 1));
 
       assertTrue(cursor.last());
       assertThat(key.getByte(0), is((byte) 9));
@@ -70,18 +86,25 @@ public class BufferCursorTest {
       assertThat(key.getByte(0), is((byte) 9));
 
       assertTrue(cursor.seek(new byte[]{5}));
-      assertThat(key.getByte(0), is((byte) 6));
-      assertThat(value.getByte(0), is((byte) 6));
+      assertThat(key.getByte(0), is((byte) 5));
+      assertThat(value.getByte(0), is((byte) 5));
 
-      cursor.first();
-      int expected = 1;
+
+      assertTrue(cursor.first());
+      long expected = 1;
       while(cursor.next()) {
-        assertThat(key.getByte(0), is((byte) expected++));
+        if (expected > 9) {
+          break;
+        }
+        assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(expected++));
       }
 
-      cursor.last();
+      assertTrue(cursor.last());
       expected = 8;
       while(cursor.prev()) {
+        if (expected < 1) {
+          break;
+        }
         assertThat(key.getByte(0), is((byte) expected--));
       }
     }
