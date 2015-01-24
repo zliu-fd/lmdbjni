@@ -24,20 +24,19 @@ import static org.fusesource.lmdbjni.JNI.*;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public enum SeekOp {
-    /**< Position at specified key, return key + data */
-    KEY         (MDB_SET_KEY       ),
+  /** < Position at specified key, return key + data */
+  KEY(MDB_SET_KEY),
 
-    /**< Position at first key greater than or equal to specified key. */
-    RANGE       (MDB_SET_RANGE     );
+  /** < Position at first key greater than or equal to specified key. */
+  RANGE(MDB_SET_RANGE);
 
-    private final int value;
+  private final int value;
 
-    SeekOp(int value) {
+  SeekOp(int value) {
+    this.value = value;
+  }
 
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
+  public int getValue() {
+    return value;
+  }
 }

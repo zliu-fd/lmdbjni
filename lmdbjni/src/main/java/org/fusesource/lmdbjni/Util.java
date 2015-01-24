@@ -27,33 +27,33 @@ import static org.fusesource.lmdbjni.JNI.strlen;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 class Util {
-    public static final boolean isAndroid = isAndroid();
+  public static final boolean isAndroid = isAndroid();
 
-    public static String string(long ptr) {
-        if( ptr == 0 )
-            return null;
-        return new String(NativeBuffer.create(ptr, strlen(ptr)).toByteArray());
-    }
+  public static String string(long ptr) {
+    if (ptr == 0)
+      return null;
+    return new String(NativeBuffer.create(ptr, strlen(ptr)).toByteArray());
+  }
 
-    public static void checkErrorCode(int rc) {
-        if( rc != 0 ) {
-            String msg = string(mdb_strerror(rc));
-            throw new LMDBException(msg, rc);
-        }
+  public static void checkErrorCode(int rc) {
+    if (rc != 0) {
+      String msg = string(mdb_strerror(rc));
+      throw new LMDBException(msg, rc);
     }
+  }
 
-    public static void checkArgNotNull(Object value, String name) {
-        if(value==null) {
-            throw new IllegalArgumentException("The "+name+" argument cannot be null");
-        }
+  public static void checkArgNotNull(Object value, String name) {
+    if (value == null) {
+      throw new IllegalArgumentException("The " + name + " argument cannot be null");
     }
+  }
 
-    private static boolean isAndroid() {
-        try {
-            Class.forName("android.os.Process");
-            return true;
-        } catch (Throwable ignored) {
-            return false;
-        }
+  private static boolean isAndroid() {
+    try {
+      Class.forName("android.os.Process");
+      return true;
+    } catch (Throwable ignored) {
+      return false;
     }
+  }
 }

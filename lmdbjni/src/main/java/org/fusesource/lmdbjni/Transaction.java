@@ -27,39 +27,39 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class Transaction extends NativeObject {
-    private DirectBuffer buffer;
+  private DirectBuffer buffer;
 
-    Transaction(long self) {
-        super(self);
-    }
+  Transaction(long self) {
+    super(self);
+  }
 
-    public void renew() {
-        checkErrorCode(mdb_txn_renew(pointer()));
-    }
+  public void renew() {
+    checkErrorCode(mdb_txn_renew(pointer()));
+  }
 
-    public void commit() {
-        if( self != 0  ) {
-            checkErrorCode(mdb_txn_commit(self));
-            self = 0;
-        }
+  public void commit() {
+    if (self != 0) {
+      checkErrorCode(mdb_txn_commit(self));
+      self = 0;
     }
+  }
 
-    public void reset() {
-        checkAllocated();
-        mdb_txn_reset(pointer());
-    }
+  public void reset() {
+    checkAllocated();
+    mdb_txn_reset(pointer());
+  }
 
-    public void abort() {
-        if( self != 0  ) {
-            mdb_txn_abort(self);
-            self = 0;
-        }
+  public void abort() {
+    if (self != 0) {
+      mdb_txn_abort(self);
+      self = 0;
     }
+  }
 
-    long getBufferAddress() {
-        if (buffer == null) {
-            buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
-        }
-        return buffer.addressOffset();
+  long getBufferAddress() {
+    if (buffer == null) {
+      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
     }
+    return buffer.addressOffset();
+  }
 }

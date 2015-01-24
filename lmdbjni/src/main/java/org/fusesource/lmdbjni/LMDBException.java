@@ -23,45 +23,77 @@ package org.fusesource.lmdbjni;
  */
 public class LMDBException extends RuntimeException {
 
-    private static final long serialVersionUID = 8823282287521553903L;
+  private static final long serialVersionUID = 8823282287521553903L;
+  /** key/data pair already exists */
+  public static final int KEYEXIST = JNI.MDB_KEYEXIST;
 
-    public static final int KEYEXIST = JNI.MDB_KEYEXIST;
-    public static final int NOTFOUND = JNI.MDB_NOTFOUND;
-    public static final int PAGE_NOTFOUND = JNI.MDB_PAGE_NOTFOUND;
-    public static final int CORRUPTED = JNI.MDB_CORRUPTED;
-    public static final int PANIC = JNI.MDB_PANIC;
-    public static final int VERSION_MISMATCH = JNI.MDB_VERSION_MISMATCH;
-    public static final int INVALID = JNI.MDB_INVALID;
-    public static final int MAP_FULL = JNI.MDB_MAP_FULL;
-    public static final int DBS_FULL = JNI.MDB_DBS_FULL;
-    public static final int READERS_FULL = JNI.MDB_READERS_FULL;
-    public static final int TLS_FULL = JNI.MDB_TLS_FULL;
-    public static final int TXN_FULL = JNI.MDB_TXN_FULL;
-    public static final int CURSOR_FULL = JNI.MDB_CURSOR_FULL;
-    public static final int PAGE_FULL = JNI.MDB_PAGE_FULL;
-    public static final int MAP_RESIZED = JNI.MDB_MAP_RESIZED;
-    public static final int INCOMPATIBLE = JNI.MDB_INCOMPATIBLE;
-    public static final int BAD_RSLOT = JNI.MDB_BAD_RSLOT;
+  /** key/data pair not found (EOF) */
+  public static final int NOTFOUND = JNI.MDB_NOTFOUND;
 
-    int errorCode;
+  /** Requested page not found - this usually indicates corruption */
+  public static final int PAGE_NOTFOUND = JNI.MDB_PAGE_NOTFOUND;
 
-    public LMDBException() {
-    }
+  /** Located page was wrong type */
+  public static final int CORRUPTED = JNI.MDB_CORRUPTED;
 
-    public LMDBException(String message) {
-        super(message);
-    }
+  /** Update of meta page failed, probably I/O error */
+  public static final int PANIC = JNI.MDB_PANIC;
 
-    public LMDBException(String message, int errorCode) {
-        super(message);
-        this.errorCode = errorCode;
-    }
+  /** Environment version mismatch */
+  public static final int VERSION_MISMATCH = JNI.MDB_VERSION_MISMATCH;
 
-    public int getErrorCode() {
-        return errorCode;
-    }
+  /** File is not a valid LMDB file */
+  public static final int INVALID = JNI.MDB_INVALID;
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
+  /** Environment mapsize reached */
+  public static final int MAP_FULL = JNI.MDB_MAP_FULL;
+
+  /** Environment maxdbs reached */
+  public static final int DBS_FULL = JNI.MDB_DBS_FULL;
+
+  /** Environment maxreaders reached */
+  public static final int READERS_FULL = JNI.MDB_READERS_FULL;
+
+  /** Too many TLS keys in use - Windows only */
+  public static final int TLS_FULL = JNI.MDB_TLS_FULL;
+
+  /** Txn has too many dirty pages */
+  public static final int TXN_FULL = JNI.MDB_TXN_FULL;
+
+  /** Cursor stack too deep - internal error */
+  public static final int CURSOR_FULL = JNI.MDB_CURSOR_FULL;
+
+  /** Page has not enough space - internal error */
+  public static final int PAGE_FULL = JNI.MDB_PAGE_FULL;
+
+  /** Database contents grew beyond environment mapsize */
+  public static final int MAP_RESIZED = JNI.MDB_MAP_RESIZED;
+
+  /** MDB_INCOMPATIBLE: Operation and DB incompatible, or DB flags changed */
+  public static final int INCOMPATIBLE = JNI.MDB_INCOMPATIBLE;
+
+  /** Invalid reuse of reader locktable slot */
+  public static final int BAD_RSLOT = JNI.MDB_BAD_RSLOT;
+
+  int errorCode;
+
+  public LMDBException() {
+  }
+
+  public LMDBException(String message) {
+    super(message);
+  }
+
+  public LMDBException(String message, int errorCode) {
+    super(message);
+    this.errorCode = errorCode;
+  }
+
+  public int getErrorCode() {
+    return errorCode;
+  }
+
+  public void setErrorCode(int errorCode) {
+    this.errorCode = errorCode;
+  }
 }

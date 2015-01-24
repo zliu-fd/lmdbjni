@@ -32,178 +32,182 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 class NativeBuffer extends NativeObject {
 
-    private static class Allocation extends NativeObject {
-        private final AtomicInteger retained = new AtomicInteger(0);
+  private static class Allocation extends NativeObject {
+    private final AtomicInteger retained = new AtomicInteger(0);
 
-        private Allocation(long size) {
-            super(JNI.malloc(size));
-        }
-
-        void retain() {
-            checkAllocated();
-            retained.incrementAndGet();
-        }
-
-        void release() {
-            checkAllocated();
-            int r = retained.decrementAndGet();
-            if( r < 0 ) {
-                throw new Error("The object has already been deleted.");
-            } else if( r==0 ) {
-                JNI.free(self);
-                self = 0;
-            }
-        }
+    private Allocation(long size) {
+      super(JNI.malloc(size));
     }
 
-    private static class Pool {
-        private final NativeBuffer.Pool prev;
-        Allocation allocation;
-        long pos;
-        long remaining;
-        int chunk;
-
-        public Pool(int chunk, Pool prev) {
-            this.chunk = chunk;
-            this.prev = prev;
-        }
-
-        NativeBuffer create(long size) {
-            if( size >= chunk ) {
-                Allocation allocation = new Allocation(size);
-                return new NativeBuffer(allocation, allocation.self, size);
-            }
-
-            if( remaining < size ) {
-                delete();
-            }
-
-            if( allocation == null ) {
-                allocate();
-            }
-
-            NativeBuffer rc = new NativeBuffer(allocation, pos, size);
-            pos = PointerMath.add(pos, size);
-            remaining -= size;
-            return rc;
-        }
-
-        private void allocate() {
-            allocation = new NativeBuffer.Allocation(chunk);
-            allocation.retain();
-            remaining = chunk;
-            pos = allocation.self;
-        }
-
-        public void delete() {
-            if( allocation!=null ) {
-                allocation.release();
-                allocation = null;
-            }
-        }
+    void retain() {
+      checkAllocated();
+      retained.incrementAndGet();
     }
 
-    private final Allocation allocation;
-    private final long capacity;
+    void release() {
+      checkAllocated();
+      int r = retained.decrementAndGet();
+      if (r < 0) {
+        throw new Error("The object has already been deleted.");
+      } else if (r == 0) {
+        JNI.free(self);
+        self = 0;
+      }
+    }
+  }
 
-    static final private ThreadLocal<Pool> CURRENT_POOL = new ThreadLocal<Pool>();
+  private static class Pool {
+    private final NativeBuffer.Pool prev;
+    Allocation allocation;
+    long pos;
+    long remaining;
+    int chunk;
 
-    static public NativeBuffer create(long capacity) {
-        Pool pool = CURRENT_POOL.get();
-        if( pool == null ) {
-            Allocation allocation = new Allocation(capacity);
-            return new NativeBuffer(allocation, allocation.self, capacity);
-        } else {
-            return pool.create(capacity);
-        }
+    public Pool(int chunk, Pool prev) {
+      this.chunk = chunk;
+      this.prev = prev;
     }
 
+    NativeBuffer create(long size) {
+      if (size >= chunk) {
+        Allocation allocation = new Allocation(size);
+        return new NativeBuffer(allocation, allocation.self, size);
+      }
 
-    public static void pushMemoryPool(int size) {
-        Pool original = CURRENT_POOL.get();
-        Pool next = new Pool(size, original);
-        CURRENT_POOL.set(next);
+      if (remaining < size) {
+        delete();
+      }
+
+      if (allocation == null) {
+        allocate();
+      }
+
+      NativeBuffer rc = new NativeBuffer(allocation, pos, size);
+      pos = PointerMath.add(pos, size);
+      remaining -= size;
+      return rc;
     }
 
-    public static void popMemoryPool() {
-        Pool next = CURRENT_POOL.get();
-        next.delete();
-        if( next.prev == null ) {
-            CURRENT_POOL.remove();
-        } else {
-            CURRENT_POOL.set(next.prev);
-        }
-    }
-
-    static public NativeBuffer create(byte[] data) {
-        if( data == null ) {
-            return null;
-        } else {
-            return create(data, 0 , data.length);
-        }
-    }
-
-    static public NativeBuffer create(byte[] data, int offset, int length) {
-        NativeBuffer rc = create(length);
-        rc.write(0, data, offset, length);
-        return rc;
-    }
-
-    static public NativeBuffer create(long pointer, int length) {
-        return new NativeBuffer(null, pointer, length);
-    }
-
-    private NativeBuffer(Allocation allocation, long self, long capacity) {
-        super(self);
-        this.capacity = capacity;
-        this.allocation = allocation;
-        if( allocation!=null ) {
-            allocation.retain();
-        }
+    private void allocate() {
+      allocation = new NativeBuffer.Allocation(chunk);
+      allocation.retain();
+      remaining = chunk;
+      pos = allocation.self;
     }
 
     public void delete() {
+      if (allocation != null) {
         allocation.release();
+        allocation = null;
+      }
     }
+  }
 
-    public long capacity() {
-        return capacity;
-    }
+  private final Allocation allocation;
+  private final long capacity;
 
-    public void write(long at, byte []source, int offset, int length) {
-        checkAllocated();
-        if( length < 0 ) throw new IllegalArgumentException("length cannot be negative");
-        if( offset < 0 ) throw new IllegalArgumentException("offset cannot be negative");
-        if( at < 0 ) throw new IllegalArgumentException("at cannot be negative");
-        if( at+length > capacity ) throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
-        if( offset+length > source.length) throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the source buffer");
-        if (Unsafe.UNSAFE != null) {
-            Unsafe.UNSAFE.copyMemory(source, Unsafe.ARRAY_BASE_OFFSET, null, self + at, length);
-        } else {
-            JNI.buffer_copy(source, offset, self, at, length);
-        }
-    }
+  static final private ThreadLocal<Pool> CURRENT_POOL = new ThreadLocal<Pool>();
 
-    public void read(long at, byte []target, int offset, int length) {
-        checkAllocated();
-        if( length < 0 ) throw new IllegalArgumentException("length cannot be negative");
-        if( offset < 0 ) throw new IllegalArgumentException("offset cannot be negative");
-        if( at < 0 ) throw new IllegalArgumentException("at cannot be negative");
-        if( at+length > capacity ) throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
-        if( offset+length > target.length) throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the target buffer");
-        if (Unsafe.UNSAFE != null) {
-            Unsafe.UNSAFE.copyMemory(null, self + at, target, Unsafe.ARRAY_BASE_OFFSET, length);
-        } else {
-            JNI.buffer_copy(self, at, target, offset, length);
-        }
+  static public NativeBuffer create(long capacity) {
+    Pool pool = CURRENT_POOL.get();
+    if (pool == null) {
+      Allocation allocation = new Allocation(capacity);
+      return new NativeBuffer(allocation, allocation.self, capacity);
+    } else {
+      return pool.create(capacity);
     }
+  }
 
-    public byte[] toByteArray() {
-        if( capacity > Integer.MAX_VALUE ) {
-            throw new OutOfMemoryError("Native buffer larger than the largest allowed Java byte[]");
-        }
-        byte [] rc = new byte[(int) capacity];
-        read(0, rc, 0, rc.length);
-        return rc;
+
+  public static void pushMemoryPool(int size) {
+    Pool original = CURRENT_POOL.get();
+    Pool next = new Pool(size, original);
+    CURRENT_POOL.set(next);
+  }
+
+  public static void popMemoryPool() {
+    Pool next = CURRENT_POOL.get();
+    next.delete();
+    if (next.prev == null) {
+      CURRENT_POOL.remove();
+    } else {
+      CURRENT_POOL.set(next.prev);
     }
+  }
+
+  static public NativeBuffer create(byte[] data) {
+    if (data == null) {
+      return null;
+    } else {
+      return create(data, 0, data.length);
+    }
+  }
+
+  static public NativeBuffer create(byte[] data, int offset, int length) {
+    NativeBuffer rc = create(length);
+    rc.write(0, data, offset, length);
+    return rc;
+  }
+
+  static public NativeBuffer create(long pointer, int length) {
+    return new NativeBuffer(null, pointer, length);
+  }
+
+  private NativeBuffer(Allocation allocation, long self, long capacity) {
+    super(self);
+    this.capacity = capacity;
+    this.allocation = allocation;
+    if (allocation != null) {
+      allocation.retain();
+    }
+  }
+
+  public void delete() {
+    allocation.release();
+  }
+
+  public long capacity() {
+    return capacity;
+  }
+
+  public void write(long at, byte[] source, int offset, int length) {
+    checkAllocated();
+    if (length < 0) throw new IllegalArgumentException("length cannot be negative");
+    if (offset < 0) throw new IllegalArgumentException("offset cannot be negative");
+    if (at < 0) throw new IllegalArgumentException("at cannot be negative");
+    if (at + length > capacity)
+      throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
+    if (offset + length > source.length)
+      throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the source buffer");
+    if (Unsafe.UNSAFE != null) {
+      Unsafe.UNSAFE.copyMemory(source, Unsafe.ARRAY_BASE_OFFSET, null, self + at, length);
+    } else {
+      JNI.buffer_copy(source, offset, self, at, length);
+    }
+  }
+
+  public void read(long at, byte[] target, int offset, int length) {
+    checkAllocated();
+    if (length < 0) throw new IllegalArgumentException("length cannot be negative");
+    if (offset < 0) throw new IllegalArgumentException("offset cannot be negative");
+    if (at < 0) throw new IllegalArgumentException("at cannot be negative");
+    if (at + length > capacity)
+      throw new ArrayIndexOutOfBoundsException("at + length exceeds the capacity of this object");
+    if (offset + length > target.length)
+      throw new ArrayIndexOutOfBoundsException("offset + length exceed the length of the target buffer");
+    if (Unsafe.UNSAFE != null) {
+      Unsafe.UNSAFE.copyMemory(null, self + at, target, Unsafe.ARRAY_BASE_OFFSET, length);
+    } else {
+      JNI.buffer_copy(self, at, target, offset, length);
+    }
+  }
+
+  public byte[] toByteArray() {
+    if (capacity > Integer.MAX_VALUE) {
+      throw new OutOfMemoryError("Native buffer larger than the largest allowed Java byte[]");
+    }
+    byte[] rc = new byte[(int) capacity];
+    read(0, rc, 0, rc.length);
+    return rc;
+  }
 }
