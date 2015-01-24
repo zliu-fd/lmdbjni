@@ -186,20 +186,16 @@ DirectBuffer v = new DirectBuffer(0, 0);
 
 try (BufferCursor cursor = db.bufferCursor(key, value)) {
   cursor.first();
-  k.getByte(0);
-  v.getByte(0);
-
-  cursor.next();
-  k.getByte(0);
-  v.getByte(0);
+  while(cursor.next()) {
+    k.getByte(0);
+    v.getByte(0);
+  }
 
   cursor.last();
-  k.getByte(0);
-  v.getByte(0);
-
-  cursor.prev();
-  k.getByte(0);
-  v.getByte(0);
+  while(cursor.prev()) {
+    k.getByte(0);
+    v.getByte(0);
+  }
 }
 ```
 
