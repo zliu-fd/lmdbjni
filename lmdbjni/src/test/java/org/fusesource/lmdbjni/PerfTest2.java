@@ -36,8 +36,8 @@ public class PerfTest2 extends Setup {
     initLMDB();
   }
 
-  public static int rc = JNI.MDB_NOTFOUND;
-  static Cursor cursor;
+  public static boolean found = false;
+  static BufferCursor cursor;
 
   public static DirectBuffer key = new DirectBuffer(0, 0);
   public static DirectBuffer value = new DirectBuffer(0, 0);
@@ -47,22 +47,16 @@ public class PerfTest2 extends Setup {
   @OutputTimeUnit(TimeUnit.NANOSECONDS)
   public void mdb_cursor_get_address() throws IOException {
     if (cursor == null) {
-      Transaction tx = env.createTransaction();
-      cursor = database.openCursor(tx);
+      cursor = database.bufferCursor(key, value);
     }
-    if (rc == JNI.MDB_NOTFOUND) {
-      rc = cursor.position(key, value, GetOp.FIRST);
-      // de-serialize key/value to make the test more realistic
-      key.getLong(0, ByteOrder.BIG_ENDIAN);
+    if (!found) {
+      found = cursor.first();
+      key.getLong(0);
       value.getLong(0);
-      // rc = JNI.mdb_cursor_get_address(cursor.pointer(), address, address + 2 * Unsafe.ADDRESS_SIZE, JNI.MDB_FIRST);
     } else {
-      Util.checkErrorCode(rc);
-      rc = cursor.position(key, value, GetOp.NEXT);
-      // de-serialize key/value to make the test more realistic
-      key.getLong(0, ByteOrder.BIG_ENDIAN);
+      found = cursor.next();
+      key.getLong(0);
       value.getLong(0);
-      //rc = JNI.mdb_cursor_get_address(cursor.pointer(), address, address + 2 * Unsafe.ADDRESS_SIZE, JNI.MDB_NEXT);
     }
   }
 }

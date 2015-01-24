@@ -30,8 +30,7 @@ public class Setup {
     database = env.openDatabase("test");
     Transaction tx = env.createTransaction();
     for (int i = 0; i < 100000; i++) {
-      long v = Long.reverseBytes(i);
-      database.put(tx, Bytes.fromLong(i), Bytes.fromLong(v), APPEND);
+      database.put(tx, Bytes.fromLong(i), Bytes.fromLong(i), APPEND);
     }
     tx.commit();
   }
