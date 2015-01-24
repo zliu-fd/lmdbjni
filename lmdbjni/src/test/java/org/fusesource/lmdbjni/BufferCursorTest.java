@@ -9,7 +9,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;

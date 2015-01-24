@@ -97,14 +97,20 @@
 
   <build>
     <plugins>
-
-      <!-- the older clean plugin has trouble deleting directories with symlinks in them -->
+      <!-- run with mvn clean test site -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>2.3</version>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <effort>Max</effort>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>findbugs-maven-plugin</artifactId>
+            </plugin>
+          </reportPlugins>
+        </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
