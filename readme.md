@@ -149,7 +149,7 @@ Working against a Snapshot view of the Database:
  }
 ```
 
-Iterating key/values:
+Buffer copy iterating key/values:
 
 ```java
 Transaction tx = env.createTransaction(true);
@@ -165,6 +165,22 @@ try {
    // Make sure you commit the transaction to avoid resource leaks.
    tx.commit();
  }
+```
+
+Zero-copy iterating key/values:
+
+```java
+Transaction tx = env.createTransaction();
+try (Cursor cursor = db.openCursor(tx)) {
+  DirectBuffer k = new DirectBuffer(byteBuffer);
+  DirectBuffer v = new DirectBuffer(0, 0);
+  cursor.position(k, v, FIRST);
+  for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
+    // do something with key and value buffers
+  }
+} finally {
+  tx.commit();
+}
 ```
 
 Using a memory pool to make native memory allocations more efficient:

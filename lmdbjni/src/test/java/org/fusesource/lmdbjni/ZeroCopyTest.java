@@ -8,7 +8,12 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.fusesource.lmdbjni.Constants.FIRST;
+import static org.fusesource.lmdbjni.Constants.NEXT;
+import static org.fusesource.lmdbjni.LMDBException.NOTFOUND;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -62,7 +67,7 @@ public class ZeroCopyTest {
     try {
       db.get(k, v);
     } catch (LMDBException e) {
-      assertThat(e.errorCode, is(LMDBException.NOTFOUND));
+      assertThat(e.errorCode, is(NOTFOUND));
     }
   }
 
@@ -129,4 +134,29 @@ public class ZeroCopyTest {
     assertThat(v.getLong(0), is(21L));
   }
 
+  @Test
+  public void testIteration() {
+    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(8);
+    k1.putLong(0, 18, ByteOrder.BIG_ENDIAN);
+    v1.putLong(0, 19);
+    k2.putLong(0, 20, ByteOrder.BIG_ENDIAN);
+    v2.putLong(0, 21);
+    db.put(k1, v1, 0);
+    db.put(k2, v2, 0);
+    List<Long> result = new ArrayList<>();
+    Transaction tx = env.createTransaction();
+    try (Cursor cursor = db.openCursor(tx)) {
+      DirectBuffer k = new DirectBuffer(byteBuffer);
+      DirectBuffer v = new DirectBuffer(0, 0);
+      cursor.position(k, v, FIRST);
+      for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
+        result.add(k.getLong(0, ByteOrder.BIG_ENDIAN));
+      }
+    } finally {
+      tx.commit();
+    }
+    assertThat(result.size(), is(2));
+    assertThat(result.get(0), is(18L));
+    assertThat(result.get(1), is(20L));
+ }
 }
