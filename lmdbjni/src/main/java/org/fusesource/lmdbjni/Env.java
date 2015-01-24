@@ -59,6 +59,16 @@ public class Env extends NativeObject implements Closeable {
         checkErrorCode(rc);
     }
 
+    /**
+     * <p>
+     *  Close the environment and release the memory map.
+     * </p>
+     *
+     * Only a single thread may call this function. All transactions, databases,
+     * and cursors must already be closed before calling this function. Attempts to
+     * use any such handles after calling this function will cause a SIGSEGV.
+     * The environment handle will be freed and must not be used again after this call.
+     */
     @Override
     public void close() {
         if( self!=0 ) {
@@ -67,16 +77,59 @@ public class Env extends NativeObject implements Closeable {
         }
     }
 
+    /**
+     * <p>
+     * Copy an LMDB environment to the specified path.
+     * </p>
+     *
+     * This function may be used to make a backup of an existing environment.
+     * No lockfile is created, since it gets recreated at need.
+     *
+     * This call can trigger significant file size growth if run in
+     * parallel with write transactions, because it employs a read-only
+     * transaction.
+     *
+     * @param path The directory in which the copy will reside. This
+     * directory must already exist and be writable but must otherwise be
+     * empty.
+     */
     public void copy(String path) {
         checkArgNotNull(path, "path");
         checkErrorCode(mdb_env_copy(pointer(), path));
     }
 
+    /**
+     * <p>
+     * Copy an LMDB environment to the specified path.
+     * </p>
+     *
+     * Perform compaction while copying: omit free pages and
+     * sequentially renumber all pages in output. This option
+     * consumes more CPU and runs more slowly than the default.
+     *
+     * @param path The directory in which the copy will reside. This
+     * directory must already exist and be writable but must otherwise be
+     * empty.
+     */
     public void copyCompact(String path) {
         checkArgNotNull(path, "path");
         checkErrorCode(mdb_env_copy2(pointer(), path, 1));
     }
 
+    /**
+     * <p>
+     * Flush the data buffers to disk.
+     * </p>
+     *
+     * Data is always written to disk when #mdb_txn_commit() is called,
+     * but the operating system may keep it buffered. LMDB always flushes
+     * the OS buffers upon commit as well, unless the environment was
+     * opened with #MDB_NOSYNC or in part #MDB_NOMETASYNC.
+     *
+     * @param force force a synchronous flush.  Otherwise
+     *  if the environment has the #MDB_NOSYNC flag set the flushes
+     *	will be omitted, and with #MDB_MAPASYNC they will be asynchronous.
+     */
     public void sync(boolean force) {
         checkErrorCode(mdb_env_sync(pointer(), force ? 1 : 0));
     }
@@ -125,22 +178,120 @@ public class Env extends NativeObject implements Closeable {
         return new Stat(rc);
     }
 
+    /**
+     * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
+     */
     public Transaction createTransaction() {
         return createTransaction(null, false);
     }
+
+    /**
+     * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
+     */
     public Transaction createTransaction(boolean readOnly) {
         return createTransaction(null, readOnly);
     }
+
+    /**
+     * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
+     */
     public Transaction createTransaction(Transaction parent) {
         return createTransaction(parent, false);
     }
 
+    /**
+     * <p>
+     *  Create a transaction for use with the environment.
+     * </p>
+     *
+     * The transaction handle may be discarded using #mdb_txn_abort() or #mdb_txn_commit().
+     * @note A transaction and its cursors must only be used by a single
+     * thread, and a thread may only have a single transaction at a time.
+     * If #MDB_NOTLS is in use, this does not apply to read-only transactions.
+     * @note Cursors may not span transactions.
+     *
+     * @param parent If this parameter is non-NULL, the new transaction
+     * will be a nested transaction, with the transaction indicated by \b parent
+     * as its parent. Transactions may be nested to any level. A parent
+     * transaction and its cursors may not issue any other operations than
+     * mdb_txn_commit and mdb_txn_abort while it has active child transactions.
+     * @param readOnly This transaction will not perform any write operations.
+     *
+     * @param parent If this parameter is non-NULL, the new transaction
+     * will be a nested transaction, with the transaction indicated by \b parent
+     * as its parent. Transactions may be nested to any level. A parent
+     * transaction and its cursors may not issue any other operations than
+     * mdb_txn_commit and mdb_txn_abort while it has active child transactions.
+     *
+     * @return transaction handle
+     */
     public Transaction createTransaction(Transaction parent, boolean readOnly) {
         long txpointer [] = new long[1];
         checkErrorCode(mdb_txn_begin(pointer(), parent==null ? 0 : parent.pointer(), readOnly ? MDB_RDONLY : 0, txpointer));
         return new Transaction(txpointer[0]);
     }
 
+    /**
+     * <p>
+     *    Open a database in the environment.
+     * </p>
+     *
+     * A database handle denotes the name and parameters of a database,
+     * independently of whether such a database exists.
+     * The database handle may be discarded by calling #mdb_dbi_close().
+     * The old database handle is returned if the database was already open.
+     * The handle may only be closed once.
+     * The database handle will be private to the current transaction until
+     * the transaction is successfully committed. If the transaction is
+     * aborted the handle will be closed automatically.
+     * After a successful commit the
+     * handle will reside in the shared environment, and may be used
+     * by other transactions. This function must not be called from
+     * multiple concurrent transactions. A transaction that uses this function
+     * must finish (either commit or abort) before any other transaction may
+     * use this function.
+     *
+     * To use named databases (with name != NULL), #mdb_env_set_maxdbs()
+     * must be called before opening the environment.  Database names
+     * are kept as keys in the unnamed database.
+     *
+     * @param tx A transaction handle.
+     * @param name The name of the database to open. If only a single
+     * 	database is needed in the environment, this value may be NULL.
+     * @param flags Special options for this database. This parameter
+     * must be set to 0 or by bitwise OR'ing together one or more of the
+     * values described here.
+     * <ul>
+     *	<li>#MDB_REVERSEKEY
+     *		Keys are strings to be compared in reverse order, from the end
+     *		of the strings to the beginning. By default, Keys are treated as strings and
+     *		compared from beginning to end.
+     *	<li>#MDB_DUPSORT
+     *		Duplicate keys may be used in the database. (Or, from another perspective,
+     *		keys may have multiple data items, stored in sorted order.) By default
+     *		keys must be unique and may have only a single data item.
+     *	<li>#MDB_INTEGERKEY
+     *		Keys are binary integers in native byte order. Setting this option
+     *		requires all keys to be the same size, typically sizeof(int)
+     *		or sizeof(size_t).
+     *	<li>#MDB_DUPFIXED
+     *		This flag may only be used in combination with #MDB_DUPSORT. This option
+     *		tells the library that the data items for this database are all the same
+     *		size, which allows further optimizations in storage and retrieval. When
+     *		all data items are the same size, the #MDB_GET_MULTIPLE and #MDB_NEXT_MULTIPLE
+     *		cursor operations may be used to retrieve multiple items at once.
+     *	<li>#MDB_INTEGERDUP
+     *		This option specifies that duplicate data items are also integers, and
+     *		should be sorted as such.
+     *	<li>#MDB_REVERSEDUP
+     *		This option specifies that duplicate data items should be compared as
+     *		strings in reverse order.
+     *	<li>#MDB_CREATE
+     *		Create the named database if it doesn't exist. This option is not
+     *		allowed in a read-only transaction or a read-only environment.
+     *
+     * @return A database handle.
+     */
     public Database openDatabase(Transaction tx, String name, int flags) {
         checkArgNotNull(tx, "tx");
         long dbi[] = new long[1];
@@ -148,14 +299,23 @@ public class Env extends NativeObject implements Closeable {
         return new Database(this, dbi[0]);
     }
 
+    /**
+     * @see org.fusesource.lmdbjni.Env#open(String, int, int)
+     */
     public Database openDatabase() {
         return openDatabase(null, Constants.CREATE);
     }
 
+    /**
+     * @see org.fusesource.lmdbjni.Env#open(String, int, int)
+     */
     public Database openDatabase(String name) {
         return openDatabase(name, Constants.CREATE);
     }
 
+    /**
+     * @see org.fusesource.lmdbjni.Env#open(String, int, int)
+     */
     public Database openDatabase(String name, int flags) {
         Transaction tx = createTransaction();
         try {
