@@ -2,6 +2,7 @@ package org.fusesource.lmdbjni;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * Do not use BufferCursor on Android.
@@ -11,12 +12,22 @@ public class BufferCursor implements Closeable {
   private final Transaction tx;
   private final DirectBuffer key;
   private final DirectBuffer value;
-
+  private final ByteBuffer byteBuffer;
   BufferCursor(Cursor cursor, Transaction tx, DirectBuffer key, DirectBuffer value) {
     this.cursor = cursor;
     this.tx = tx;
     this.key = key;
     this.value = value;
+    this.byteBuffer = key.byteBuffer();
+    if (byteBuffer == null) {
+      throw new IllegalArgumentException("No ByteBuffer available for key.");
+    }
+  }
+
+  public boolean seek(byte[] key) {
+    this.key.wrap(byteBuffer);
+    this.key.putBytes(0, key);
+    return cursor.seekPosition(this.key, value, SeekOp.RANGE) == 0;
   }
 
   public boolean first() {

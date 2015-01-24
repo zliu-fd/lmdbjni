@@ -196,6 +196,11 @@ try (BufferCursor cursor = db.bufferCursor(key, value)) {
     k.getByte(0);
     v.getByte(0);
   }
+
+  cursor.seek(bytes("London"));
+  k.getByte(0);
+  v.getByte(0);
+
 }
 ```
 

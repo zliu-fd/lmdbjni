@@ -69,6 +69,10 @@ public class BufferCursorTest {
       assertFalse(cursor.next());
       assertThat(key.getByte(0), is((byte) 9));
 
+      assertTrue(cursor.seek(new byte[]{5}));
+      assertThat(key.getByte(0), is((byte) 6));
+      assertThat(value.getByte(0), is((byte) 6));
+
       cursor.first();
       int expected = 1;
       while(cursor.next()) {
