@@ -84,8 +84,8 @@ public class DirectBuffer {
   public static final boolean SHOULD_BOUNDS_CHECK = !Boolean.getBoolean(DISABLE_BOUNDS_CHECKS_PROP_NAME);
 
   private static final byte[] NULL_BYTES = "null".getBytes(StandardCharsets.UTF_8);
-  public static final String NATIVE_NATIVE_BYTE_ORDER_PROP_NAME = "directbuffer.native.order";
-  private static final ByteOrder NATIVE_BYTE_ORDER = Boolean.getBoolean(DISABLE_BOUNDS_CHECKS_PROP_NAME) ?
+  public static final String NATIVE_BYTE_ORDER_PROP_NAME = "directbuffer.native.byte.order";
+  private static final ByteOrder NATIVE_BYTE_ORDER = Boolean.getBoolean(NATIVE_BYTE_ORDER_PROP_NAME) ?
     ByteOrder.nativeOrder() : ByteOrder.BIG_ENDIAN;
   private static final long ARRAY_BASE_OFFSET = UNSAFE.arrayBaseOffset(byte[].class);
 
