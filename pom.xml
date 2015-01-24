@@ -97,7 +97,7 @@
 
   <build>
     <plugins>
-      <!-- run with mvn clean test site -->
+      <!-- run with mvn clean test site
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -111,6 +111,7 @@
           </reportPlugins>
         </configuration>
       </plugin>
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
