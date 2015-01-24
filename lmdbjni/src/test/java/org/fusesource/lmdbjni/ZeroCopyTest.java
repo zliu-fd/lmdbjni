@@ -27,10 +27,10 @@ public class ZeroCopyTest {
   private Database db;
   private Env env;
 
-  private DirectBuffer k1 = new DirectBuffer(ByteBuffer.allocateDirect(8));
-  private DirectBuffer v1 = new DirectBuffer(ByteBuffer.allocateDirect(8));
-  private DirectBuffer k2 = new DirectBuffer(ByteBuffer.allocateDirect(8));
-  private DirectBuffer v2 = new DirectBuffer(ByteBuffer.allocateDirect(8));
+  private DirectBuffer k1 = new DirectBuffer();
+  private DirectBuffer v1 = new DirectBuffer();
+  private DirectBuffer k2 = new DirectBuffer();
+  private DirectBuffer v2 = new DirectBuffer();
 
   @Before
   public void before() throws IOException {
@@ -56,8 +56,8 @@ public class ZeroCopyTest {
     db.put(k1, v1);
     db.put(k2, v2);
 
-    DirectBuffer k = new DirectBuffer(ByteBuffer.allocateDirect(8));
-    DirectBuffer v = new DirectBuffer(0, 0);
+    DirectBuffer k = new DirectBuffer();
+    DirectBuffer v = new DirectBuffer();
     k.putLong(0, 10);
     db.get(k, v);
     assertThat(v.getLong(0), is(11L));
@@ -84,8 +84,8 @@ public class ZeroCopyTest {
     tx.commit();
     cursor.close();
 
-    DirectBuffer k = new DirectBuffer(0, 0);
-    DirectBuffer v = new DirectBuffer(0, 0);
+    DirectBuffer k = new DirectBuffer();
+    DirectBuffer v = new DirectBuffer();
 
     tx = env.createTransaction();
     cursor = db.openCursor(tx);
@@ -119,7 +119,7 @@ public class ZeroCopyTest {
     cursor = db.openCursor(tx);
 
     DirectBuffer k = new DirectBuffer(byteBuffer);
-    DirectBuffer v = new DirectBuffer(0, 0);
+    DirectBuffer v = new DirectBuffer();
     k.putLong(0, 10);
 
     cursor.seekPosition(k, v, SeekOp.RANGE);
@@ -145,8 +145,8 @@ public class ZeroCopyTest {
     List<Long> result = new ArrayList<>();
     Transaction tx = env.createTransaction();
     try (Cursor cursor = db.openCursor(tx)) {
-      DirectBuffer k = new DirectBuffer(byteBuffer);
-      DirectBuffer v = new DirectBuffer(0, 0);
+      DirectBuffer k = new DirectBuffer();
+      DirectBuffer v = new DirectBuffer();
       for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
         result.add(k.getLong(0));
       }

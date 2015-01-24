@@ -39,8 +39,8 @@ public class PerfTest2 extends Setup {
   public static boolean found = false;
   static BufferCursor cursor;
 
-  public static DirectBuffer key = new DirectBuffer(0, 0);
-  public static DirectBuffer value = new DirectBuffer(0, 0);
+  public static DirectBuffer key = new DirectBuffer();
+  public static DirectBuffer value = new DirectBuffer();
 
   @GenerateMicroBenchmark
   @BenchmarkMode(Mode.AverageTime)

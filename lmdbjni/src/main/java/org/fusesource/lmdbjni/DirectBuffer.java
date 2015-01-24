@@ -96,6 +96,13 @@ public class DirectBuffer {
   private int capacity;
 
   /**
+   * Attach a view to a direct {@link java.nio.ByteBuffer}.
+   */
+  public DirectBuffer() {
+    wrap(ByteBuffer.allocateDirect(511));
+  }
+
+  /**
    * Attach a view to a byte[] for providing direct access.
    *
    * @param buffer to which the view is attached.

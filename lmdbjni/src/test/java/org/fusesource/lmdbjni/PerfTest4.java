@@ -37,8 +37,8 @@ public class PerfTest4 extends Setup {
   }
 
   public static AtomicLong counter = new AtomicLong(0);
-  public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
-  public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
+  public static DirectBuffer key = new DirectBuffer();
+  public static DirectBuffer value = new DirectBuffer();
   public static Transaction tx;
 
   @GenerateMicroBenchmark

@@ -178,8 +178,8 @@ Working against a Snapshot view of the Database.
 Zero-copy cursor (not available on Android).
 
 ```java
-DirectBuffer k = new DirectBuffer(ByteBuffer.allocateDirect(511));
-DirectBuffer v = new DirectBuffer(0, 0);
+DirectBuffer k = new DirectBuffer();
+DirectBuffer v = new DirectBuffer();
 
 try (BufferCursor cursor = db.bufferCursor(key, value)) {
   cursor.first();

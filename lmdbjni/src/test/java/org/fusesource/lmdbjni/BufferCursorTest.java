@@ -24,8 +24,8 @@ public class BufferCursorTest {
   Env env;
   Database db;
   LinkedList<byte[]> keys;
-  DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
-  DirectBuffer value = new DirectBuffer(0, 0);
+  DirectBuffer key = new DirectBuffer();
+  DirectBuffer value = new DirectBuffer();
 
   @Before
   public void before() throws IOException {
