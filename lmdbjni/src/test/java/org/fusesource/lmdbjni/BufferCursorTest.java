@@ -11,9 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BufferCursorTest {
   static {
@@ -70,6 +68,18 @@ public class BufferCursorTest {
       assertTrue(cursor.next());
       assertFalse(cursor.next());
       assertThat(key.getByte(0), is((byte) 9));
+
+      cursor.first();
+      int expected = 1;
+      while(cursor.next()) {
+        assertThat(key.getByte(0), is((byte) expected++));
+      }
+
+      cursor.last();
+      expected = 8;
+      while(cursor.prev()) {
+        assertThat(key.getByte(0), is((byte) expected--));
+      }
     }
   }
 }
