@@ -111,7 +111,34 @@ Putting, Getting, and Deleting key/values.
  db.delete(bytes("Tampa"));
 ```
 
-Performing Atomic/Transacted Updates:
+Iterating and seeking key/values forward and backward.
+
+```java
+try (EntryIterator it = db.iterate()) {
+  for (Entry next : it.iterable()) {
+  }
+}
+
+try (EntryIterator it = db.iterateBackward()) {
+  for (Entry next : it.iterable()) {
+  }
+}
+
+byte[] key = bytes("London");
+try (EntryIterator it = db.seek(key)) {
+  for (Entry next : it.iterable()) {
+  }
+}
+
+try (EntryIterator it = db.seekBackward(key))) {
+  for (Entry next : it.iterable()) {
+  }
+}
+
+```
+
+Performing transactional updates.
+
 ```java
  Transaction tx = env.createTransaction();
  boolean ok = false;
@@ -130,7 +157,7 @@ Performing Atomic/Transacted Updates:
  }
 ```
 
-Working against a Snapshot view of the Database:
+Working against a Snapshot view of the Database.
 
 ```java
  // create a read-only transaction...
@@ -146,36 +173,6 @@ Working against a Snapshot view of the Database:
    // Make sure you commit the transaction to avoid resource leaks.
    tx.commit();
  }
-```
-
-Buffer copy iterating key/values forward and backward.
-
-```java
-try (EntryIterator it = db.iterate()) {
-  for (Entry next : it.iterable()) {
-  }
-}
-
-try (EntryIterator it = db.iterateBackward()) {
-  for (Entry next : it.iterable()) {
-  }
-}
-
-```
-
-Buffer copy seek key/values forward and backward.
-
-```java
-byte[] key = bytes("London");
-try (EntryIterator it = db.seek(key)) {
-  for (Entry next : it.iterable()) {
-  }
-}
-
-try (EntryIterator it = db.seekBackward(key))) {
-  for (Entry next : it.iterable()) {
-  }
-}
 ```
 
 Zero-copy cursor (not available on Android).
