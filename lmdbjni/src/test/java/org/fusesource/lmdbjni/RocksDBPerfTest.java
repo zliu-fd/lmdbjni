@@ -17,39 +17,39 @@ import java.util.concurrent.TimeUnit;
 
 public class RocksDBPerfTest extends Setup {
 
-    static {
-        initRocksDB();
+  static {
+    initRocksDB();
+  }
+
+  @Test
+  public void test() throws RunnerException {
+    Options options = new OptionsBuilder()
+      .include(".*" + RocksDBPerfTest.class.getSimpleName() + ".*")
+      .warmupIterations(10)
+      .measurementIterations(10)
+      .forks(1)
+      .jvmArgs("-server")
+      .jvmClasspath(Maven.classPath)
+      .outputFormat(OutputFormatType.TextReport)
+      .build();
+    new Runner(options).run();
+  }
+
+  static RocksIterator it;
+
+  @GenerateMicroBenchmark
+  @BenchmarkMode(Mode.AverageTime)
+  @OutputTimeUnit(TimeUnit.NANOSECONDS)
+  public void rocksdb_iterate() throws IOException {
+    if (it == null) {
+      it = rocksDb.newIterator();
     }
+    it.next();
 
-    @Test
-    public void test() throws RunnerException {
-        Options options = new OptionsBuilder()
-                .include(".*" + RocksDBPerfTest.class.getSimpleName() + ".*")
-                .warmupIterations(10)
-                .measurementIterations(10)
-                .forks(1)
-                .jvmArgs("-server")
-                .jvmClasspath(Maven.classPath)
-                .outputFormat(OutputFormatType.TextReport)
-                .build();
-        new Runner(options).run();
+    if (!it.isValid()) {
+      it.seekToFirst();
     }
-
-    static RocksIterator it;
-
-    @GenerateMicroBenchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void rocksdb_iterate() throws IOException {
-        if (it == null) {
-            it = rocksDb.newIterator();
-        }
-        it.next();
-
-        if (!it.isValid()) {
-            it.seekToFirst();
-        }
-        it.key();
-        it.value();
-    }
+    it.key();
+    it.value();
+  }
 }

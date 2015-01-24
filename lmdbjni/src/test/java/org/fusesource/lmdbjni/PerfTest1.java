@@ -15,47 +15,48 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class PerfTest1 extends Setup {
-    @Test
-    public void test() throws RunnerException {
-        Options options = new OptionsBuilder()
-                .include(".*" + PerfTest1.class.getSimpleName() + ".*")
-                .warmupIterations(10)
-                .measurementIterations(10)
-                .forks(1)
-                .jvmArgs("-server")
-                .jvmClasspath(Maven.classPath)
-                .outputFormat(OutputFormatType.TextReport)
-                .build();
-        new Runner(options).run();
-    }
-    static {
-        initLMDB();
-    }
+  @Test
+  public void test() throws RunnerException {
+    Options options = new OptionsBuilder()
+      .include(".*" + PerfTest1.class.getSimpleName() + ".*")
+      .warmupIterations(10)
+      .measurementIterations(10)
+      .forks(1)
+      .jvmArgs("-server")
+      .jvmClasspath(Maven.classPath)
+      .outputFormat(OutputFormatType.TextReport)
+      .build();
+    new Runner(options).run();
+  }
 
-    public static int rc = JNI.MDB_NOTFOUND;
-    static Cursor cursor;
+  static {
+    initLMDB();
+  }
 
-    @GenerateMicroBenchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void mdb_cursor_get_with_deserialization() throws IOException {
-        if (cursor == null) {
-            Transaction tx = env.createTransaction();
-            cursor = database.openCursor(tx);
-        }
-        if (rc == JNI.MDB_NOTFOUND) {
-            Entry entry = cursor.get(GetOp.FIRST);
-            // de-serialize key/value to make the test more realistic
-            Bytes.getLong(entry.getKey(), 0);
-            Bytes.getLong(entry.getValue(), 0);
-        } else {
-            Util.checkErrorCode(rc);
-            Entry entry = cursor.get(GetOp.NEXT);
-            // de-serialize key/value to make the test more realistic
-            Bytes.getLong(entry.getKey(), 0);
-            Bytes.getLong(entry.getValue(), 0);
-        }
+  public static int rc = JNI.MDB_NOTFOUND;
+  static Cursor cursor;
+
+  @GenerateMicroBenchmark
+  @BenchmarkMode(Mode.AverageTime)
+  @OutputTimeUnit(TimeUnit.NANOSECONDS)
+  public void mdb_cursor_get_with_deserialization() throws IOException {
+    if (cursor == null) {
+      Transaction tx = env.createTransaction();
+      cursor = database.openCursor(tx);
     }
+    if (rc == JNI.MDB_NOTFOUND) {
+      Entry entry = cursor.get(GetOp.FIRST);
+      // de-serialize key/value to make the test more realistic
+      Bytes.getLong(entry.getKey(), 0);
+      Bytes.getLong(entry.getValue(), 0);
+    } else {
+      Util.checkErrorCode(rc);
+      Entry entry = cursor.get(GetOp.NEXT);
+      // de-serialize key/value to make the test more realistic
+      Bytes.getLong(entry.getKey(), 0);
+      Bytes.getLong(entry.getValue(), 0);
+    }
+  }
 /*
     @GenerateMicroBenchmark
     public void mdb_cursor_get_without_deserialization() throws IOException {

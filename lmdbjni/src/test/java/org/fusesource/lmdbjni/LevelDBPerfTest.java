@@ -21,37 +21,37 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class LevelDBPerfTest extends Setup {
-    static {
-        initLevelDb();
-    }
+  static {
+    initLevelDb();
+  }
 
-    @Test
-    public void test() throws RunnerException {
-        Options options = new OptionsBuilder()
-                .include(".*" + LevelDBPerfTest.class.getSimpleName() + ".*")
-                .warmupIterations(10)
-                .measurementIterations(10)
-                .forks(1)
-                .jvmArgs("-server")
-                .jvmClasspath(Maven.classPath)
-                .outputFormat(OutputFormatType.TextReport)
-                .build();
-        new Runner(options).run();
-    }
+  @Test
+  public void test() throws RunnerException {
+    Options options = new OptionsBuilder()
+      .include(".*" + LevelDBPerfTest.class.getSimpleName() + ".*")
+      .warmupIterations(10)
+      .measurementIterations(10)
+      .forks(1)
+      .jvmArgs("-server")
+      .jvmClasspath(Maven.classPath)
+      .outputFormat(OutputFormatType.TextReport)
+      .build();
+    new Runner(options).run();
+  }
 
-    static DBIterator iterator;
+  static DBIterator iterator;
 
-    @GenerateMicroBenchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void leveldb_iterate() throws IOException {
-        if (iterator == null) {
-            iterator = leveldb.iterator();
-        }
-        if (iterator.hasNext()) {
-            Map.Entry<byte[], byte[]> next = iterator.next();
-        } else {
-            iterator.seekToFirst();
-        }
+  @GenerateMicroBenchmark
+  @BenchmarkMode(Mode.AverageTime)
+  @OutputTimeUnit(TimeUnit.NANOSECONDS)
+  public void leveldb_iterate() throws IOException {
+    if (iterator == null) {
+      iterator = leveldb.iterator();
     }
+    if (iterator.hasNext()) {
+      Map.Entry<byte[], byte[]> next = iterator.next();
+    } else {
+      iterator.seekToFirst();
+    }
+  }
 }

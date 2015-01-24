@@ -32,16 +32,22 @@ public class Constants {
 
   /** mmap at a fixed address (experimental) */
   public static final int FIXEDMAP = MDB_FIXEDMAP;
+
   /** no environment directory */
   public static final int NOSUBDIR = MDB_NOSUBDIR;
+
   /** don't fsync after commit */
   public static final int NOSYNC = MDB_NOSYNC;
+
   /** read only */
   public static final int RDONLY = MDB_RDONLY;
+
   /** don't fsync metapage after commit */
   public static final int NOMETASYNC = MDB_NOMETASYNC;
+
   /** use writable mmap */
   public static final int WRITEMAP = MDB_WRITEMAP;
+
   /** use asynchronous msync when #MDB_WRITEMAP is used */
   public static final int MAPASYNC = MDB_MAPASYNC;
   /**
@@ -49,10 +55,13 @@ public class Constants {
    * instead of to threads
    */
   public static final int NOTLS = MDB_NOTLS;
+
   /** don't do any locking, caller must manage their own locks */
   public static final int NOLOCK = MDB_NOLOCK;
+
   /** don't do readahead (no effect on Windows) */
   public static final int NORDAHEAD = MDB_NORDAHEAD;
+
   /** don't initialize malloc'd memory before writing to datafile */
   public static final int NOMEMINIT = MDB_NOMEMINIT;
 

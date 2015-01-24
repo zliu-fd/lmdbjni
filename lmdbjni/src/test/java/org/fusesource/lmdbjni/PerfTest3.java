@@ -18,38 +18,38 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PerfTest3 extends Setup {
 
-    @Test
-    public void test() throws RunnerException {
-        Options options = new OptionsBuilder()
-                .include(".*" + PerfTest3.class.getSimpleName() + ".*")
-                .warmupIterations(10)
-                .measurementIterations(10)
-                .forks(1)
-                .jvmArgs("-server")
-                .jvmClasspath(Maven.classPath)
-                .outputFormat(OutputFormatType.TextReport)
-                .build();
-        new Runner(options).run();
-    }
+  @Test
+  public void test() throws RunnerException {
+    Options options = new OptionsBuilder()
+      .include(".*" + PerfTest3.class.getSimpleName() + ".*")
+      .warmupIterations(10)
+      .measurementIterations(10)
+      .forks(1)
+      .jvmArgs("-server")
+      .jvmClasspath(Maven.classPath)
+      .outputFormat(OutputFormatType.TextReport)
+      .build();
+    new Runner(options).run();
+  }
 
-    static {
-        initLMDB();
-    }
+  static {
+    initLMDB();
+  }
 
-    public static AtomicLong counter = new AtomicLong(0);
-    public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
-    public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
-    public static Transaction tx;
+  public static AtomicLong counter = new AtomicLong(0);
+  public static DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(8));
+  public static DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(8));
+  public static Transaction tx;
 
-    @GenerateMicroBenchmark
-    @BenchmarkMode(Mode.AverageTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void mdb_cursor_put_address() throws IOException {
-        if (tx == null) {
-            tx = env.createTransaction();
-        }
-        key.putLong(0, counter.incrementAndGet());
-        value.putLong(0, counter.get());
-        database.put(tx, key, value);
+  @GenerateMicroBenchmark
+  @BenchmarkMode(Mode.AverageTime)
+  @OutputTimeUnit(TimeUnit.NANOSECONDS)
+  public void mdb_cursor_put_address() throws IOException {
+    if (tx == null) {
+      tx = env.createTransaction();
     }
+    key.putLong(0, counter.incrementAndGet());
+    value.putLong(0, counter.get());
+    database.put(tx, key, value);
+  }
 }
