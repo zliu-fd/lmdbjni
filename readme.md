@@ -171,11 +171,10 @@ Zero-copy iterating key/values:
 
 ```java
 Transaction tx = env.createTransaction();
-try (Cursor cursor = db.openCursor(tx)) {
+try (Cursor c = db.openCursor(tx)) {
   DirectBuffer k = new DirectBuffer(byteBuffer);
   DirectBuffer v = new DirectBuffer(0, 0);
-  cursor.position(k, v, FIRST);
-  for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
+  for (int rc = c.position(k, v, FIRST); rc != NOTFOUND; rc = c.position(k, v, NEXT)) {
     // do something with key and value buffers
   }
 } finally {
