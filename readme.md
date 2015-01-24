@@ -97,8 +97,7 @@ Recommended Package imports:
 
 Opening and closing the database.
 ```java
- try (Env env = new Env()) {
-   env.open("/tmp/mydb");
+ try (Env env = new Env("/tmp/mydb")) {
    try (Database db = env.openDatabase()) {
      ... // use the db
    }
