@@ -201,6 +201,12 @@ try (BufferCursor cursor = db.bufferCursor(key, value)) {
 }
 ```
 
+Atomic hot backup.
+
+```java
+ env.copy(backupPath);
+```
+
 Using a memory pool to make native memory allocations more efficient:
 
 ```java
