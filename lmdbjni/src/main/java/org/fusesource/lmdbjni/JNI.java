@@ -730,5 +730,9 @@ class JNI {
             @JniArg(cast = "MDB_val *", flags = {NO_OUT}) MDB_val a,
             @JniArg(cast = "MDB_val *", flags = {NO_OUT}) MDB_val b);
 
+    @JniMethod
+    public static final native int mdb_env_get_maxkeysize(
+            @JniArg(cast = "MDB_env *") long env);
+
 
 }

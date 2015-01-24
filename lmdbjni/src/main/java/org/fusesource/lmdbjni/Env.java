@@ -167,4 +167,8 @@ public class Env extends NativeObject implements Closeable {
     public static void popMemoryPool() {
         NativeBuffer.popMemoryPool();
     }
+
+    public long getMaxKeySize() {
+        return mdb_env_get_maxkeysize(pointer());
+    }
 }

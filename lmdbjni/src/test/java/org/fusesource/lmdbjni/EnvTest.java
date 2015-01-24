@@ -105,6 +105,15 @@ public class EnvTest {
         }
     }
 
+    @Test
+    public void testMaxKeySize() throws Exception {
+        String path = tmp.newFolder().getCanonicalPath();
+        try (Env env = new Env()) {
+            env.open(path);
+            assertThat(env.getMaxKeySize(), is(511L));
+        }
+    }
+
 
     private void doTest(Env env, Database db) {
         assertNull(db.put(bytes("Tampa"), bytes("green")));
