@@ -95,4 +95,14 @@ public class EntryIteratorTest {
       assertTrue(keys.isEmpty());
     }
   }
+
+  @Test
+  public void testIterable() throws IOException {
+    try (EntryIterator it = db.iterate()) {
+      for (Entry next : it.iterable()) {
+        assertArrayEquals(keys.pollFirst(), next.getKey());
+      }
+    }
+    assertTrue(keys.isEmpty());
+  }
 }

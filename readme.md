@@ -153,14 +153,12 @@ Buffer copy iterating key/values forward and backward.
 
 ```java
 try (EntryIterator it = db.iterate()) {
-  while (it.hasNext()) {
-    Entry entry = it.next();
+  for (Entry next : it.iterable()) {
   }
 }
 
 try (EntryIterator it = db.iterateBackward()) {
-  while (it.hasNext()) {
-    Entry entry = it.next();
+  for (Entry next : it.iterable()) {
   }
 }
 
@@ -171,15 +169,12 @@ Buffer copy seek key/values forward and backward.
 ```java
 byte[] key = bytes("London");
 try (EntryIterator it = db.seek(key)) {
-  while (it.hasNext()) {
-    Entry entry = it.next();
+  for (Entry next : it.iterable()) {
   }
 }
 
-byte[] key = bytes("London");
-try (EntryIterator it = db.seekBackward(key)) {
-  while (it.hasNext()) {
-    Entry entry = it.next();
+try (EntryIterator it = db.seekBackward(key))) {
+  for (Entry next : it.iterable()) {
   }
 }
 ```

@@ -72,6 +72,15 @@ public class EntryIterator implements Iterator<Entry>, Closeable {
     cursor.close();
   }
 
+  public Iterable<Entry> iterable() {
+    return new Iterable<Entry>() {
+      @Override
+      public Iterator<Entry> iterator() {
+        return EntryIterator.this;
+      }
+    };
+  }
+
   static enum IteratorType {
     FORWARD, BACKWARD
   }
