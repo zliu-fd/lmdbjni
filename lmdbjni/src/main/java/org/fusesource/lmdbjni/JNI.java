@@ -128,6 +128,12 @@ class JNI {
     static public int MDB_MAPASYNC;
     @JniField(flags = {CONSTANT})
     static public int MDB_NOTLS;
+    @JniField(flags = {CONSTANT})
+    static public int MDB_NOLOCK;
+    @JniField(flags = {CONSTANT})
+    static public int MDB_NORDAHEAD;
+    @JniField(flags = {CONSTANT})
+    static public int MDB_NOMEMINIT;
 
     //====================================================//
     // Database Flags

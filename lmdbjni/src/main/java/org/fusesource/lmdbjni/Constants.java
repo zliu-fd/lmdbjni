@@ -35,6 +35,9 @@ public class Constants {
     public static final int WRITEMAP    = MDB_WRITEMAP    ;
     public static final int MAPASYNC    = MDB_MAPASYNC    ;
     public static final int NOTLS       = MDB_NOTLS       ;
+    public static final int NOLOCK      = MDB_NOLOCK      ;
+    public static final int NORDAHEAD   = MDB_NORDAHEAD   ;
+    public static final int NOMEMINIT   = MDB_NOMEMINIT   ;
 
     //====================================================//
     // Database Flags
