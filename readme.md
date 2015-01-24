@@ -17,6 +17,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
  * [LMDB paper](http://symas.com/mdb/20120829-LinuxCon-MDB-txt.pdf)
  * [LMDB lecture by Howard Chu](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
  * [LMDB source code](https://gitorious.org/mdb/mdb/source/libraries/liblmdb)
+ * [LMDB JNI JavaDoc](http://deephacks.org/lmdbjni/apidocs/index.html)
 
 ### Benchmarks
 
@@ -88,8 +89,6 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 ```
 
 ### Usage
-
-Read the [javadoc](http://deephacks.org/lmdbjni/apidocs/index.html).
 
 Recommended Package imports:
 ```java
