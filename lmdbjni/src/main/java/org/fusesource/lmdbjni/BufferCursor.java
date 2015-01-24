@@ -5,8 +5,34 @@ import java.nio.ByteBuffer;
 /**
  * A cursor that allow for zero-copy lookup and navigation by using
  * addresses provided by LMDB instead of copying data for each operation.
- *
  * Do not use on Android.
+ *
+ * <pre>
+ * {@code
+ * DirectBuffer k = new DirectBuffer();
+ * DirectBuffer v = new DirectBuffer();
+ *
+ * try (BufferCursor cursor = db.bufferCursor(key, value)) {
+ *   cursor.first();
+ *   while(cursor.next()) {
+ *     k.getByte(0);
+ *     v.getByte(0);
+ *   }
+ *
+ *    cursor.last();
+ *    while(cursor.prev()) {
+ *      k.getByte(0);
+ *      v.getByte(0);
+ *    }
+ *
+ *    cursor.seek(bytes("London"));
+ *    k.getByte(0);
+ *    v.getByte(0);
+ *  }
+ * }
+ * </pre>
+ *
+ * @author Kristoffer Sjögren
  */
 public class BufferCursor implements AutoCloseable {
   private final Cursor cursor;
@@ -123,6 +149,16 @@ public class BufferCursor implements AutoCloseable {
       lastSeek = false;
     }
     return cursor.position(key, value, GetOp.PREV_DUP) == 0;
+  }
+
+  /**
+   * <p>
+   *   Delete key/data pair at current cursor position.
+   * </p>
+   *
+   */
+  public void delete() {
+    cursor.delete();
   }
 
   /**

@@ -4,6 +4,15 @@ import java.util.Iterator;
 
 /**
  * Iterator for entries.
+ *
+ * <pre>
+ * {@code
+ * try (EntryIterator it = db.iterate()) {
+ *   for (Entry next : it.iterable()) {
+ *   }
+ * }
+ * }
+ * </pre>
  */
 public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   private final Cursor cursor;

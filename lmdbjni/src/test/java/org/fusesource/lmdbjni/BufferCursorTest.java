@@ -144,5 +144,27 @@ public class BufferCursorTest {
       value.getBytes(0, bytes);
       assertThat(new String(bytes), is("val1"));
     }
-}
+  }
+
+  @Test
+  public void testDelete() {
+    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
+      assertTrue(cursor.first());
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      cursor.next();
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      cursor.delete();
+      // the buffer still holds the value just deleted
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      cursor.next();
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(2L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(2L));
+      cursor.prev();
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+    }
+  }
 }

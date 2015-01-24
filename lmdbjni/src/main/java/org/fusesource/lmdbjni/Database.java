@@ -271,6 +271,25 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
+   * <p>
+   *   Creates a cursor and a write transaction for doing zero copy seeking
+   *   and writing.
+   * </p>
+   *
+   * Key and value buffers are updated as the cursor moves. The transaction
+   * is closed along with the cursor.
+   *
+   * @param key A DirectBuffer must be backed by a direct ByteBuffer.
+   * @param value No particular requirements on the value buffer.
+   * @return a closable cursor handle.
+   */
+  public BufferCursor bufferCursorWriter(DirectBuffer key, DirectBuffer value) {
+    Transaction tx = env.createTransaction(false);
+    Cursor cursor = openCursor(tx);
+    return new BufferCursor(cursor, tx, key, value);
+  }
+
+  /**
    * @see org.fusesource.lmdbjni.Database#put(Transaction, byte[], byte[], int)
    */
   public int put(DirectBuffer key, DirectBuffer value) {
