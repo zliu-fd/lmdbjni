@@ -75,6 +75,19 @@ public class LMDBException extends RuntimeException {
   /** Invalid reuse of reader locktable slot */
   public static final int BAD_RSLOT = JNI.MDB_BAD_RSLOT;
 
+  /** Transaction cannot recover - it must be aborted */
+  public static final int BAD_TXN = JNI.MDB_BAD_TXN;
+
+  /** Unsupported size of key/DB name/data, or wrong DUPFIXED size */
+  public static final int BAD_VALSIZE = JNI.MDB_BAD_VALSIZE;
+
+  /** The specified DBI was changed unexpectedly */
+  public static final int BAD_DBI = JNI.MDB_BAD_DBI;
+
+  /** The last defined error code */
+  public static final int LAST_ERRCODE = JNI.MDB_LAST_ERRCODE;
+
+
   int errorCode;
 
   public LMDBException() {
