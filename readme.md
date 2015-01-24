@@ -89,6 +89,8 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 
 ### Usage
 
+Read the [javadoc](http://deephacks.org/lmdbjni/apidocs/index.html).
+
 Recommended Package imports:
 ```java
  import org.fusesource.lmdbjni.*;
