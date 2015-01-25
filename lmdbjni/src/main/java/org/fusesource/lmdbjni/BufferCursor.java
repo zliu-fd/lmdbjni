@@ -49,7 +49,7 @@ import java.nio.ByteOrder;
  * <p/>
  * <pre>
  * {@code
- * 
+ *
  * // read only
  * try (BufferCursor cursor = db.bufferCursor()) {
  *   cursor.first();

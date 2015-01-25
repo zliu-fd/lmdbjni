@@ -196,20 +196,28 @@ The safest (and slowest) approach for interacting with LMDB JNI is using buffer 
 is not available on Android.
 
 ```java
+ // read only
  try (BufferCursor cursor = db.bufferCursor()) {
+
+   // iterate from first item and forwards
    cursor.first();
    while(cursor.next()) {
+     // read a position in buffer
      cursor.keyByte(0);
      cursor.valByte(0);
    }
 
+   // iterate from last item and backwards
    cursor.last();
    while(cursor.prev()) {
+     // copy entire buffer
      cursor.keyBytes();
      cursor.valBytes();
    }
 
+   // find first key greater than or equal to specified key.
    cursor.seek(bytes("London"));
+   // read utf-8 string from position until NULL byte
    cursor.keyUtf8(0);
    cursor.valUtf8(0);
  }
@@ -217,10 +225,13 @@ is not available on Android.
  // open for write
  try (BufferCursor cursor = db.bufferCursorWriter()) {
    cursor.first();
+   // write utf-8 ending with NULL byte
    cursor.keyWriteUtf8("England");
    cursor.valWriteUtf8("London");
+   // overwrite existing item if any
    cursor.overwrite();
    cursor.first();
+   // delete current cursor position
    curstor.delete();
  } 
 
