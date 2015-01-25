@@ -49,7 +49,8 @@ import java.nio.ByteOrder;
  * <p/>
  * <pre>
  * {@code
- *
+ * 
+ * // read only
  * try (BufferCursor cursor = db.bufferCursor()) {
  *   cursor.first();
  *   while(cursor.next()) {
@@ -66,6 +67,16 @@ import java.nio.ByteOrder;
  *   cursor.seek(bytes("London"));
  *   cursor.keyByte(0);
  *   cursor.valByte(0);
+ * }
+ *
+ * // open for write
+ * try (BufferCursor cursor = db.bufferCursorWriter()) {
+ *   cursor.first();
+ *   cursor.keyWriteUtf8("England");
+ *   cursor.valWriteUtf8("London");
+ *   cursor.overwrite();
+ *   cursor.first();
+ *   cursor.delete();
  * }
  * }
  * </pre>
