@@ -176,9 +176,8 @@ Working against a Snapshot view of the Database.
  }
 ```
 
-The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. BufferCursor is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc.
-
-Zero-copy cursor seeking (not available on Android).
+The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. BufferCursor is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc. This mode
+is not available on Android.
 
 ```java
  try (BufferCursor cursor = db.bufferCursor()) {
