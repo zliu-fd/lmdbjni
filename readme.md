@@ -138,7 +138,7 @@ try (EntryIterator it = db.seekBackward(key))) {
 
 ```
 
-Performing [transactional](https://github.com/deephacks/lmdbjni/blob/master/lmdbjni/src/main/java/org/fusesource/lmdbjni/Transaction.java) updates.
+Performing [transactional](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Transaction.html) updates.
 
 ```java
  Transaction tx = env.createTransaction();
@@ -192,10 +192,7 @@ Using a memory pool to make native memory allocations more efficient:
  }
 ```
 
-
-
-
-The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. [BufferCursor](https://github.com/deephacks/lmdbjni/blob/master/lmdbjni/src/main/java/org/fusesource/lmdbjni/BufferCursor.java) is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc. This mode
+The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. [BufferCursor](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/BufferCursor.html) is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc. This mode
 is not available on Android.
 
 ```java
