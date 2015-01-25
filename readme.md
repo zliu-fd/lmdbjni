@@ -176,14 +176,14 @@ Working against a Snapshot view of the Database.
  }
 ```
 
-Zero-copy cursor (not available on Android).
+Zero-copy cursor seeking (not available on Android).
 
 ```java
  try (BufferCursor cursor = db.bufferCursor()) {
    cursor.first();
    while(cursor.next()) {
-     cursor.keyGetByte(0);
-     cursor.valGetByte(0);
+     cursor.keyByte(0);
+     cursor.valByte(0);
    }
 
    cursor.last();
@@ -197,6 +197,20 @@ Zero-copy cursor (not available on Android).
    cursor.valUtf8(0);
  }
 ```
+
+Zero-copy modification (not available on Android).
+
+```java
+ try (BufferCursor cursor = db.bufferCursor()) {
+   cursor.first();
+   cursor.keyWriteUtf8("England");
+   cursor.valWriteUtf8("London");
+   cursor.overwrite();
+   cursor.first();
+   curstor.delete();
+ }
+```
+
 
 Atomic hot backup.
 
