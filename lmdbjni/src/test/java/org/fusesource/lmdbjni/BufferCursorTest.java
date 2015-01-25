@@ -133,13 +133,11 @@ public class BufferCursorTest {
   public void testOverwrite() {
     try (BufferCursor cursor = db.bufferCursorWriter()) {
       assertTrue(cursor.seek(Bytes.fromLong(0)));
-      cursor.valWriteByte(100);
-      assertTrue(cursor.overwrite());
+      assertTrue(cursor.valWriteByte(100).overwrite());
       assertTrue(cursor.first());
       assertThat(cursor.keyLong(0), is(0L));
       assertThat(cursor.valByte(0), is((byte) 100));
-      cursor.valWriteByte(200);
-      assertTrue(cursor.overwrite());
+      assertTrue(cursor.valWriteByte(200).overwrite());
       assertTrue(cursor.first());
       assertThat(cursor.keyLong(0), is(0L));
       assertThat(cursor.valByte(0), is((byte) 200));
@@ -154,8 +152,7 @@ public class BufferCursorTest {
   @Test
   public void testAppend() {
     try (BufferCursor cursor = db.bufferCursorWriter()) {
-      cursor.keyWriteByte(100).valWriteByte(100);
-      cursor.append();
+      cursor.keyWriteByte(100).valWriteByte(100).append();
       assertTrue(cursor.first());
       assertThat(cursor.keyLong(0), is(0L));
       assertThat(cursor.valLong(0), is(0L));
@@ -179,14 +176,18 @@ public class BufferCursorTest {
   public void testPut() {
     try (BufferCursor cursor = db.bufferCursorWriter()) {
       assertTrue(cursor.seek(new byte[]{1}));
-      cursor.keyWriteByte(1).valWriteByte(100);
-      assertFalse(cursor.put());
+      assertFalse(cursor
+        .keyWriteByte(1)
+        .valWriteByte(100)
+        .put());
       assertTrue(cursor.seek(new byte[]{1}));
       assertTrue(cursor.first());
       assertThat(cursor.keyLong(0), is(0L));
       assertThat(cursor.valLong(0), is(0L));
-      cursor.keyWriteByte(111).valWriteByte(121);
-      assertTrue(cursor.put());
+      assertTrue(cursor
+        .keyWriteByte(111)
+        .valWriteByte(121)
+        .put());
       assertTrue(cursor.seek(new byte[]{111}));
       assertThat(cursor.keyByte(0), is((byte) 111));
       assertThat(cursor.valByte(0), is((byte) 121));
@@ -216,8 +217,8 @@ public class BufferCursorTest {
         .valWriteFloat(5.0f)
         .valWriteDouble(6.0)
         .valWriteBytes(new byte[]{1, 2, 3})
-        .valWriteUtf8("cba");
-      cursor.overwrite();
+        .valWriteUtf8("cba")
+        .overwrite();
     }
 
     try (BufferCursor cursor = db.bufferCursorWriter()) {
@@ -247,8 +248,8 @@ public class BufferCursorTest {
       cursor.keyWriteUtf8("abc")
         .keyWriteUtf8("def")
         .valWriteUtf8("ghi")
-        .valWriteUtf8("jkl");
-      cursor.overwrite();
+        .valWriteUtf8("jkl")
+        .overwrite();
     }
 
     try (BufferCursor cursor = db.bufferCursorWriter()) {
