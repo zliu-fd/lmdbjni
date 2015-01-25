@@ -167,4 +167,29 @@ public class BufferCursorTest {
       assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
     }
   }
+
+  @Test
+  public void testPut() {
+    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
+      key.putByte(0, (byte) 100);
+      value.putByte(0, (byte) 100);
+      cursor.put();
+      assertTrue(cursor.first());
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertTrue(cursor.last());
+      assertThat(key.getByte(100), is((byte)0));
+      assertThat(value.getByte(100), is((byte)0));
+
+    }
+    key = new DirectBuffer();
+    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
+      assertTrue(cursor.first());
+      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertTrue(cursor.last());
+      assertThat(key.getByte(100), is((byte)0));
+      assertThat(value.getByte(100), is((byte)0));
+    }
+  }
 }

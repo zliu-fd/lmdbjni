@@ -161,14 +161,20 @@ public class BufferCursor implements AutoCloseable {
     cursor.delete();
   }
 
+  public void put() {
+    cursor.put(key, value, 0);
+  }
+
   /**
    * Close the cursor and the transaction.
    */
   @Override
   public void close() {
     if (tx != null) {
+      cursor.close();
       tx.commit();
+    } else {
+      cursor.close();
     }
-    cursor.close();
   }
 }
