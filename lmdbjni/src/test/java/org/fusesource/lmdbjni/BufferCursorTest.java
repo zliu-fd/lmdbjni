@@ -267,6 +267,34 @@ public class BufferCursorTest {
     }
   }
 
+  @Test
+  public void testWriteBuffers() {
+    ByteString stringKey = new ByteString("key");
+    ByteString stringValue = new ByteString("value");
+
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      cursor.first();
+      DirectBuffer key = new DirectBuffer();
+      key.putString(0, stringKey);
+      // remember NULL byte
+      cursor.keyWrite(key, stringKey.size() + 1);
+      DirectBuffer value = new DirectBuffer();
+      value.putString(0, stringValue);
+      // remember NULL byte
+      cursor.valWrite(value, stringValue.size() + 1);
+      cursor.put();
+      debug(cursor);
+    }
+
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      cursor.last();
+      ByteString string = cursor.keyUtf8(0);
+      assertThat(string.getString(), is("key"));
+      string = cursor.valUtf8(0);
+      assertThat(string.getString(), is("value"));
+    }
+  }
+
   private void debug(BufferCursor cursor) {
     System.out.println("----");
     cursor.first();
