@@ -42,24 +42,22 @@ public class Iteration extends Setup {
     }
   }
 
-  static DirectBuffer key = new DirectBuffer();
-  static DirectBuffer value = new DirectBuffer();
   static BufferCursor bufferCursor;
   static boolean found = false;
 
   @Benchmark
   public void lmdb_zero_copy() {
     if (bufferCursor == null) {
-      bufferCursor = database.bufferCursor(key, value);
+      bufferCursor = database.bufferCursor();
     }
     if (!found) {
       found = bufferCursor.first();
-      key.getLong(0);
-      value.getLong(0);
+      bufferCursor.keyLong(0);
+      bufferCursor.valLong(0);
     } else {
       found = bufferCursor.next();
-      key.getLong(0);
-      value.getLong(0);
+      bufferCursor.keyLong(0);
+      bufferCursor.valLong(0);
     }
   }
 
