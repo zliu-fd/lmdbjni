@@ -188,13 +188,13 @@ Zero-copy cursor (not available on Android).
 
    cursor.last();
    while(cursor.prev()) {
-     cursor.keyGetByte(0);
-     cursor.valGetByte(0);
+     cursor.keyBytes();
+     cursor.valBytes();
    }
 
    cursor.seek(bytes("London"));
-   cursor.keyGetByte(0);
-   cursor.valGetByte(0);
+   cursor.keyUtf8(0);
+   cursor.valUtf8(0);
  }
 ```
 
