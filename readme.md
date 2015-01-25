@@ -230,7 +230,10 @@ is not available on Android.
    // write utf-8 ending with NULL byte
    cursor.keyWriteUtf8("England");
    cursor.valWriteUtf8("London");
-   // overwrite existing item if any
+   // overwrite existing item if any. Data is not written
+   // into database before this operation is called and
+   // no updates are visible outside this transaction until
+   // the transaction is committed
    cursor.overwrite();
    cursor.first();
    // delete current cursor position
