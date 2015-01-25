@@ -51,7 +51,8 @@ public class Database extends NativeObject implements AutoCloseable {
    * the database handle or one of its cursors any further. Do not close
    * a handle if an existing transaction has modified its database.
    * Doing so can cause misbehavior from database corruption to errors
-   * like MDB_BAD_VALSIZE (since the DB name is gone).
+   * like {@link org.fusesource.lmdbjni.LMDBException#BAD_VALSIZE}
+   * (since the DB name is gone).
    */
   @Override
   public void close() {
@@ -160,8 +161,8 @@ public class Database extends NativeObject implements AutoCloseable {
    * This function retrieves key/data pairs from the database. The address
    * and length of the data associated with the specified \b key are returned
    * in the structure to which \b data refers.
-   * If the database supports duplicate keys (#MDB_DUPSORT) then the
-   * first data item for the key will be returned. Retrieval of other
+   * If the database supports duplicate keys ({@link org.fusesource.lmdbjni.Constants#DUPSORT})
+   * then the first data item for the key will be returned. Retrieval of other
    * items requires the use of #mdb_cursor_get().
    *
    * @param tx transaction handle
@@ -401,7 +402,7 @@ public class Database extends NativeObject implements AutoCloseable {
    * This function stores key/data pairs in the database. The default behavior
    * is to enter the new key/data pair, replacing any previously existing key
    * if duplicates are disallowed, or adding a duplicate data item if
-   * duplicates are allowed (#MDB_DUPSORT).
+   * duplicates are allowed ({@link org.fusesource.lmdbjni.Constants#DUPSORT}).
    *
    * @param tx transaction handle
    * @param key The key to store in the database
@@ -410,29 +411,31 @@ public class Database extends NativeObject implements AutoCloseable {
    * must be set to 0 or by bitwise OR'ing together one or more of the
    * values described here.
    * <ul>
-   *	<li>#MDB_NODUPDATA - enter the new key/data pair only if it does not
-   *		already appear in the database. This flag may only be specified
-   *		if the database was opened with #MDB_DUPSORT. The function will
-   *		return #MDB_KEYEXIST if the key/data pair already appears in the
-   *		database.
-   *	<li>#MDB_NOOVERWRITE - enter the new key/data pair only if the key
-   *		does not already appear in the database. The function will return
-   *		#MDB_KEYEXIST if the key already appears in the database, even if
-   *		the database supports duplicates (#MDB_DUPSORT). The \b data
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NODUPDATA} - enter the
+   *    new key/data pair only if it does not already appear in the database.
+   *    This flag may only be specified if the database was opened with
+   *    {@link org.fusesource.lmdbjni.Constants#DUPSORT}. The function will
+   *    return #MDB_KEYEXIST if the key/data pair already appears in the database.
+   *	<li{@link org.fusesource.lmdbjni.Constants#NOOVERWRITE} - enter the new
+   *    key/data pair only if the key does not already appear in the database.
+   *    The function will return {@link org.fusesource.lmdbjni.LMDBException#KEYEXIST}
+   *    if the key already appears in the database, even if the database supports
+   *    duplicates ({@link org.fusesource.lmdbjni.Constants#DUPSORT}). The \b data
    *		parameter will be set to point to the existing item.
-   *	<li>#MDB_RESERVE - reserve space for data of the given size, but
-   *		don't copy the given data. Instead, return a pointer to the
-   *		reserved space, which the caller can fill in later - before
+   *	<li>{@link org.fusesource.lmdbjni.Constants#RESERVE} - reserve space for
+   *    data of the given size, but don't copy the given data. Instead, return
+   *    a pointer to the reserved space, which the caller can fill in later - before
    *		the next update operation or the transaction ends. This saves
    *		an extra memcpy if the data is being generated later.
    *		LMDB does nothing else with this memory, the caller is expected
    *		to modify all of the space requested.
-   *	<li>#MDB_APPEND - append the given key/data pair to the end of the
-   *		database. No key comparisons are performed. This option allows
-   *		fast bulk loading when keys are already known to be in the
+   *	<li>{@link org.fusesource.lmdbjni.Constants#APPEND} - append the given
+   *    key/data pair to the end of the database. No key comparisons are performed.
+   *    This option allows fast bulk loading when keys are already known to be in the
    *		correct order. Loading unsorted keys with this flag will cause
    *		data corruption.
-   *	<li>#MDB_APPENDDUP - as above, but for sorted dup data.
+   *	<li>{@link org.fusesource.lmdbjni.Constants#APPENDDUP} - as above, but for
+   *    sorted dup data.
    * </ul>
    *
    * @return the existing value if it was a dup insert attempt.
@@ -549,7 +552,8 @@ public class Database extends NativeObject implements AutoCloseable {
    * Removes key/data pairs from the database.
    * </p>
    * If the database does not support sorted duplicate data items
-   * (#MDB_DUPSORT) the value parameter is ignored.
+   * ({@link org.fusesource.lmdbjni.Constants#DUPSORT}) the value
+   * parameter is ignored.
    * If the database supports sorted duplicates and the data parameter
    * is NULL, all of the duplicate data items for the key will be
    * deleted. Otherwise, if the data parameter is non-NULL

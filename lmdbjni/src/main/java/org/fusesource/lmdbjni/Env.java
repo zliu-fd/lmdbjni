@@ -86,7 +86,7 @@ public class Env extends NativeObject implements AutoCloseable {
    * values described here.
    * Flags set by mdb_env_set_flags() are also used.
    * <ul>
-   *	<li>#MDB_FIXEDMAP
+   *	<li>{@link org.fusesource.lmdbjni.Constants#FIXEDMAP}
    *      use a fixed address for the mmap region. This flag must be specified
    *      when creating the environment, and is stored persistently in the environment.
    *		If successful, the memory map will always reside at the same virtual address
@@ -94,24 +94,24 @@ public class Env extends NativeObject implements AutoCloseable {
    *		across multiple invocations. This option may not always work, depending on
    *		how the operating system has allocated memory to shared libraries and other uses.
    *		The feature is highly experimental.
-   *	<li>#MDB_NOSUBDIR
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOSUBDIR}
    *		By default, LMDB creates its environment in a directory whose
    *		pathname is given in \b path, and creates its data and lock files
    *		under that directory. With this option, \b path is used as-is for
    *		the database main data file. The database lock file is the \b path
    *		with "-lock" appended.
-   *	<li>#MDB_RDONLY
+   *	<li>{@link org.fusesource.lmdbjni.Constants#RDONLY}
    *		Open the environment in read-only mode. No write operations will be
    *		allowed. LMDB will still modify the lock file - except on read-only
    *		filesystems, where LMDB does not use locks.
-   *	<li>#MDB_WRITEMAP
+   *	<li>{@link org.fusesource.lmdbjni.Constants#WRITEMAP}
    *		Use a writeable memory map unless MDB_RDONLY is set. This is faster
    *		and uses fewer mallocs, but loses protection from application bugs
    *		like wild pointer writes and other bad updates into the database.
    *		Incompatible with nested transactions.
    *		Processes with and without MDB_WRITEMAP on the same environment do
    *		not cooperate well.
-   *	<li>#MDB_NOMETASYNC
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOMETASYNC}
    *		Flush system buffers to disk only once per transaction, omit the
    *		metadata flush. Defer that until the system flushes files to disk,
    *		or next non-MDB_RDONLY commit or #mdb_env_sync(). This optimization
@@ -119,7 +119,7 @@ public class Env extends NativeObject implements AutoCloseable {
    *		committed transaction. I.e. it preserves the ACI (atomicity,
    *		consistency, isolation) but not D (durability) database property.
    *		This flag may be changed at any time using #mdb_env_set_flags().
-   *	<li>#MDB_NOSYNC
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOSYNC}
    *		Don't flush system buffers to disk when committing a transaction.
    *		This optimization means a system crash can corrupt the database or
    *		lose the last transactions if buffers are not yet flushed to disk.
@@ -133,13 +133,13 @@ public class Env extends NativeObject implements AutoCloseable {
    *		hint for when to write transactions to disk, unless #mdb_env_sync()
    *		is called. (#MDB_MAPASYNC | #MDB_WRITEMAP) may be preferable.
    *		This flag may be changed at any time using #mdb_env_set_flags().
-   *	<li>#MDB_MAPASYNC
+   *	<li>{@link org.fusesource.lmdbjni.Constants#MAPASYNC}
    *		When using #MDB_WRITEMAP, use asynchronous flushes to disk.
    *		As with #MDB_NOSYNC, a system crash can then corrupt the
    *		database or lose the last transactions. Calling #mdb_env_sync()
    *		ensures on-disk database integrity until next commit.
    *		This flag may be changed at any time using #mdb_env_set_flags().
-   *	<li>#MDB_NOTLS
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOTLS}
    *		Don't use Thread-Local Storage. Tie reader locktable slots to
    *		#MDB_txn objects instead of to threads. I.e. #mdb_txn_reset() keeps
    *		the slot reseved for the #MDB_txn object. A thread may use parallel
@@ -148,20 +148,20 @@ public class Env extends NativeObject implements AutoCloseable {
    *		user threads over individual OS threads need this option. Such an
    *		application must also serialize the write transactions in an OS
    *		thread, since LMDB's write locking is unaware of the user threads.
-   *	<li>#MDB_NOLOCK
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOLOCK}
    *		Don't do any locking. If concurrent access is anticipated, the
    *		caller must manage all concurrency itself. For proper operation
    *		the caller must enforce single-writer semantics, and must ensure
    *		that no readers are using old transactions while a writer is
    *		active. The simplest approach is to use an exclusive lock so that
    *		no readers may be active at all when a writer begins.
-   *	<li>#MDB_NORDAHEAD
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NORDAHEAD}
    *		Turn off readahead. Most operating systems perform readahead on
    *		read requests by default. This option turns it off if the OS
    *		supports it. Turning it off may help random read performance
    *		when the DB is larger than RAM and system RAM is full.
    *		The option is not implemented on Windows.
-   *	<li>#MDB_NOMEMINIT
+   *	<li>{@link org.fusesource.lmdbjni.Constants#NOMEMINIT}
    *		Don't initialize malloc'd memory before writing to unused spaces
    *		in the data file. By default, memory for pages written to the data
    *		file is obtained using malloc. While these pages may be reused in
@@ -253,11 +253,13 @@ public class Env extends NativeObject implements AutoCloseable {
    * Data is always written to disk when #mdb_txn_commit() is called,
    * but the operating system may keep it buffered. LMDB always flushes
    * the OS buffers upon commit as well, unless the environment was
-   * opened with #MDB_NOSYNC or in part #MDB_NOMETASYNC.
+   * opened with {@link org.fusesource.lmdbjni.Constants#NOSYNC} or in part
+   * {@link org.fusesource.lmdbjni.Constants#NOMETASYNC}
    *
    * @param force force a synchronous flush.  Otherwise
-   *              if the environment has the #MDB_NOSYNC flag set the flushes
-   *              will be omitted, and with #MDB_MAPASYNC they will be asynchronous.
+   *              if the environment has the {@link org.fusesource.lmdbjni.Constants#NOSYNC}
+   *              flag set the flushes will be omitted, and with {@link org.fusesource.lmdbjni.Constants#MAPASYNC}
+   *              they will be asynchronous.
    */
   public void sync(boolean force) {
     checkErrorCode(mdb_env_sync(pointer(), force ? 1 : 0));
@@ -284,8 +286,8 @@ public class Env extends NativeObject implements AutoCloseable {
    *
    * If the mapsize is increased by another process, and data has grown
    * beyond the range of the current mapsize, #mdb_txn_begin() will
-   * return #MDB_MAP_RESIZED. This function may be called with a size
-   * of zero to adopt the new size.
+   * return {@link org.fusesource.lmdbjni.LMDBException#MAP_RESIZED}.
+   * This function may be called with a size of zero to adopt the new size.
    *
    * Any attempt to set a size smaller than the space already consumed
    * by the environment will be silently changed to the current size of the used space.
@@ -328,8 +330,8 @@ public class Env extends NativeObject implements AutoCloseable {
    * the environment. The default is 126.
    * Starting a read-only transaction normally ties a lock table slot to the
    * current thread until the environment closes or the thread exits. If
-   * MDB_NOTLS is in use, #mdb_txn_begin() instead ties the slot to the
-   * MDB_txn object until it or the #MDB_env object is destroyed.
+   * {@link org.fusesource.lmdbjni.Constants#NOTLS} is in use, #mdb_txn_begin() instead
+   * ties the slot to the MDB_txn object until it or the #MDB_env object is destroyed.
    * This function may only be called after #mdb_env_create() and before #mdb_env_open().
    *
    * @param size The maximum number of reader lock table slots
@@ -412,7 +414,8 @@ public class Env extends NativeObject implements AutoCloseable {
    * @return transaction handle
    * @note A transaction and its cursors must only be used by a single
    * thread, and a thread may only have a single transaction at a time.
-   * If #MDB_NOTLS is in use, this does not apply to read-only transactions.
+   * If {@link org.fusesource.lmdbjni.Constants#NOTLS} is in use, this does not apply to
+   * read-only transactions.
    * @note Cursors may not span transactions.
    */
   public Transaction createTransaction(Transaction parent, boolean readOnly) {
@@ -453,31 +456,31 @@ public class Env extends NativeObject implements AutoCloseable {
    *              must be set to 0 or by bitwise OR'ing together one or more of the
    *              values described here.
    *              <ul>
-   *              <li>#MDB_REVERSEKEY
+   *              <li>{@link org.fusesource.lmdbjni.Constants#REVERSEKEY}
    *              Keys are strings to be compared in reverse order, from the end
    *              of the strings to the beginning. By default, Keys are treated as strings and
    *              compared from beginning to end.
-   *              <li>#MDB_DUPSORT
+   *              <li>{@link org.fusesource.lmdbjni.Constants#DUPSORT}
    *              Duplicate keys may be used in the database. (Or, from another perspective,
    *              keys may have multiple data items, stored in sorted order.) By default
    *              keys must be unique and may have only a single data item.
-   *              <li>#MDB_INTEGERKEY
+   *              <li>{@link org.fusesource.lmdbjni.Constants#INTEGERKEY}
    *              Keys are binary integers in native byte order. Setting this option
    *              requires all keys to be the same size, typically sizeof(int)
    *              or sizeof(size_t).
-   *              <li>#MDB_DUPFIXED
-   *              This flag may only be used in combination with #MDB_DUPSORT. This option
-   *              tells the library that the data items for this database are all the same
+   *              <li>{@link org.fusesource.lmdbjni.Constants#DUPFIXED}
+   *              This flag may only be used in combination with {@link org.fusesource.lmdbjni.Constants#DUPSORT}.
+   *              This option tells the library that the data items for this database are all the same
    *              size, which allows further optimizations in storage and retrieval. When
    *              all data items are the same size, the #MDB_GET_MULTIPLE and #MDB_NEXT_MULTIPLE
    *              cursor operations may be used to retrieve multiple items at once.
-   *              <li>#MDB_INTEGERDUP
+   *              <li>{@link org.fusesource.lmdbjni.Constants#INTEGERDUP}
    *              This option specifies that duplicate data items are also integers, and
    *              should be sorted as such.
-   *              <li>#MDB_REVERSEDUP
+   *              <li>{@link org.fusesource.lmdbjni.Constants#REVERSEDUP}
    *              This option specifies that duplicate data items should be compared as
    *              strings in reverse order.
-   *              <li>#MDB_CREATE
+   *              <li>{@link org.fusesource.lmdbjni.Constants#CREATE}
    *              Create the named database if it doesn't exist. This option is not
    *              allowed in a read-only transaction or a read-only environment.
    * @return A database handle.

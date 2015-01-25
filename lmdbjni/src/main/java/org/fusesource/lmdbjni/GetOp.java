@@ -31,14 +31,14 @@ public enum GetOp {
 
   /**
    * Position at first data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   FIRST_DUP(MDB_FIRST_DUP),
 
-  /** Position at key/data pair. Only for #MDB_DUPSORT */
+  /** Position at key/data pair. Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
   GET_BOTH(MDB_GET_BOTH),
 
-  /** position at key, nearest data. Only for #MDB_DUPSORT */
+  /** position at key, nearest data. Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
   GET_BOTH_RANGE(MDB_GET_BOTH_RANGE),
 
   /** Return key/data at current cursor position */
@@ -47,7 +47,8 @@ public enum GetOp {
   /**
    * Return key and up to a page of duplicate data items
    * from current cursor position. Move cursor to prepare
-   * for #MDB_NEXT_MULTIPLE. Only for #MDB_DUPFIXED
+   * for {@link org.fusesource.lmdbjni.Constants#NEXT_MULTIPLE}.
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPFIXED}
    */
   GET_MULTIPLE(MDB_GET_MULTIPLE),
 
@@ -56,7 +57,7 @@ public enum GetOp {
 
   /**
    * Position at last data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   LAST_DUP(MDB_LAST_DUP),
 
@@ -65,14 +66,15 @@ public enum GetOp {
 
   /**
    * Position at next data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   NEXT_DUP(MDB_NEXT_DUP),
 
   /**
    * Return key and up to a page of duplicate data items
    * from next cursor position. Move cursor to prepare
-   * for #MDB_NEXT_MULTIPLE. Only for #MDB_DUPFIXED
+   * for {@link org.fusesource.lmdbjni.Constants#NEXT_MULTIPLE}.
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPFIXED}
    */
   NEXT_MULTIPLE(MDB_NEXT_MULTIPLE),
 
@@ -84,7 +86,7 @@ public enum GetOp {
 
   /**
    * Position at previous data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   PREV_DUP(MDB_PREV_DUP),
 

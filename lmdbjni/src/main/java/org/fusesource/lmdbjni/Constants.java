@@ -81,10 +81,11 @@ public class Constants {
    */
   public static final int INTEGERKEY = MDB_INTEGERKEY;
 
-  /** with #MDB_DUPSORT, sorted dup items have fixed size */
+  /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT},
+   * sorted dup items have fixed size */
   public static final int DUPFIXED = MDB_DUPFIXED;
 
-  /** with #MDB_DUPSORT, use reverse string dups */
+  /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT}, use reverse string dups */
   public static final int INTEGERDUP = MDB_INTEGERDUP;
 
   /** create DB if not already existing */
@@ -101,7 +102,7 @@ public class Constants {
   public static final int NOOVERWRITE = MDB_NOOVERWRITE;
 
   /**
-   * Only for #MDB_DUPSORT<br>
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT} <br>
    * For put: don't write if the key and data pair already exist.<br>
    * For mdb_cursor_del: remove all duplicate data items.
    */
@@ -122,7 +123,8 @@ public class Constants {
   /** Duplicate data is being appended, don't split full pages. */
   public static final int APPENDDUP = MDB_APPENDDUP;
 
-  /** Store multiple data items in one call. Only for #MDB_DUPFIXED. */
+  /** Store multiple data items in one call. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPFIXED}. */
   public static final int MULTIPLE = MDB_MULTIPLE;
 
   //====================================================//
@@ -134,14 +136,16 @@ public class Constants {
 
   /**
    * Position at first data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp FIRST_DUP = GetOp.FIRST_DUP;
 
-  /** Position at key/data pair. Only for #MDB_DUPSORT */
+  /** Position at key/data pair. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
   public static final GetOp GET_BOTH = GetOp.GET_BOTH;
 
-  /** position at key, nearest data. Only for #MDB_DUPSORT */
+  /** position at key, nearest data. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
   public static final GetOp GET_BOTH_RANGE = GetOp.GET_BOTH_RANGE;
 
   /** Return key/data at current cursor position */
@@ -150,7 +154,8 @@ public class Constants {
   /**
    * Return key and up to a page of duplicate data items
    * from current cursor position. Move cursor to prepare
-   * for #MDB_NEXT_MULTIPLE. Only for #MDB_DUPFIXED
+   * for {@link org.fusesource.lmdbjni.Constants#NEXT_MULTIPLE}.
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp GET_MULTIPLE = GetOp.GET_MULTIPLE;
 
@@ -159,7 +164,7 @@ public class Constants {
 
   /**
    * Position at last data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for{@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp LAST_DUP = GetOp.LAST_DUP;
 
@@ -168,14 +173,15 @@ public class Constants {
 
   /**
    * Position at next data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp NEXT_DUP = GetOp.NEXT_DUP;
 
   /**
    * Return key and up to a page of duplicate data items
    * from next cursor position. Move cursor to prepare
-   * for #MDB_NEXT_MULTIPLE. Only for #MDB_DUPFIXED
+   * for {@link org.fusesource.lmdbjni.Constants#NEXT_MULTIPLE}.
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp NEXT_MULTIPLE = GetOp.NEXT_MULTIPLE;
 
@@ -187,7 +193,7 @@ public class Constants {
 
   /**
    * Position at previous data item of current key.
-   * Only for #MDB_DUPSORT
+   * Only for {@link org.fusesource.lmdbjni.Constants#DUPSORT}
    */
   public static final GetOp PREV_DUP = GetOp.PREV_DUP;
 

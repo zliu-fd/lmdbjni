@@ -84,7 +84,7 @@ public class BufferCursor implements AutoCloseable {
   private boolean valDatbaseMemoryLocation = false;
   private int keyWriteIndex = 0;
   private int valWriteIndex = 0;
-  
+
   BufferCursor(Cursor cursor, Transaction tx, DirectBuffer key, DirectBuffer value) {
     this.cursor = cursor;
     this.isReadOnly = tx.isReadOnly();
@@ -160,7 +160,8 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
-   * Position at next data item of current key. Only for #MDB_DUPSORT.
+   * Position at next data item of current key. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}.
    *
    * @return true if found
    */
@@ -183,7 +184,8 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
-   * Position at previous data item of current key. Only for #MDB_DUPSORT.
+   * Position at previous data item of current key. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}.
    *
    * @return true if found
    */

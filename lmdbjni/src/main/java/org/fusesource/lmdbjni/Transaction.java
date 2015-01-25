@@ -76,10 +76,10 @@ public class Transaction extends NativeObject {
    * Abort the transaction like #mdb_txn_abort(), but keep the transaction
    * handle. #mdb_txn_renew() may reuse the handle. This saves allocation
    * overhead if the process will start a new read-only transaction soon,
-   * and also locking overhead if #MDB_NOTLS is in use. The reader table
-   * lock is released, but the table slot stays tied to its thread or
+   * and also locking overhead if {@link org.fusesource.lmdbjni.Constants#NOTLS}
+   * is in use. The reader table lock is released, but the table slot stays tied to its thread or
    * #MDB_txn. Use mdb_txn_abort() to discard a reset handle, and to free
-   * its lock table slot if MDB_NOTLS is in use.
+   * its lock table slot if {@link org.fusesource.lmdbjni.Constants#NOTLS} is in use.
    * Cursors opened within the transaction must not be used
    * again after this call, except with #mdb_cursor_renew().
    * Reader locks generally don't interfere with writers, but they keep old
