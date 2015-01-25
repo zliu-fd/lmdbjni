@@ -27,14 +27,22 @@ import java.nio.ByteOrder;
  * Any modification will be written into cached byte buffers which needs
  * to be sized in order to fit key and value data written into them.
  * The key buffer is 511 by default which is the max key size in LMDB.
+ * This limitation will be fixed in later versions to allow for dynamically
+ * changing buffers as capacity is exceeded.
  * </p>
- * <p/>
+ * <p>
+ * As soon as a key or value is written, the cursor still maintain its
+ * position but the initial view into the database is lost and will
+ * need to be re-established.
+ * </p>
  * <p>
  * Note that buffers write in native byte order by default which
  * may not be desired for certain key ordering schemes. The BufferCursor
- * writes data in big endian.
+ * writes data in regular big endian.
  * </p>
  * <p/>
+ * BufferCopy is not thread safe and should be closed by the same thread
+ * that opened it.
  * <p>
  * Do not use on Android.
  * </p>
