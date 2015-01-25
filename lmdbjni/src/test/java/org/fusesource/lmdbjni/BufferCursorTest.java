@@ -209,12 +209,14 @@ public class BufferCursorTest {
         .keyWriteFloat(1.0f)
         .keyWriteDouble(2.0)
         .keyWriteBytes(new byte[]{1, 2, 3})
+        .keyWriteUtf8("abc")
         .valWriteByte(112)
         .valWriteInt(3)
         .valWriteLong(4)
         .valWriteFloat(5.0f)
         .valWriteDouble(6.0)
-        .valWriteBytes(new byte[] {1, 2, 3});
+        .valWriteBytes(new byte[]{1, 2, 3})
+        .valWriteUtf8("cba");
       cursor.overwrite();
     }
 
@@ -226,12 +228,14 @@ public class BufferCursorTest {
       assertThat(cursor.keyFloat(13), is(1.0f));
       assertThat(cursor.keyDouble(17), is(2.0));
       assertArrayEquals(cursor.keyBytes(25, 3), new byte[]{1,2,3});
+      assertThat(cursor.keyUtf8(28).getString(), is("abc"));
       assertThat(cursor.valByte(0), is((byte)112));
       assertThat(cursor.valInt(1), is(3));
       assertThat(cursor.valLong(5), is(4L));
       assertThat(cursor.valFloat(13), is(5.0f));
       assertThat(cursor.valDouble(17), is(6.0));
       assertArrayEquals(cursor.valBytes(25, 3), new byte[]{1,2,3});
+      assertThat(cursor.valUtf8(28).getString(), is("cba"));
     }
   }
 

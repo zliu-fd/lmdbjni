@@ -7,14 +7,14 @@ import java.nio.ByteOrder;
  * Cursor mode that allow for zero-copy lookup, navigation and modification
  * by using addresses provided by LMDB instead of copying data for each
  * operation.
- *
+ * <p/>
  * <p>
  * This is an advanced mode. Users should avoid interacting directly
  * with DirectBuffer and use the BufferCursor API instead. Otherwise
  * take extra care of buffer memory address+size and byte ordering.
  * Mistakes may lead to SIGSEGV or unpredictable key ordering etc.
  * </p>
- *
+ * <p/>
  * <p>
  * Key and value buffers are updated as the cursor moves. After a
  * cursor have been moved, the buffers will point to a memory address
@@ -22,23 +22,23 @@ import java.nio.ByteOrder;
  * and may not modify it in any way. Modification to buffers in this
  * state will cause a SIGSEGV.
  * </p>
- *
+ * <p/>
  * <p>
  * Any modification will be written into cached byte buffers which needs
  * to be sized in order to fit key and value data written into them.
  * The key buffer is 511 by default which is the max key size in LMDB.
  * </p>
- *
+ * <p/>
  * <p>
  * Note that buffers write in native byte order by default which
  * may not be desired for certain key ordering schemes. The BufferCursor
  * writes data in big endian.
  * </p>
- *
+ * <p/>
  * <p>
  * Do not use on Android.
  * </p>
- *
+ * <p/>
  * <pre>
  * {@code
  *
@@ -103,7 +103,6 @@ public class BufferCursor implements AutoCloseable {
 
   /**
    * Position at first key greater than or equal to specified key.
-   *
    *
    * @param key key to seek for.
    * @return true if a key was found.
@@ -186,9 +185,8 @@ public class BufferCursor implements AutoCloseable {
 
   /**
    * <p>
-   *   Delete key/data pair at current cursor position.
+   * Delete key/data pair at current cursor position.
    * </p>
-   *
    */
   public void delete() {
     cursor.delete();
@@ -215,7 +213,7 @@ public class BufferCursor implements AutoCloseable {
     DirectBuffer k = (keyWriteIndex != 0) ?
       new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
     DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex ) : value;
+      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     try {
@@ -229,7 +227,6 @@ public class BufferCursor implements AutoCloseable {
     }
   }
 
-
   /**
    * Stores key/data pairs in the database replacing any
    * previously existing key.
@@ -238,7 +235,7 @@ public class BufferCursor implements AutoCloseable {
     DirectBuffer k = (keyWriteIndex != 0) ?
       new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
     DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex ) : value;
+      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     return cursor.put(k, v, 0) == 0;
@@ -255,7 +252,7 @@ public class BufferCursor implements AutoCloseable {
     DirectBuffer k = (keyWriteIndex != 0) ?
       new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
     DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex ) : value;
+      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     cursor.put(k, v, Constants.APPEND);
@@ -335,6 +332,35 @@ public class BufferCursor implements AutoCloseable {
    * Write data to key at current cursor position and
    * move write index forward.
    *
+   * @param data string
+   * @return this
+   */
+  public BufferCursor keyWriteUtf8(ByteString data) {
+    setSafeKeyMemoryLocation();
+    this.key.putString(keyWriteIndex, data);
+    keyWriteIndex += data.size() + 1;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
+   * @param data string
+   * @return this
+   */
+  public BufferCursor keyWriteUtf8(String data) {
+    setSafeKeyMemoryLocation();
+    ByteString bytes = new ByteString(data);
+    this.key.putString(keyWriteIndex, bytes);
+    keyWriteIndex += bytes.size() + 1;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
    * @param data byte array
    * @return this
    */
@@ -349,7 +375,7 @@ public class BufferCursor implements AutoCloseable {
    * Overwrite key data at current cursor position and
    * move write index forward.
    *
-   * @param buffer buffer
+   * @param buffer   buffer
    * @param capacity capacity
    * @return this
    */
@@ -408,6 +434,17 @@ public class BufferCursor implements AutoCloseable {
    */
   public double keyDouble(int pos) {
     return this.key.getDouble(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get string data from key (ending with NULL byte)
+   * at current cursor position.
+   *
+   * @param pos byte position
+   * @return String
+   */
+  public ByteString keyUtf8(int pos) {
+    return this.key.getString(pos);
   }
 
   /**
@@ -505,6 +542,35 @@ public class BufferCursor implements AutoCloseable {
    * Write data to value at current cursor position and
    * move write index forward.
    *
+   * @param data string
+   * @return this
+   */
+  public BufferCursor valWriteUtf8(String data) {
+    setSafeValMemoryLocation();
+    ByteString bytes = new ByteString(data);
+    this.value.putString(valWriteIndex, bytes);
+    valWriteIndex += bytes.size() + 1;
+    return this;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
+   * @param data string
+   * @return this
+   */
+  public BufferCursor valWriteUtf8(ByteString data) {
+    setSafeValMemoryLocation();
+    this.value.putString(valWriteIndex, data);
+    valWriteIndex += data.size() + 1;
+    return this;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
    * @param data byte array
    * @return this
    */
@@ -519,7 +585,7 @@ public class BufferCursor implements AutoCloseable {
    * Overwrite value data at current cursor position and
    * move write index forward.
    *
-   * @param buffer buffer
+   * @param buffer   buffer
    * @param capacity capacity
    * @return this
    */
@@ -602,12 +668,24 @@ public class BufferCursor implements AutoCloseable {
     return this.value.getDouble(pos, ByteOrder.BIG_ENDIAN);
   }
 
+  /**
+   * Get string data from key (ending with NULL byte)
+   * at current cursor position.
+   *
+   * @param pos byte position
+   * @return String
+   */
+  public ByteString valUtf8(int pos) {
+    return this.value.getString(pos);
+  }
+
   private void setSafeKeyMemoryLocation() {
     if (keyDatbaseMemoryLocation) {
       this.key.wrap(keyByteBuffer);
       keyDatbaseMemoryLocation = false;
     }
   }
+
   private void setSafeValMemoryLocation() {
     if (valDatbaseMemoryLocation) {
       this.value.wrap(valueByteBuffer);

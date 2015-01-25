@@ -639,15 +639,21 @@ public class DirectBuffer {
   }
 
   public ByteString getString(final int offset) {
-    final int length = getInt(offset, ByteOrder.nativeOrder());
-    return new ByteString(getStringUtf8(offset, length));
+    byte terminator = 1;
+    int index = offset;
+    while (terminator != (byte)0x00) {
+      boundsCheck(index, SIZE_OF_BYTE);
+      terminator = UNSAFE.getByte(byteArray, addressOffset + index++);
+    }
+    byte[] bytes = new byte[index - offset - 1];
+    getBytes(offset, bytes);
+    return new ByteString(bytes);
   }
 
-  public int putString(final int offset, final ByteString value) {
+  public void putString(final int offset, final ByteString value) {
     final byte[] bytes = value.getBytes();
-    putInt(offset, bytes.length, NATIVE_BYTE_ORDER);
-    putBytes(offset + SIZE_OF_INT, bytes);
-    return SIZE_OF_INT + bytes.length;
+    putBytes(offset, bytes);
+    putByte(offset + bytes.length, (byte)0x00);
   }
 
   public boolean getBoolean(int offset) {
