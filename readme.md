@@ -201,7 +201,7 @@ Zero-copy cursor seeking (not available on Android).
 Zero-copy modification (not available on Android).
 
 ```java
- try (BufferCursor cursor = db.bufferCursor()) {
+ try (BufferCursor cursor = db.bufferCursorWriter()) {
    cursor.first();
    cursor.keyWriteUtf8("England");
    cursor.valWriteUtf8("London");
