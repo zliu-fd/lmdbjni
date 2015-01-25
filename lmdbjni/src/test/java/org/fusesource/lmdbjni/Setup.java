@@ -16,7 +16,7 @@ public class Setup {
   public static void setLmdbLibraryPath() {
     File path = new File(".");
     if (isWindows()) {
-      path = new File(path, "../lmdbjni-win64/target/native-build/target/lib");
+      path = new File(path, "../lmdbjni-win64/target/native-build/target/x64-release/lib");
     } else if (isMac()) {
       path = new File(path, "../lmdbjni-osx64/target/native-build/target/lib");
     } else {
