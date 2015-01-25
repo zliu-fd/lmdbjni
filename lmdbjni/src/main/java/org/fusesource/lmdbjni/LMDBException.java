@@ -89,6 +89,8 @@ public class LMDBException extends RuntimeException {
   /** The last defined error code */
   public static final int LAST_ERRCODE = JNI.MDB_LAST_ERRCODE;
 
+  /** Permission denied */
+  public static final int EACCES = 13;
 
   int errorCode;
 

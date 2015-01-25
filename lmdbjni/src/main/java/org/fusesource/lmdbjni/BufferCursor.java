@@ -83,9 +83,10 @@ public class BufferCursor implements AutoCloseable {
   private boolean valDatbaseMemoryLocation = false;
   private int keyWriteIndex = 0;
   private int valWriteIndex = 0;
-
+  private final boolean isReadOnly;
   BufferCursor(Cursor cursor, Transaction tx, DirectBuffer key, DirectBuffer value) {
     this.cursor = cursor;
+    this.isReadOnly = tx.isReadOnly();
     this.tx = tx;
     if (key.byteBuffer() == null) {
       throw new IllegalArgumentException("No ByteBuffer available for key.");
@@ -274,6 +275,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteByte(int data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     this.key.putByte(keyWriteIndex, (byte) data);
     keyWriteIndex += 1;
@@ -288,6 +292,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteInt(int data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     this.key.putInt(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
     keyWriteIndex += 4;
@@ -302,6 +309,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteLong(long data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     this.key.putLong(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
     keyWriteIndex += 8;
@@ -316,6 +326,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteFloat(float data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.key.putFloat(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
     keyWriteIndex += 4;
@@ -330,6 +343,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteDouble(double data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.key.putDouble(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
     keyWriteIndex += 8;
@@ -344,6 +360,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteUtf8(ByteString data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     this.key.putString(keyWriteIndex, data);
     keyWriteIndex += data.size() + 1;
@@ -358,6 +377,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteUtf8(String data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     ByteString bytes = new ByteString(data);
     this.key.putString(keyWriteIndex, bytes);
@@ -373,6 +395,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWriteBytes(byte[] data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeKeyMemoryLocation();
     this.key.putBytes(keyWriteIndex, data);
     keyWriteIndex += data.length;
@@ -388,6 +413,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor keyWrite(DirectBuffer buffer, int capacity) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     keyDatbaseMemoryLocation = false;
     this.key.wrap(buffer.addressOffset(), capacity);
     keyWriteIndex = capacity;
@@ -484,6 +512,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteByte(int data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putByte(valWriteIndex, (byte) data);
     valWriteIndex += 1;
@@ -498,6 +529,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteInt(int data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putInt(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
     valWriteIndex += 4;
@@ -512,6 +546,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteLong(long data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putLong(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
     valWriteIndex += 8;
@@ -526,6 +563,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteFloat(float data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putFloat(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
     valWriteIndex += 4;
@@ -540,6 +580,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteDouble(double data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putDouble(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
     valWriteIndex += 8;
@@ -554,6 +597,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteUtf8(String data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     ByteString bytes = new ByteString(data);
     this.value.putString(valWriteIndex, bytes);
@@ -569,6 +615,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteUtf8(ByteString data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putString(valWriteIndex, data);
     valWriteIndex += data.size() + 1;
@@ -583,6 +632,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWriteBytes(byte[] data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     setSafeValMemoryLocation();
     this.value.putBytes(valWriteIndex, data);
     valWriteIndex += data.length;
@@ -598,6 +650,9 @@ public class BufferCursor implements AutoCloseable {
    * @return this
    */
   public BufferCursor valWrite(DirectBuffer buffer, int capacity) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
     valDatbaseMemoryLocation = false;
     this.value.wrap(buffer.addressOffset(), capacity);
     valWriteIndex = capacity;

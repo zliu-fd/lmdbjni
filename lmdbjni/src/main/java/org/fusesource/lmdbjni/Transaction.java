@@ -30,9 +30,11 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  */
 public class Transaction extends NativeObject {
   private DirectBuffer buffer;
+  private boolean readOnly;
 
-  Transaction(long self) {
+  Transaction(long self, boolean readOnly) {
     super(self);
+    this.readOnly = readOnly;
   }
 
   /**
@@ -105,6 +107,10 @@ public class Transaction extends NativeObject {
       mdb_txn_abort(self);
       self = 0;
     }
+  }
+
+  public boolean isReadOnly() {
+    return readOnly;
   }
 
   long getBufferAddress() {

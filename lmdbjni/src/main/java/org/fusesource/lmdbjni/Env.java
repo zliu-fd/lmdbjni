@@ -419,7 +419,7 @@ public class Env extends NativeObject implements AutoCloseable {
     checkOpen();
     long txpointer[] = new long[1];
     checkErrorCode(mdb_txn_begin(pointer(), parent == null ? 0 : parent.pointer(), readOnly ? MDB_RDONLY : 0, txpointer));
-    return new Transaction(txpointer[0]);
+    return new Transaction(txpointer[0], readOnly);
   }
 
   /**
