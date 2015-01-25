@@ -75,15 +75,16 @@ import java.nio.ByteOrder;
 public class BufferCursor implements AutoCloseable {
   private final Cursor cursor;
   private final Transaction tx;
+  private final ByteBuffer keyByteBuffer;
+  private final ByteBuffer valueByteBuffer;
+  private final boolean isReadOnly;
   private DirectBuffer key;
   private DirectBuffer value;
-  private ByteBuffer keyByteBuffer;
-  private ByteBuffer valueByteBuffer;
   private boolean keyDatbaseMemoryLocation = false;
   private boolean valDatbaseMemoryLocation = false;
   private int keyWriteIndex = 0;
   private int valWriteIndex = 0;
-  private final boolean isReadOnly;
+  
   BufferCursor(Cursor cursor, Transaction tx, DirectBuffer key, DirectBuffer value) {
     this.cursor = cursor;
     this.isReadOnly = tx.isReadOnly();
