@@ -240,6 +240,32 @@ public class BufferCursorTest {
   }
 
 
+  @Test
+  public void testWriteStrings() {
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      cursor.first();
+      cursor.keyWriteUtf8("abc")
+        .keyWriteUtf8("def")
+        .valWriteUtf8("ghi")
+        .valWriteUtf8("jkl");
+      cursor.overwrite();
+    }
+
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      cursor.last();
+      ByteString string = cursor.keyUtf8(0);
+      assertThat(string.getString(), is("abc"));
+      // add NULL byte
+      string = cursor.keyUtf8(string.size() + 1);
+      assertThat(string.getString(), is("def"));
+      string = cursor.valUtf8(0);
+      assertThat(string.getString(), is("ghi"));
+      // add NULL byte
+      string = cursor.valUtf8(string.size() + 1);
+      assertThat(string.getString(), is("jkl"));
+    }
+  }
+
   private void debug(BufferCursor cursor) {
     System.out.println("----");
     cursor.first();
