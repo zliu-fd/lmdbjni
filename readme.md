@@ -90,13 +90,13 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 
 ### Usage
 
-Recommended Package imports:
+Recommended package imports.
 ```java
  import org.fusesource.lmdbjni.*;
  import static org.fusesource.lmdbjni.Constants.*;
 ```
 
-Opening and closing the database.
+[Opening](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Env.html#open-java.lang.String-int-int-) and closing the database.
 ```java
  try (Env env = new Env("/tmp/mydb")) {
    try (Database db = env.openDatabase()) {
@@ -105,7 +105,7 @@ Opening and closing the database.
  }
 ```
 
-Putting, Getting, and Deleting key/values.
+[Putting](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Database.html#put-org.fusesource.lmdbjni.Transaction-byte:A-byte:A-int-), [getting](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Database.html#get-org.fusesource.lmdbjni.Transaction-byte:A-), and [deleting](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Database.html#delete-org.fusesource.lmdbjni.Transaction-byte:A-byte:A-) key/values.
 ```java
  db.put(bytes("Tampa"), bytes("rocks"));
  String value = string(db.get(bytes("Tampa")));
@@ -138,7 +138,7 @@ try (EntryIterator it = db.seekBackward(key))) {
 
 ```
 
-Performing transactional updates.
+Performing [transactional](https://github.com/deephacks/lmdbjni/blob/master/lmdbjni/src/main/java/org/fusesource/lmdbjni/Transaction.java) updates.
 
 ```java
  Transaction tx = env.createTransaction();
@@ -158,7 +158,7 @@ Performing transactional updates.
  }
 ```
 
-Working against a Snapshot view of the Database.
+Working against a snapshot view of the database.
 
 ```java
  // create a read-only transaction...
@@ -175,7 +175,7 @@ Working against a Snapshot view of the Database.
    tx.commit();
  }
 ```
-Atomic hot backup.
+Atomic hot [backup](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Env.html#copy-java.lang.String-).
 
 ```java
  env.copy(backupPath);
@@ -195,7 +195,7 @@ Using a memory pool to make native memory allocations more efficient:
 
 
 
-The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. BufferCursor is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc. This mode
+The safest (and slowest) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. [BufferCursor](https://github.com/deephacks/lmdbjni/blob/master/lmdbjni/src/main/java/org/fusesource/lmdbjni/BufferCursor.java) is an advanced, more efficient, zero copy mode. There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc. This mode
 is not available on Android.
 
 ```java
