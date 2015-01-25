@@ -45,19 +45,19 @@ import java.nio.ByteOrder;
  * try (BufferCursor cursor = db.bufferCursor()) {
  *   cursor.first();
  *   while(cursor.next()) {
- *     cursor.keyGetByte(0);
- *     cursor.valGetByte(0);
+ *     cursor.keyByte(0);
+ *     cursor.valByte(0);
  *   }
  *
  *   cursor.last();
  *   while(cursor.prev()) {
- *     cursor.keyGetByte(0);
- *     cursor.valGetByte(0);
+ *     cursor.keyByte(0);
+ *     cursor.valByte(0);
  *   }
  *
  *   cursor.seek(bytes("London"));
- *   cursor.keyGetByte(0);
- *   cursor.valGetByte(0);
+ *   cursor.keyByte(0);
+ *   cursor.valByte(0);
  * }
  * }
  * </pre>
@@ -307,6 +307,34 @@ public class BufferCursor implements AutoCloseable {
    * Write data to key at current cursor position and
    * move write index forward.
    *
+   * @param data float
+   * @return this
+   */
+  public BufferCursor keyWriteFloat(float data) {
+    setSafeValMemoryLocation();
+    this.key.putFloat(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    keyWriteIndex += 4;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
+   * @param data double
+   * @return this
+   */
+  public BufferCursor keyWriteDouble(double data) {
+    setSafeValMemoryLocation();
+    this.key.putDouble(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    keyWriteIndex += 8;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
    * @param data byte array
    * @return this
    */
@@ -318,12 +346,27 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * Overwrite key data at current cursor position and
+   * move write index forward.
+   *
+   * @param buffer buffer
+   * @param capacity capacity
+   * @return this
+   */
+  public BufferCursor keyWrite(DirectBuffer buffer, int capacity) {
+    keyDatbaseMemoryLocation = false;
+    this.key.wrap(buffer.addressOffset(), capacity);
+    keyWriteIndex = capacity;
+    return this;
+  }
+
+  /**
    * Get data from key at current cursor position.
    *
    * @param pos byte position
    * @return byte
    */
-  public byte keyGetByte(int pos) {
+  public byte keyByte(int pos) {
     return this.key.getByte(pos);
   }
 
@@ -333,7 +376,7 @@ public class BufferCursor implements AutoCloseable {
    * @param pos byte position
    * @return int
    */
-  public int keyGetInt(int pos) {
+  public int keyInt(int pos) {
     return this.key.getInt(pos, ByteOrder.BIG_ENDIAN);
   }
 
@@ -343,8 +386,40 @@ public class BufferCursor implements AutoCloseable {
    * @param pos byte position
    * @return long
    */
-  public long keyGetLong(int pos) {
+  public long keyLong(int pos) {
     return this.key.getLong(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
+   * @return float
+   */
+  public float keyFloat(int pos) {
+    return this.key.getFloat(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
+   * @return double
+   */
+  public double keyDouble(int pos) {
+    return this.key.getDouble(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
+   * @return byte array
+   */
+  public byte[] keyBytes(int pos, int length) {
+    byte[] k = new byte[length];
+    key.getBytes(pos, k);
+    return k;
   }
 
   /**
@@ -402,6 +477,34 @@ public class BufferCursor implements AutoCloseable {
    * Write data to value at current cursor position and
    * move write index forward.
    *
+   * @param data float
+   * @return this
+   */
+  public BufferCursor valWriteFloat(float data) {
+    setSafeValMemoryLocation();
+    this.value.putFloat(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    valWriteIndex += 4;
+    return this;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
+   * @param data float
+   * @return this
+   */
+  public BufferCursor valWriteDouble(double data) {
+    setSafeValMemoryLocation();
+    this.value.putDouble(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    valWriteIndex += 8;
+    return this;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
    * @param data byte array
    * @return this
    */
@@ -413,12 +516,27 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * Overwrite value data at current cursor position and
+   * move write index forward.
+   *
+   * @param buffer buffer
+   * @param capacity capacity
+   * @return this
+   */
+  public BufferCursor valWrite(DirectBuffer buffer, int capacity) {
+    valDatbaseMemoryLocation = false;
+    this.value.wrap(buffer.addressOffset(), capacity);
+    valWriteIndex = capacity;
+    return this;
+  }
+
+  /**
    * Get data from value at current cursor position.
    *
    * @param pos byte position
    * @return byte
    */
-  public byte valGetByte(int pos) {
+  public byte valByte(int pos) {
     return this.value.getByte(pos);
   }
 
@@ -428,9 +546,32 @@ public class BufferCursor implements AutoCloseable {
    * @param pos byte position
    * @return int
    */
-  public int valGetInt(int pos) {
+  public int valInt(int pos) {
     return this.value.getInt(pos, ByteOrder.BIG_ENDIAN);
   }
+
+  /**
+   * Get data from value at current cursor position.
+   *
+   * @param pos byte position
+   * @return long
+   */
+  public long valLong(int pos) {
+    return this.value.getLong(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
+   * @return byte array
+   */
+  public byte[] valBytes(int pos, int length) {
+    byte[] v = new byte[length];
+    value.getBytes(pos, v);
+    return v;
+  }
+
 
   /**
    * @return copy of value data
@@ -445,10 +586,20 @@ public class BufferCursor implements AutoCloseable {
    * Get data from value at current cursor position.
    *
    * @param pos byte position
-   * @return long
+   * @return float
    */
-  public long valGetLong(int pos) {
-    return this.value.getLong(pos, ByteOrder.BIG_ENDIAN);
+  public float valFloat(int pos) {
+    return this.value.getFloat(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from value at current cursor position.
+   *
+   * @param pos byte position
+   * @return double
+   */
+  public double valDouble(int pos) {
+    return this.value.getDouble(pos, ByteOrder.BIG_ENDIAN);
   }
 
   private void setSafeKeyMemoryLocation() {
