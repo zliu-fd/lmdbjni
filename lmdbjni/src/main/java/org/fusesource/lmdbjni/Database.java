@@ -254,18 +254,53 @@ public class Database extends NativeObject implements AutoCloseable {
 
   /**
    * <p>
-   *   Creates a cursor and a read transaction for doing zero copy seeking.
+   *   Creates a cursor and a read only transaction for doing zero copy seeking.
    * </p>
    *
    * Key and value buffers are updated as the cursor moves. The transaction
    * is closed along with the cursor.
    *
    * @param key A DirectBuffer must be backed by a direct ByteBuffer.
-   * @param value No particular requirements on the value buffer.
+   * @param value A DirectBuffer must be backed by a direct ByteBuffer.
    * @return a closable cursor handle.
    */
   public BufferCursor bufferCursor(DirectBuffer key, DirectBuffer value) {
     Transaction tx = env.createTransaction(true);
+    Cursor cursor = openCursor(tx);
+    return new BufferCursor(cursor, tx, key, value);
+  }
+
+  /**
+   * <p>
+   *   Creates a cursor and a read only transaction for doing zero copy seeking.
+   * </p>
+   *
+   * Key and value buffers are updated as the cursor moves. The transaction
+   * is closed along with the cursor.
+   *
+   * @return a closable cursor handle.
+   */
+  public BufferCursor bufferCursor() {
+    Transaction tx = env.createTransaction(true);
+    Cursor cursor = openCursor(tx);
+    return new BufferCursor(cursor, tx, 1024);
+  }
+
+  /**
+   * <p>
+   *   Creates a cursor and a write transaction for doing zero copy seeking
+   *   and writing.
+   * </p>
+   *
+   * Key and value buffers are updated as the cursor moves. The transaction
+   * is closed along with the cursor.
+   *
+   * @param key A DirectBuffer must be backed by a direct ByteBuffer.
+   * @param value A DirectBuffer must be backed by a direct ByteBuffer.
+   * @return a closable cursor handle.
+   */
+  public BufferCursor bufferCursorWriter(DirectBuffer key, DirectBuffer value) {
+    Transaction tx = env.createTransaction(false);
     Cursor cursor = openCursor(tx);
     return new BufferCursor(cursor, tx, key, value);
   }
@@ -279,14 +314,12 @@ public class Database extends NativeObject implements AutoCloseable {
    * Key and value buffers are updated as the cursor moves. The transaction
    * is closed along with the cursor.
    *
-   * @param key A DirectBuffer must be backed by a direct ByteBuffer.
-   * @param value No particular requirements on the value buffer.
    * @return a closable cursor handle.
    */
-  public BufferCursor bufferCursorWriter(DirectBuffer key, DirectBuffer value) {
+  public BufferCursor bufferCursorWriter() {
     Transaction tx = env.createTransaction(false);
     Cursor cursor = openCursor(tx);
-    return new BufferCursor(cursor, tx, key, value);
+    return new BufferCursor(cursor, tx, 1024);
   }
 
   /**

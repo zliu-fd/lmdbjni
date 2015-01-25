@@ -179,27 +179,23 @@ Working against a Snapshot view of the Database.
 Zero-copy cursor (not available on Android).
 
 ```java
-DirectBuffer k = new DirectBuffer();
-DirectBuffer v = new DirectBuffer();
+ try (BufferCursor cursor = db.bufferCursor()) {
+   cursor.first();
+   while(cursor.next()) {
+     cursor.keyGetByte(0);
+     cursor.valGetByte(0);
+   }
 
-try (BufferCursor cursor = db.bufferCursor(key, value)) {
-  cursor.first();
-  while(cursor.next()) {
-    k.getByte(0);
-    v.getByte(0);
-  }
+   cursor.last();
+   while(cursor.prev()) {
+     cursor.keyGetByte(0);
+     cursor.valGetByte(0);
+   }
 
-  cursor.last();
-  while(cursor.prev()) {
-    k.getByte(0);
-    v.getByte(0);
-  }
-
-  cursor.seek(bytes("London"));
-  k.getByte(0);
-  v.getByte(0);
-
-}
+   cursor.seek(bytes("London"));
+   cursor.keyGetByte(0);
+   cursor.valGetByte(0);
+ }
 ```
 
 Atomic hot backup.

@@ -7,8 +7,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -26,13 +25,8 @@ public class BufferCursorTest {
   Database db;
   LinkedList<byte[]> keys;
 
-  DirectBuffer key;
-  DirectBuffer value;
-
   @Before
   public void before() throws IOException {
-    key = new DirectBuffer();
-    value = new DirectBuffer();
     String path = tmp.newFolder().getCanonicalPath();
     env = new Env(path);
     db = env.openDatabase();
@@ -58,138 +52,160 @@ public class BufferCursorTest {
 
   @Test
   public void testBufferCursor() throws IOException {
-    try (BufferCursor cursor = db.bufferCursor(key, value)) {
+    try (BufferCursor cursor = db.bufferCursor()) {
       assertTrue(cursor.first());
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(cursor.keyGetLong(0), is(0L));
       // go to far
       assertFalse(cursor.prev());
       assertFalse(cursor.prev());
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(cursor.keyGetLong(0), is(0L));
 
       assertTrue(cursor.seek(new byte[]{1}));
-      assertThat(key.getByte(0), is((byte) 1));
+      assertThat(cursor.keyGetByte(0), is((byte) 1));
 
       assertTrue(cursor.seek(Bytes.fromLong(1)));
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      assertThat(cursor.keyGetLong(0), is(1L));
 
       assertTrue(cursor.seek(new byte[]{1}));
-      assertThat(key.getByte(0), is((byte) 1));
+      assertThat(cursor.keyGetByte(0), is((byte) 1));
       assertTrue(cursor.next());
-      assertThat(key.getByte(0), is((byte) 2));
+      assertThat(cursor.keyGetByte(0), is((byte) 2));
       assertTrue(cursor.prev());
-      assertThat(key.getByte(0), is((byte) 1));
+      assertThat(cursor.keyGetByte(0), is((byte) 1));
 
       assertTrue(cursor.last());
-      assertThat(key.getByte(0), is((byte) 9));
+      assertThat(cursor.keyGetByte(0), is((byte) 9));
       assertTrue(cursor.prev());
-      assertThat(key.getByte(0), is((byte) 8));
+      assertThat(cursor.keyGetByte(0), is((byte) 8));
       // go too far
       assertTrue(cursor.next());
       assertFalse(cursor.next());
-      assertThat(key.getByte(0), is((byte) 9));
+      assertThat(cursor.keyGetByte(0), is((byte) 9));
 
       assertTrue(cursor.seek(new byte[]{5}));
-      assertThat(key.getByte(0), is((byte) 5));
-      assertThat(value.getByte(0), is((byte) 5));
+      assertThat(cursor.keyGetByte(0), is((byte) 5));
+      assertThat(cursor.valGetByte(0), is((byte) 5));
 
 
       assertTrue(cursor.first());
       long expected = 1;
-      while(cursor.next()) {
+      while (cursor.next()) {
         if (expected > 9) {
           break;
         }
-        assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(expected++));
+        assertThat(cursor.keyGetLong(0), is(expected++));
       }
 
       assertTrue(cursor.last());
       expected = 8;
-      while(cursor.prev()) {
+      while (cursor.prev()) {
         if (expected < 1) {
           break;
         }
-        assertThat(key.getByte(0), is((byte) expected--));
+        assertThat(cursor.keyGetByte(0), is((byte) expected--));
       }
-    }
-  }
-
-  @Test
-  public void testTooSmallBuffers() {
-    byte[] key1 = "key1".getBytes();
-    byte[] val1 = "val1".getBytes();
-    db.put(key1, val1);
-    byte[] key2 = "key2".getBytes();
-    byte[] val2 = "val2".getBytes();
-    db.put(key2, val2);
-    byte[] bytes = new byte[key1.length];
-    key = new DirectBuffer(ByteBuffer.allocateDirect(1));
-    value = new DirectBuffer(ByteBuffer.allocateDirect(1));
-    try (BufferCursor cursor = db.bufferCursor(key, value)) {
-      assertTrue(cursor.seek(key1));
-      key.getBytes(0, bytes);
-      assertThat(new String(bytes), is("key1"));
-      value.getBytes(0, bytes);
-      assertThat(new String(bytes), is("val1"));
-
-      assertTrue(cursor.seek(new byte[] {10}));
-      assertTrue(cursor.next());
-      key.getBytes(0, bytes);
-      assertThat(new String(bytes), is("key2"));
-      value.getBytes(0, bytes);
-      assertThat(new String(bytes), is("val2"));
-
-      assertTrue(cursor.prev());
-      key.getBytes(0, bytes);
-      assertThat(new String(bytes), is("key1"));
-      value.getBytes(0, bytes);
-      assertThat(new String(bytes), is("val1"));
     }
   }
 
   @Test
   public void testDelete() {
-    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
       assertTrue(cursor.first());
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetLong(0), is(0L));
       cursor.next();
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      assertThat(cursor.keyGetLong(0), is(1L));
+      assertThat(cursor.valGetLong(0), is(1L));
       cursor.delete();
       // the buffer still holds the value just deleted
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(1L));
+      assertThat(cursor.keyGetLong(0), is(1L));
+      assertThat(cursor.valGetLong(0), is(1L));
       cursor.next();
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(2L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(2L));
+      assertThat(cursor.keyGetLong(0), is(2L));
+      assertThat(cursor.valGetLong(0), is(2L));
       cursor.prev();
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetLong(0), is(0L));
+    }
+  }
+
+  @Test
+  public void testOverwrite() {
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      assertTrue(cursor.seek(Bytes.fromLong(0)));
+      cursor.valWriteByte(100);
+      assertTrue(cursor.overwrite());
+      assertTrue(cursor.first());
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetByte(0), is((byte) 100));
+      cursor.valWriteByte(200);
+      assertTrue(cursor.overwrite());
+      assertTrue(cursor.first());
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetByte(0), is((byte) 200));
+    }
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      assertTrue(cursor.first());
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetByte(0), is((byte) 200));
+    }
+  }
+
+  @Test
+  public void testAppend() {
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      cursor.keyWriteByte(100).valWriteByte(100);
+      cursor.append();
+      assertTrue(cursor.first());
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetLong(0), is(0L));
+      assertTrue(cursor.last());
+      assertThat(cursor.keyGetByte(0), is((byte) 100L));
+      assertThat(cursor.valGetByte(0), is((byte) 100L));
+
+    }
+
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      assertTrue(cursor.first());
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetLong(0), is(0L));
+      assertTrue(cursor.last());
+      assertThat(cursor.keyGetByte(0), is((byte) 100));
+      assertThat(cursor.valGetByte(0), is((byte) 100L));
     }
   }
 
   @Test
   public void testPut() {
-    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
-      key.putByte(0, (byte) 100);
-      value.putByte(0, (byte) 100);
-      cursor.put();
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      assertTrue(cursor.seek(new byte[]{1}));
+      cursor.keyWriteByte(1).valWriteByte(100);
+      assertFalse(cursor.put());
+      assertTrue(cursor.seek(new byte[]{1}));
       assertTrue(cursor.first());
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertTrue(cursor.last());
-      assertThat(key.getByte(100), is((byte)0));
-      assertThat(value.getByte(100), is((byte)0));
+      assertThat(cursor.keyGetLong(0), is(0L));
+      assertThat(cursor.valGetLong(0), is(0L));
+      cursor.keyWriteByte(111).valWriteByte(121);
+      assertTrue(cursor.put());
+      assertTrue(cursor.seek(new byte[]{111}));
+      assertThat(cursor.keyGetByte(0), is((byte) 111));
+      assertThat(cursor.valGetByte(0), is((byte) 121));
+    }
 
+    try (BufferCursor cursor = db.bufferCursorWriter()) {
+      assertTrue(cursor.seek(new byte[]{111}));
+      assertThat(cursor.keyGetByte(0), is((byte) 111));
+      assertThat(cursor.valGetByte(0), is((byte) 121));
     }
-    key = new DirectBuffer();
-    try (BufferCursor cursor = db.bufferCursorWriter(key, value)) {
-      assertTrue(cursor.first());
-      assertThat(key.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertThat(value.getLong(0, ByteOrder.BIG_ENDIAN), is(0L));
-      assertTrue(cursor.last());
-      assertThat(key.getByte(100), is((byte)0));
-      assertThat(value.getByte(100), is((byte)0));
+  }
+
+  private void debug(BufferCursor cursor) {
+    System.out.println("----");
+    cursor.first();
+    System.out.println(Arrays.toString(cursor.keyBytes()) + " " + Arrays.toString(cursor.valBytes()));
+    while (cursor.next()) {
+      System.out.println(Arrays.toString(cursor.keyBytes()) + " " + Arrays.toString(cursor.valBytes()));
     }
+    System.out.println("----");
   }
 }
