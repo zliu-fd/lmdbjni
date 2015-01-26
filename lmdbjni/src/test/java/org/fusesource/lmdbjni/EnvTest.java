@@ -51,6 +51,10 @@ public class EnvTest {
     String path = tmp.newFolder().getCanonicalPath();
     try (Env env = new Env()) {
       env.open(path);
+      env.pushMemoryPool(10);
+      env.pushMemoryPool(10);
+      env.popMemoryPool();
+      env.popMemoryPool();
       try (Database db = env.openDatabase()) {
         doTest(env, db);
       }
@@ -101,6 +105,7 @@ public class EnvTest {
   public void testEnvInfo() throws Exception {
     String path = tmp.newFolder().getCanonicalPath();
     try (Env env = new Env()) {
+      env.addFlags(CREATE);
       env.open(path);
       env.setMapSize(1048576L);
       try (Database db = env.openDatabase()) {
@@ -113,6 +118,8 @@ public class EnvTest {
         assertThat(info.getMaxReaders(), is(126L));
         assertThat(info.getNumReaders(), is(0L));
 
+        assertThat(env.getMaxReaders(), is(126L));
+        assertThat(env.getFlags(), is(0b11_0000_0000_0100_0000_0000_0000_0000));
       }
     }
   }
@@ -147,6 +154,7 @@ public class EnvTest {
   }
 
   private void doTest(Env env, Database db) {
+
     assertNull(db.put(bytes("Tampa"), bytes("green")));
     assertNull(db.put(bytes("London"), bytes("red")));
 
@@ -190,5 +198,6 @@ public class EnvTest {
     } catch (LMDBException e) {
       assertTrue(e.getErrorCode() > 0);
     }
+    env.sync(true);
   }
 }

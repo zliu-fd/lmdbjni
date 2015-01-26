@@ -15,12 +15,4 @@ public class NativeBufferTest {
     pool.delete();
 
   }
-
-  @Test
-  public void testMemoryPool() {
-    NativeBuffer.pushMemoryPool(10);
-    NativeBuffer.pushMemoryPool(10);
-    NativeBuffer.popMemoryPool();
-    NativeBuffer.popMemoryPool();
-  }
 }
