@@ -15,3 +15,5 @@ eclipse-classes
 test-data
 *.releaseBackup
 release.properties
+cov-int
+*.tgz
