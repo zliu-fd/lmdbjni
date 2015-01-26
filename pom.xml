@@ -32,6 +32,7 @@
 
   <properties>
     <hawtjni-version>1.9</hawtjni-version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <modules>
@@ -156,27 +157,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.eluder.coveralls</groupId>
-        <artifactId>coveralls-maven-plugin</artifactId>
-        <version>3.0.1</version>
-        <configuration>
-          <repoToken>t0ZqivSo91X1wfD5BNbbKDH5pwiI4y9YM</repoToken>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.2.201409121644</version>
-        <executions>
-          <execution>
-            <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -248,6 +228,32 @@
       <modules>
         <module>lmdbjni-linux64</module>
       </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.2.201409121644</version>
+            <executions>
+              <execution>
+                <id>prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+            <version>3.0.1</version>
+            <configuration>
+              <sourceEncoding>utf8</sourceEncoding>
+              <repoToken>t0ZqivSo91X1wfD5BNbbKDH5pwiI4y9YM</repoToken>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <profile>
