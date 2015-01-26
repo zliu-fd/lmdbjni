@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/deephacks/lmdbjni.png?branch=master)](https://travis-ci.org/deephacks/lmdbjni)
 <a href="https://scan.coverity.com/projects/4017">
   <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/4017/badge.svg"/>
+       src="https://scan.coverity.com/projects/4017/badge.png"/>
 </a>
 [![Coverage Status](https://coveralls.io/repos/deephacks/lmdbjni/badge.png?branch=master)](https://coveralls.io/r/deephacks/lmdbjni?branch=master)
 
