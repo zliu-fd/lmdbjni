@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 import static org.fusesource.lmdbjni.Constants.*;
 
@@ -106,6 +107,12 @@ public class EnvTest {
         db.put(new byte[]{1}, new byte[]{1});
         EnvInfo info = env.info();
         assertThat(info.getMapSize(), is(1048576L));
+        assertThat(info.getMapAddr(), is(0L));
+        assertThat(info.getLastPgNo(), is(2L));
+        assertThat(info.getLastTxnId(), is(1L));
+        assertThat(info.getMaxReaders(), is(126L));
+        assertThat(info.getNumReaders(), is(0L));
+
       }
     }
   }
@@ -120,7 +127,12 @@ public class EnvTest {
         db.put(new byte[]{1}, new byte[]{1});
         db.put(new byte[]{2}, new byte[]{1});
         Stat stat = env.stat();
+        System.out.println(stat);
         assertThat(stat.getEntries(), is(2L));
+        assertThat(stat.getPsize(), is(not(0L)));
+        assertThat(stat.getOverflowPages(), is(0L));
+        assertThat(stat.getDepth(), is(1L));
+        assertThat(stat.getLeafPages(), is(1L));
       }
     }
   }
