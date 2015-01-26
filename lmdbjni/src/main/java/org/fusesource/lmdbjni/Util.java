@@ -18,6 +18,8 @@
 
 package org.fusesource.lmdbjni;
 
+import java.nio.charset.Charset;
+
 import static org.fusesource.lmdbjni.JNI.mdb_strerror;
 import static org.fusesource.lmdbjni.JNI.strlen;
 
@@ -32,7 +34,8 @@ class Util {
   public static String string(long ptr) {
     if (ptr == 0)
       return null;
-    return new String(NativeBuffer.create(ptr, strlen(ptr)).toByteArray());
+    return new String(NativeBuffer.create(ptr, strlen(ptr)).toByteArray(),
+      Charset.defaultCharset());
   }
 
   public static void checkErrorCode(int rc) {

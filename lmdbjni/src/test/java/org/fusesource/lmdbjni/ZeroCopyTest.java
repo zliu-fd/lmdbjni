@@ -78,25 +78,26 @@ public class ZeroCopyTest {
     v2.putLong(0, 17);
 
     Transaction tx = env.createTransaction();
-    Cursor cursor = db.openCursor(tx);
-    cursor.put(k1, v1, 0);
-    cursor.put(k2, v2, 0);
-    tx.commit();
-    cursor.close();
+    try (Cursor cursor = db.openCursor(tx)) {
+      cursor.put(k1, v1, 0);
+      cursor.put(k2, v2, 0);
+      tx.commit();
+
+    }
 
     DirectBuffer k = new DirectBuffer();
     DirectBuffer v = new DirectBuffer();
 
     tx = env.createTransaction();
-    cursor = db.openCursor(tx);
+    try (Cursor cursor = db.openCursor(tx)) {
+      cursor.position(k, v, GetOp.FIRST);
+      assertThat(k.getLong(0), is(14L));
+      assertThat(v.getLong(0), is(15L));
 
-    cursor.position(k, v, GetOp.FIRST);
-    assertThat(k.getLong(0), is(14L));
-    assertThat(v.getLong(0), is(15L));
-
-    cursor.position(k, v, GetOp.NEXT);
-    assertThat(k.getLong(0), is(16L));
-    assertThat(v.getLong(0), is(17L));
+      cursor.position(k, v, GetOp.NEXT);
+      assertThat(k.getLong(0), is(16L));
+      assertThat(v.getLong(0), is(17L));
+    }
   }
 
 
@@ -135,7 +136,6 @@ public class ZeroCopyTest {
 
   @Test
   public void testIteration() {
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(8);
     k1.putLong(0, 18);
     v1.putLong(0, 19);
     k2.putLong(0, 20);

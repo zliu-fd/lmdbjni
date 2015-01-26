@@ -1,6 +1,7 @@
 package org.fusesource.lmdbjni;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Iterator for entries.
@@ -65,7 +66,10 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   }
 
   @Override
-  public Entry next() {
+  public Entry next() throws NoSuchElementException {
+    if (entry == null) {
+      throw new NoSuchElementException();
+    }
     return entry;
   }
 
