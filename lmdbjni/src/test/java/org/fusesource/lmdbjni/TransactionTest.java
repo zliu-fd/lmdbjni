@@ -43,6 +43,11 @@ public class TransactionTest {
     db.put(tx, data, data);
     tx.commit();
     assertArrayEquals(data, db.get(data));
+
+    tx = env.createTransaction(false);
+    db.delete(tx, data);
+    tx.commit();
+    assertNull(db.get(data));
   }
 
   @Test
@@ -51,11 +56,18 @@ public class TransactionTest {
     db.put(tx, data, data);
     tx.abort();
     assertNull(db.get(data));
+
+    db.put(data, data);
+
+    tx = env.createTransaction(false);
+    db.delete(tx, data);
+    tx.abort();
+    assertArrayEquals(data, db.get(data));
   }
 
   @Test
   public void testResetRenew() {
-    testCommit();
+    db.put(data, data);
     Transaction tx = env.createTransaction(true);
     assertArrayEquals(data, db.get(tx, data));
     tx.reset();

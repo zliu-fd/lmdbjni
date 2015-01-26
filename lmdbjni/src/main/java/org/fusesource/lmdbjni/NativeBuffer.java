@@ -56,7 +56,7 @@ class NativeBuffer extends NativeObject {
     }
   }
 
-  private static class Pool {
+  static class Pool {
     private final NativeBuffer.Pool prev;
     Allocation allocation;
     long pos;

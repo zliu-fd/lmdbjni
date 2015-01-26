@@ -4,7 +4,7 @@ package org.fusesource.lmdbjni;
 /**
  * Statistics about the LMDB environment.
  */
-public class Stat {
+public class Stat extends JNI.MDB_stat {
   private final long psize;
   private final long depth;
   private final long branchPages;

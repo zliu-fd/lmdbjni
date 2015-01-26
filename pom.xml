@@ -114,11 +114,6 @@
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <trimStackTrace>false</trimStackTrace>
           <printSummary>true</printSummary>
-          <includes>
-            <include>**/*TestCase.java</include>
-            <include>**/*TestSuite.java</include>
-            <include>**/*Test.java</include>
-          </includes>
           <excludes>
             <exclude>**/*PerfTest*.java</exclude>
           </excludes>
@@ -234,6 +229,12 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.2.201409121644</version>
+            <configuration>
+              <excludes>
+                <!-- tested by third party -->
+                <exclude>**/DirectBuffer*</exclude>
+              </excludes>
+            </configuration>
             <executions>
               <execution>
                 <id>prepare-agent</id>

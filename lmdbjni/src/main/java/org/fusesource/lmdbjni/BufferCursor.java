@@ -149,12 +149,36 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * Position at first data item of current key. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}.
+   *
+   * @return true if found
+   */
+  public boolean firstDup() {
+    int rc = cursor.position(key, value, GetOp.FIRST_DUP);
+    wrapDatabaseMemoryLocation(key, value);
+    return rc == 0;
+  }
+
+  /**
    * Position at last key/data item.
    *
    * @return true if found
    */
   public boolean last() {
     int rc = cursor.position(key, value, GetOp.LAST);
+    wrapDatabaseMemoryLocation(key, value);
+    return rc == 0;
+  }
+
+  /**
+   * Position at first data item of current key. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}.
+   *
+   * @return true if found
+   */
+  public boolean lastDup() {
+    int rc = cursor.position(key, value, GetOp.LAST_DUP);
     wrapDatabaseMemoryLocation(key, value);
     return rc == 0;
   }
@@ -252,7 +276,7 @@ public class BufferCursor implements AutoCloseable {
 
   /**
    * Stores key/data pairs in the database replacing any
-   * previously existing key.
+   * previously existing key. Also used for adding duplicates.
    */
   public boolean overwrite() {
     DirectBuffer k = (keyWriteIndex != 0) ?
@@ -756,6 +780,16 @@ public class BufferCursor implements AutoCloseable {
     return this.value.getString(pos);
   }
 
+  /**
+   * Prepare cursor for write.
+   *
+   * Only needed by users that manage DirectBuffer on their own.
+   */
+  public void setWriteMode() {
+    setSafeKeyMemoryLocation();
+    setSafeValMemoryLocation();
+  }
+
   private void setSafeKeyMemoryLocation() {
     if (keyDatbaseMemoryLocation) {
       this.key.wrap(keyByteBuffer);
@@ -778,4 +812,5 @@ public class BufferCursor implements AutoCloseable {
     keyWriteIndex = 0;
     valWriteIndex = 0;
   }
+
 }

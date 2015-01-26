@@ -65,10 +65,10 @@ public class Database extends NativeObject implements AutoCloseable {
   /**
    * @return Statistics for a database.
    */
-  public MDB_stat stat() {
+  public Stat stat() {
     Transaction tx = env.createTransaction(true);
     try {
-      return stat(tx);
+      return new Stat(stat(tx));
     } finally {
       tx.commit();
     }
