@@ -1,11 +1,9 @@
 # LMDB JNI
 
-[![Build Status](https://travis-ci.org/deephacks/lmdbjni.png?branch=master)](https://travis-ci.org/deephacks/lmdbjni)
-<a href="https://scan.coverity.com/projects/4017">
+[![Build Status](https://travis-ci.org/deephacks/lmdbjni.png?branch=master)](https://travis-ci.org/deephacks/lmdbjni) [![Coverage Status](https://coveralls.io/repos/deephacks/lmdbjni/badge.svg?branch=master)](https://coveralls.io/r/deephacks/lmdbjni?branch=master) <a href="https://scan.coverity.com/projects/4017">
   <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/4017/badge.png"/>
+       src="https://scan.coverity.com/projects/4017/badge.svg"/>
 </a>
-[![Coverage Status](https://coveralls.io/repos/deephacks/lmdbjni/badge.png?branch=master)](https://coveralls.io/r/deephacks/lmdbjni?branch=master)
 
 LMDB JNI provide a Java API to [LMDB](http://symas.com/mdb/) which is an ultra-fast, ultra-compact key-value embedded data store developed by Symas for the OpenLDAP Project. It uses memory-mapped files, so it has the read performance of a pure in-memory database while still offering the persistence of standard disk-based databases. Transactional with full ACID semantics and crash-proof by design. No corruption. No startup time. No dependencies.
 
