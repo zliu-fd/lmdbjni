@@ -50,7 +50,7 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
 ### Maven
 
 ```xml
-<!-- required -->
+<!-- required java classes -->
 
 <dependency>
   <groupId>org.deephacks.lmdbjni</groupId>
@@ -58,7 +58,7 @@ This project is licensed under the [Apache License, Version 2.0](http://www.apac
   <version>${lmdbjni.version}</version>
 </dependency>
 
-<!-- pick one or more platforms below -->
+<!-- prebuilt liblmdb platform packages -->
 
 <dependency>
   <groupId>org.deephacks.lmdbjni</groupId>
