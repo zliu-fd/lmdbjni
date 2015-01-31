@@ -22,13 +22,15 @@ import java.nio.ByteOrder;
  * and may not modify it in any way. Modification to buffers in this
  * state will cause a SIGSEGV.
  * </p>
- * <p/>
  * <p>
- * Any modification will be written into cached byte buffers which needs
- * to be sized in order to fit key and value data written into them.
- * The key buffer is 511 by default which is the max key size in LMDB.
- * This limitation will be fixed in later versions to allow for dynamically
- * changing buffers as capacity is exceeded.
+ * Any modification will be written into cached byte buffers which
+ * is not written into database until {@link BufferCursor#put()} or
+ * {@link BufferCursor#overwrite()} is called and no updates are visible
+ * outside the transaction until the transaction is committed. The
+ * byte buffers needs to be sized in order to fit key and value data
+ * written into them. The key buffer is 511 by default which is the max
+ * key size in LMDB. This limitation will be fixed in later versions
+ * to allow for dynamically changing buffers as capacity is exceeded.
  * </p>
  * <p>
  * As soon as a key or value is written, the cursor still maintain its
