@@ -33,9 +33,11 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
 public class Cursor extends NativeObject implements AutoCloseable {
   DirectBuffer buffer;
   long bufferAddress;
+  boolean isReadOnly;
 
-  Cursor(long self) {
+  Cursor(long self, boolean isReadOnly) {
     super(self);
+    this.isReadOnly = isReadOnly;
   }
 
   /**
@@ -308,4 +310,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
     return rc[0];
   }
 
+  public boolean isReadOnly() {
+    return isReadOnly;
+  }
 }

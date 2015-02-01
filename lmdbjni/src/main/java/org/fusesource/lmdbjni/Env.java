@@ -389,6 +389,20 @@ public class Env extends NativeObject implements AutoCloseable {
   /**
    * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
    */
+  public Transaction createReadTransaction() {
+    return createTransaction(null, true);
+  }
+
+  /**
+   * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
+   */
+  public Transaction createWriteTransaction() {
+    return createTransaction(null, false);
+  }
+
+  /**
+   * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
+   */
   public Transaction createTransaction(Transaction parent) {
     return createTransaction(parent, false);
   }

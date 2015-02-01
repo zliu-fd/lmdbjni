@@ -87,7 +87,6 @@ import java.nio.ByteOrder;
  */
 public class BufferCursor implements AutoCloseable {
   private final Cursor cursor;
-  private final Transaction tx;
   private final ByteBuffer keyByteBuffer;
   private final ByteBuffer valueByteBuffer;
   private final boolean isReadOnly;
@@ -98,10 +97,9 @@ public class BufferCursor implements AutoCloseable {
   private int keyWriteIndex = 0;
   private int valWriteIndex = 0;
 
-  BufferCursor(Cursor cursor, Transaction tx, DirectBuffer key, DirectBuffer value) {
+  BufferCursor(Cursor cursor, DirectBuffer key, DirectBuffer value) {
     this.cursor = cursor;
-    this.isReadOnly = tx.isReadOnly();
-    this.tx = tx;
+    this.isReadOnly = cursor.isReadOnly();
     if (key.byteBuffer() == null) {
       throw new IllegalArgumentException("No ByteBuffer available for key.");
     }
@@ -120,8 +118,8 @@ public class BufferCursor implements AutoCloseable {
     this.valueByteBuffer = value.byteBuffer();
   }
 
-  BufferCursor(Cursor cursor, Transaction tx, int maxValueSize) {
-    this(cursor, tx, new DirectBuffer(), new DirectBuffer(ByteBuffer.allocateDirect(maxValueSize)));
+  BufferCursor(Cursor cursor, int maxValueSize) {
+    this(cursor, new DirectBuffer(), new DirectBuffer(ByteBuffer.allocateDirect(maxValueSize)));
   }
 
   /**
@@ -246,12 +244,7 @@ public class BufferCursor implements AutoCloseable {
    */
   @Override
   public void close() {
-    if (tx != null) {
-      cursor.close();
-      tx.commit();
-    } else {
-      cursor.close();
-    }
+    cursor.close();
   }
 
   /**

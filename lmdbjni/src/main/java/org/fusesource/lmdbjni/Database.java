@@ -255,72 +255,46 @@ public class Database extends NativeObject implements AutoCloseable {
 
   /**
    * <p>
-   *   Creates a cursor and a read only transaction for doing zero copy seeking.
+   *   Creates a cursor for doing zero copy operations.
+   * </p>
+   *
+   * @param tx transaction handle
+   * @return a closable cursor handle.
+   */
+  public BufferCursor bufferCursor(Transaction tx) {
+    return bufferCursor(tx, 1024);
+  }
+
+  /**
+   * <p>
+   *   Creates a cursor for doing zero copy operations.
+   * </p>
+   *
+   * @param tx transaction handle
+   * @param maxValueSize maximum size of values to store in the database.
+   * @return a closable cursor handle.
+   */
+  public BufferCursor bufferCursor(Transaction tx, int maxValueSize) {
+    Cursor cursor = openCursor(tx);
+    return new BufferCursor(cursor, maxValueSize);
+  }
+
+  /**
+   * <p>
+   *   Creates a cursor and a write transaction for doing zero copy operations.
    * </p>
    *
    * Key and value buffers are updated as the cursor moves. The transaction
    * is closed along with the cursor.
    *
+   * @param tx transaction handle
    * @param key A DirectBuffer must be backed by a direct ByteBuffer.
    * @param value A DirectBuffer must be backed by a direct ByteBuffer.
    * @return a closable cursor handle.
    */
-  public BufferCursor bufferCursor(DirectBuffer key, DirectBuffer value) {
-    Transaction tx = env.createTransaction(true);
+  public BufferCursor bufferCursor(Transaction tx, DirectBuffer key, DirectBuffer value) {
     Cursor cursor = openCursor(tx);
-    return new BufferCursor(cursor, tx, key, value);
-  }
-
-  /**
-   * <p>
-   *   Creates a cursor and a read only transaction for doing zero copy seeking.
-   * </p>
-   *
-   * Key and value buffers are updated as the cursor moves. The transaction
-   * is closed along with the cursor.
-   *
-   * @return a closable cursor handle.
-   */
-  public BufferCursor bufferCursor() {
-    Transaction tx = env.createTransaction(true);
-    Cursor cursor = openCursor(tx);
-    return new BufferCursor(cursor, tx, 1024);
-  }
-
-  /**
-   * <p>
-   *   Creates a cursor and a write transaction for doing zero copy seeking
-   *   and writing.
-   * </p>
-   *
-   * Key and value buffers are updated as the cursor moves. The transaction
-   * is closed along with the cursor.
-   *
-   * @param key A DirectBuffer must be backed by a direct ByteBuffer.
-   * @param value A DirectBuffer must be backed by a direct ByteBuffer.
-   * @return a closable cursor handle.
-   */
-  public BufferCursor bufferCursorWriter(DirectBuffer key, DirectBuffer value) {
-    Transaction tx = env.createTransaction(false);
-    Cursor cursor = openCursor(tx);
-    return new BufferCursor(cursor, tx, key, value);
-  }
-
-  /**
-   * <p>
-   *   Creates a cursor and a write transaction for doing zero copy seeking
-   *   and writing.
-   * </p>
-   *
-   * Key and value buffers are updated as the cursor moves. The transaction
-   * is closed along with the cursor.
-   *
-   * @return a closable cursor handle.
-   */
-  public BufferCursor bufferCursorWriter() {
-    Transaction tx = env.createTransaction(false);
-    Cursor cursor = openCursor(tx);
-    return new BufferCursor(cursor, tx, 1024);
+    return new BufferCursor(cursor, key, value);
   }
 
   /**
@@ -621,7 +595,7 @@ public class Database extends NativeObject implements AutoCloseable {
   public Cursor openCursor(Transaction tx) {
     long cursor[] = new long[1];
     checkErrorCode(mdb_cursor_open(tx.pointer(), pointer(), cursor));
-    return new Cursor(cursor[0]);
+    return new Cursor(cursor[0], tx.isReadOnly());
   }
 
 }
