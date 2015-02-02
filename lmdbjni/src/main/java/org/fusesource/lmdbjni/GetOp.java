@@ -91,7 +91,10 @@ public enum GetOp {
   PREV_DUP(MDB_PREV_DUP),
 
   /** Position at last data item of previous key */
-  PREV_NODUP(MDB_PREV_NODUP);
+  PREV_NODUP(MDB_PREV_NODUP),
+
+  /** Position at specified key */
+  SET(MDB_SET);
 
   private final int value;
 
