@@ -45,24 +45,28 @@ public class EntryIteratorTest {
 
   @Test
   public void testIterateForward() throws IOException {
-    try (EntryIterator it = db.iterate()) {
+    Transaction tx = env.createReadTransaction();
+    try (EntryIterator it = db.iterate(tx)) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
+    tx.commit();
   }
 
   @Test
   public void testIterateBackward() throws IOException {
-    try (EntryIterator it = db.iterateBackward()) {
+    Transaction tx = env.createReadTransaction();
+    try (EntryIterator it = db.iterateBackward(tx)) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
+    tx.commit();
   }
 
   @Test
@@ -72,13 +76,15 @@ public class EntryIteratorTest {
     keys.pollFirst();
     keys.pollFirst();
     keys.pollFirst();
-    try (EntryIterator it = db.seek(new byte[]{5})) {
+    Transaction tx = env.createReadTransaction();
+    try (EntryIterator it = db.seek(tx, new byte[]{5})) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
+    tx.commit();
   }
 
   @Test
@@ -87,22 +93,26 @@ public class EntryIteratorTest {
     keys.pollLast();
     keys.pollLast();
     keys.pollLast();
-    try (EntryIterator it = db.seekBackward(new byte[]{5})) {
+    Transaction tx = env.createReadTransaction();
+    try (EntryIterator it = db.seekBackward(tx, new byte[]{5})) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
+    tx.commit();
   }
 
   @Test
   public void testIterable() throws IOException {
-    try (EntryIterator it = db.iterate()) {
+    Transaction tx = env.createReadTransaction();
+    try (EntryIterator it = db.iterate(tx)) {
       for (Entry next : it.iterable()) {
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
     }
     assertTrue(keys.isEmpty());
+    tx.commit();
   }
 }

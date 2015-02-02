@@ -196,59 +196,56 @@ public class Database extends NativeObject implements AutoCloseable {
 
   /**
    * <p>
-   *   Creates a forward sequential iterator and a transaction
-   *   starting at first key greater than or equal to specified key.
+   *   Creates a forward sequential iterator starting at
+   *   first key greater than or equal to specified key.
    * </p>
    *
-   * The transaction is closed along with the iterator.
-   *
+   * @param tx transaction handle
+   * @param key start position
    * @return a closable iterator handle.
    */
-  public EntryIterator seek(byte[] key) {
-    return iterate(key, IteratorType.FORWARD);
+  public EntryIterator seek(Transaction tx, byte[] key) {
+    return iterate(tx, key, IteratorType.FORWARD);
   }
 
   /**
    * <p>
-   *   Creates a backward sequential iterator and a transaction
-   *   starting at first key greater than or equal to specified key.
+   *   Creates a backward sequential iterator starting at
+   *   first key greater than or equal to specified key.
    * </p>
    *
-   * The transaction is closed along with the iterator.
-   *
+   * @param tx transaction handle
+   * @param key start position
    * @return a closable iterator handle.
    */
-  public EntryIterator seekBackward(byte[] key) {
-    return iterate(key, IteratorType.BACKWARD);
+  public EntryIterator seekBackward(Transaction tx, byte[] key) {
+    return iterate(tx, key, IteratorType.BACKWARD);
   }
 
   /**
    * <p>
-   *   Creates a forward sequential iterator and a read transaction.
+   *   Creates a forward sequential iterator from the first key.
    * </p>
    *
-   * The transaction is closed along with the iterator.
-   *
+   * @param tx transaction handle
    * @return a closable iterator handle.
    */
-  public EntryIterator iterate() {
-    return iterate(null, IteratorType.FORWARD);
+  public EntryIterator iterate(Transaction tx) {
+    return iterate(tx, null, IteratorType.FORWARD);
   }
   /**
    * <p>
-   *   Creates a backward sequential iterator and a read transaction.
+   *   Creates a backward sequential iterator from the last key.
    * </p>
    *
-   * The transaction is closed along with the iterator.
-   *
+   * @param tx transaction handle
    * @return a closable iterator handle.
    */
-  public EntryIterator iterateBackward() {
-    return iterate(null, IteratorType.BACKWARD);
+  public EntryIterator iterateBackward(Transaction tx) {
+    return iterate(tx, null, IteratorType.BACKWARD);
   }
 
-  private EntryIterator iterate(byte[] key, IteratorType type) {
-    Transaction tx = env.createTransaction(true);
+  private EntryIterator iterate(Transaction tx, byte[] key, IteratorType type) {
     Cursor cursor = openCursor(tx);
     return new EntryIterator(cursor, tx, key, type);
   }

@@ -26,11 +26,6 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
     this.type = type;
     this.tx = tx;
     this.key = key;
-    if (key != null) {
-      this.entry = cursor.seek(SeekOp.KEY, key);
-    } else {
-      this.entry = cursor.get(GetOp.FIRST);
-    }
   }
 
   private Entry entry;
