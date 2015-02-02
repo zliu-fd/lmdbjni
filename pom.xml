@@ -233,6 +233,8 @@
               <excludes>
                 <!-- tested by third party -->
                 <exclude>**/DirectBuffer*</exclude>
+                <!-- this is LMDB -->
+                <exclude>**/JNI*</exclude>
                 <exclude>**/Util*</exclude>
               </excludes>
             </configuration>

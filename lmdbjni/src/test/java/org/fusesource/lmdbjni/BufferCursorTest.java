@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -317,6 +318,15 @@ public class BufferCursorTest {
       assertThat(cursor.valUtf8(28), is(new ByteString("cba")));
     }
     tx.commit();
+  }
+
+  @Test
+  public void testByteString() {
+    ByteString string = new ByteString("cba");
+    assertThat(string.length(), is(3));
+    HashMap<ByteString, ByteString> map = new HashMap<>();
+    map.put(string, string);
+    assertThat(string, is(new ByteString("cba")));
   }
 
 

@@ -18,7 +18,6 @@
 
 package org.fusesource.lmdbjni;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import static org.fusesource.lmdbjni.JNI.*;
