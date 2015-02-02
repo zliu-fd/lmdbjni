@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import static org.fusesource.lmdbjni.Bytes.fromLong;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
@@ -29,7 +30,9 @@ public class DatabaseTest {
   @Before
   public void before() throws IOException {
     String path = tmp.newFolder().getCanonicalPath();
-    env = new Env(path);
+    env = new Env();
+    env.setMapSize(16 * 4096);
+    env.open(path);
     db = env.openDatabase();
   }
 
@@ -37,6 +40,18 @@ public class DatabaseTest {
   public void after() throws IOException {
     db.close();
     env.close();
+  }
+
+  /**
+   * Should trigger MDB_MAP_FULL if entries wasn't deleted.
+   */
+  @Test
+  public void testCleanupFullDb() {
+    for (int i = 0; i < 100; i++) {
+      // twice the size of page size
+      db.put(fromLong(i), new byte[2 * 4096]);
+      db.delete(fromLong(i));
+    }
   }
 
   @Test
