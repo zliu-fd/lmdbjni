@@ -19,6 +19,7 @@
 package org.fusesource.lmdbjni;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import static org.fusesource.lmdbjni.JNI.*;
 
@@ -81,8 +82,10 @@ public class Constants {
    */
   public static final int INTEGERKEY = MDB_INTEGERKEY;
 
-  /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT},
-   * sorted dup items have fixed size */
+  /**
+   * with {@link org.fusesource.lmdbjni.Constants#DUPSORT},
+   * sorted dup items have fixed size
+   */
   public static final int DUPFIXED = MDB_DUPFIXED;
 
   /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT}, use reverse string dups */
@@ -123,8 +126,10 @@ public class Constants {
   /** Duplicate data is being appended, don't split full pages. */
   public static final int APPENDDUP = MDB_APPENDDUP;
 
-  /** Store multiple data items in one call. Only for
-   * {@link org.fusesource.lmdbjni.Constants#DUPFIXED}. */
+  /**
+   * Store multiple data items in one call. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPFIXED}.
+   */
   public static final int MULTIPLE = MDB_MULTIPLE;
 
   //====================================================//
@@ -140,12 +145,16 @@ public class Constants {
    */
   public static final GetOp FIRST_DUP = GetOp.FIRST_DUP;
 
-  /** Position at key/data pair. Only for
-   * {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
+  /**
+   * Position at key/data pair. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}
+   */
   public static final GetOp GET_BOTH = GetOp.GET_BOTH;
 
-  /** position at key, nearest data. Only for
-   * {@link org.fusesource.lmdbjni.Constants#DUPSORT} */
+  /**
+   * position at key, nearest data. Only for
+   * {@link org.fusesource.lmdbjni.Constants#DUPSORT}
+   */
   public static final GetOp GET_BOTH_RANGE = GetOp.GET_BOTH_RANGE;
 
   /** Return key/data at current cursor position */
@@ -197,7 +206,7 @@ public class Constants {
    */
   public static final GetOp PREV_DUP = GetOp.PREV_DUP;
 
-  /**  Position at last data item of previous key */
+  /** Position at last data item of previous key */
   public static final GetOp PREV_NODUP = GetOp.PREV_NODUP;
 
   /** Position at specified key, return key + data */
@@ -210,21 +219,13 @@ public class Constants {
     if (value == null) {
       return null;
     }
-    try {
-      return value.getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    return value.getBytes(StandardCharsets.UTF_8);
   }
 
   public static String string(byte value[]) {
     if (value == null) {
       return null;
     }
-    try {
-      return new String(value, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    return new String(value, StandardCharsets.UTF_8);
   }
 }

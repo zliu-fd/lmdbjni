@@ -92,13 +92,11 @@ public class LMDBException extends RuntimeException {
   /** Permission denied */
   public static final int EACCES = 13;
 
-  int errorCode;
-
-  public LMDBException() {
-  }
+  final int errorCode;
 
   public LMDBException(String message) {
     super(message);
+    errorCode = -1;
   }
 
   public LMDBException(String message, int errorCode) {
@@ -110,7 +108,4 @@ public class LMDBException extends RuntimeException {
     return errorCode;
   }
 
-  public void setErrorCode(int errorCode) {
-    this.errorCode = errorCode;
-  }
 }
