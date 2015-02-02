@@ -233,6 +233,7 @@
               <excludes>
                 <!-- tested by third party -->
                 <exclude>**/DirectBuffer*</exclude>
+                <exclude>**/Util*</exclude>
               </excludes>
             </configuration>
             <executions>

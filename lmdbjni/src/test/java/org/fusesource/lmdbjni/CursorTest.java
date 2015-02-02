@@ -1,0 +1,65 @@
+package org.fusesource.lmdbjni;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.IOException;
+
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertArrayEquals;
+
+public class CursorTest {
+  static {
+    Setup.setLmdbLibraryPath();
+  }
+
+  @Rule
+  public TemporaryFolder tmp = new TemporaryFolder();
+
+  Env env;
+  Database db;
+
+  @Before
+  public void before() throws IOException {
+    String path = tmp.newFolder().getCanonicalPath();
+    env = new Env(path);
+    db = env.openDatabase();
+  }
+
+  @After
+  public void after() throws IOException {
+    db.close();
+    env.close();
+  }
+
+  @Test
+  public void testCursorPutGet() {
+    Transaction tx = env.createWriteTransaction();
+    try (Cursor cursor = db.openCursor(tx)) {
+      cursor.put(Bytes.fromLong(1), Bytes.fromLong(1), 0);
+    }
+    tx.commit();
+    assertArrayEquals(db.get(Bytes.fromLong(1)), Bytes.fromLong(1));
+  }
+
+  @Test
+  public void testCursorRenew() {
+    Transaction read = env.createReadTransaction();
+    Cursor readCursor = db.openCursor(read);
+    Transaction write = env.createWriteTransaction();
+    try (Cursor cursor = db.openCursor(write)) {
+      cursor.put(Bytes.fromLong(1), Bytes.fromLong(1), 0);
+      write.commit();
+    }
+    assertNull(readCursor.get(GetOp.FIRST));
+    read.abort();
+    read = env.createReadTransaction();
+    readCursor.renew(read);
+    assertArrayEquals(readCursor.get(GetOp.FIRST).getKey(), Bytes.fromLong(1));
+    readCursor.close();
+    read.abort();
+  }
+}
