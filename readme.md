@@ -43,10 +43,6 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 * https://groups.google.com/forum/#!forum/lmdbjni
 
-### License
-
-This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes `liblmdb` library version 0.9.14 of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
-
 ### Maven
 
 ```xml
@@ -240,3 +236,7 @@ The safest (and slowest) approach for interacting with LMDB JNI is using buffer 
  } 
 
 ```
+
+### License
+
+This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes `liblmdb` library version 0.9.14 of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
