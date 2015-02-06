@@ -39,10 +39,6 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
    ```
    
 
-### Google groups
-
-* https://groups.google.com/forum/#!forum/lmdbjni
-
 ### Maven
 
 ```xml
@@ -236,6 +232,10 @@ The safest (and slowest) approach for interacting with LMDB JNI is using buffer 
  } 
 
 ```
+
+### Google groups
+
+* https://groups.google.com/forum/#!forum/lmdbjni
 
 ### License
 
