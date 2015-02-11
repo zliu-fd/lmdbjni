@@ -27,7 +27,7 @@ public class Iteration extends Setup {
   public static int rc = JNI.MDB_NOTFOUND;
   static Cursor cursor;
 
-//  @Benchmark
+  @Benchmark
   public void lmdb_buffer_copy() {
     if (cursor == null) {
       Transaction tx = env.createTransaction();
@@ -50,7 +50,7 @@ public class Iteration extends Setup {
   static BufferCursor bufferCursor;
   static Transaction tx;
 
-//  @Benchmark
+  @Benchmark
   public void lmdb_zero_copy() {
     if (bufferCursor == null) {
       tx = env.createReadTransaction();
@@ -79,7 +79,7 @@ public class Iteration extends Setup {
 
   static RocksIterator it;
 
-//  @Benchmark
+  @Benchmark
   public void rocksdb() throws IOException {
     if (it == null) {
       it = rocksDb.newIterator();
@@ -95,7 +95,7 @@ public class Iteration extends Setup {
 
   static DBIterator iterator;
 
-//  @Benchmark
+  @Benchmark
   public void leveldb() throws IOException {
     if (iterator == null) {
       iterator = leveldb.iterator();
