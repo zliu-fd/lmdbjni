@@ -27,17 +27,17 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
 
-* [LMDB JNI Microbenchmark](http://pastebin.com/7WencUCv), February 2015 ([source](https://github.com/deephacks/lmdbjni/blob/master/jmh/src/main/java/org/fusesource/lmdbjni/Iteration.java))
+* [LMDB JNI Microbenchmark](http://pastebin.com/3huizUps), February 2015 ([source](https://github.com/deephacks/lmdbjni/blob/master/jmh/src/main/java/org/fusesource/lmdbjni/Iteration.java))
    
   Iteration speed compared with [RocksDB](https://github.com/facebook/rocksdb), [LevelDB](https://github.com/dain/leveldb) and [MapDB](https://github.com/jankotek/MapDB).
    Mongodb is difficult to setup in JMH but [de.flapdoodle.embed.mongo](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo) indicate that it is around 50x slower than lmdb_zero_copy. 
    ```bash
   Benchmark                    Mode  Cnt         Score         Error  Units
-  Iteration.leveldb           thrpt   10   7409691.075 ± 1034143.851  ops/s
-  Iteration.lmdb_buffer_copy  thrpt   10   3272913.808 ±  273708.249  ops/s
-  Iteration.lmdb_zero_copy    thrpt   10  15159373.188 ± 1653813.416  ops/s
-  Iteration.mapdb             thrpt   10    670041.571 ±  110186.548  ops/s
-  Iteration.rocksdb           thrpt   10   1247677.436 ±  141876.999  ops/s
+  Iteration.leveldb           thrpt   10   6965637.351 ±  784589.894  ops/s
+  Iteration.lmdb_buffer_copy  thrpt   10   3157796.643 ±  265830.424  ops/s
+  Iteration.lmdb_zero_copy    thrpt   10  16372428.882 ± 1812316.504  ops/s
+  Iteration.mapdb             thrpt   10   1358748.670 ±   87502.413  ops/s
+  Iteration.rocksdb           thrpt   10   1311441.804 ±  176129.883  ops/s
    ```
    
 
