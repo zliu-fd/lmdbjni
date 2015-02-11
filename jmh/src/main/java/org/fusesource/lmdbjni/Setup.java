@@ -1,5 +1,6 @@
 package org.fusesource.lmdbjni;
 
+import com.google.common.primitives.SignedBytes;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.mapdb.*;
@@ -67,16 +68,14 @@ public class Setup {
     }
   }
 
-  static Map<byte[], byte[]> mapdbmap;
+  static BTreeMap<byte[], byte[]> mapdbmap;
 
   public static void initMapDB() {
     mapdbmap = DBMaker.newTempFileDB()
       .mmapFileEnable()
       .make()
-      .createHashMap("test")
-      .hasher(Hasher.BYTE_ARRAY)
-      .keySerializer(Serializer.BYTE_ARRAY)
-      .valueSerializer(Serializer.BYTE_ARRAY)
+      .createTreeMap("test")
+      .comparator(SignedBytes.lexicographicalComparator())
       .makeOrGet();
     for (int i = 0; i < 100000; i++) {
       mapdbmap.put(Bytes.fromLong(i), Bytes.fromLong(i));
