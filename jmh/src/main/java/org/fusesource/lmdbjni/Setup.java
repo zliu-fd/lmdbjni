@@ -2,23 +2,24 @@ package org.fusesource.lmdbjni;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.impl.Iq80DBFactory;
+import org.mapdb.*;
 import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import static org.fusesource.lmdbjni.Constants.APPEND;
 
 public class Setup {
-
-  public static File dir = new File("/tmp/test");
   public static Database database;
   public static Env env;
   public static JNI.MDB_val valueVal;
   public static JNI.MDB_val keyVal;
 
   public static void initLMDB() {
+    File dir = new File("/tmp/lmdb");
     setLmdbLibraryPath();
     valueVal = new JNI.MDB_val();
     keyVal = new JNI.MDB_val();
@@ -37,6 +38,7 @@ public class Setup {
   static RocksDB rocksDb;
 
   public static void initRocksDB() {
+    File dir = new File("/tmp/rocksdb");
     recreateDir(dir);
     org.rocksdb.Options options = new org.rocksdb.Options();
     options.setCreateIfMissing(true);
@@ -53,6 +55,7 @@ public class Setup {
   static DB leveldb;
 
   public static void initLevelDb() {
+    File dir = new File("/tmp/leveldb");
     recreateDir(dir);
     try {
       leveldb = Iq80DBFactory.factory.open(dir, new org.iq80.leveldb.Options());
@@ -61,6 +64,22 @@ public class Setup {
       }
     } catch (IOException e) {
       e.printStackTrace();
+    }
+  }
+
+  static Map<byte[], byte[]> mapdbmap;
+
+  public static void initMapDB() {
+    mapdbmap = DBMaker.newTempFileDB()
+      .mmapFileEnable()
+      .make()
+      .createHashMap("test")
+      .hasher(Hasher.BYTE_ARRAY)
+      .keySerializer(Serializer.BYTE_ARRAY)
+      .valueSerializer(Serializer.BYTE_ARRAY)
+      .makeOrGet();
+    for (int i = 0; i < 100000; i++) {
+      mapdbmap.put(Bytes.fromLong(i), Bytes.fromLong(i));
     }
   }
 

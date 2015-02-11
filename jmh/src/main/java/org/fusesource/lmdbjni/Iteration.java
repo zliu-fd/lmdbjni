@@ -7,16 +7,21 @@ import org.rocksdb.RocksIterator;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.fusesource.lmdbjni.Setup.initMapDB;
 
 @Measurement(iterations = 5)
 @Warmup(iterations = 10)
 @Fork(value = 2)
 public class Iteration extends Setup {
+  static boolean found = false;
 
   static {
     initLMDB();
     initRocksDB();
     initLevelDb();
+    initMapDB();
   }
 
   public static int rc = JNI.MDB_NOTFOUND;
@@ -43,12 +48,13 @@ public class Iteration extends Setup {
   }
 
   static BufferCursor bufferCursor;
-  static boolean found = false;
+  static Transaction tx;
 
   @Benchmark
   public void lmdb_zero_copy() {
     if (bufferCursor == null) {
-      bufferCursor = database.bufferCursor();
+      tx = env.createReadTransaction();
+      bufferCursor = database.bufferCursor(tx);
     }
     if (!found) {
       found = bufferCursor.first();
@@ -59,6 +65,16 @@ public class Iteration extends Setup {
       bufferCursor.keyLong(0);
       bufferCursor.valLong(0);
     }
+  }
+  static AtomicInteger counter = new AtomicInteger(0);
+  static byte[] bytes = null;
+
+  @Benchmark
+  public void mapdb() {
+    if (bytes == null) {
+      counter.set(0);
+    } 
+    bytes = Setup.mapdbmap.get(Bytes.fromLong(counter.incrementAndGet()));
   }
 
   static RocksIterator it;
