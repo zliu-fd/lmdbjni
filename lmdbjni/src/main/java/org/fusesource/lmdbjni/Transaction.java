@@ -18,6 +18,7 @@
 
 package org.fusesource.lmdbjni;
 
+import java.io.Closeable;
 import java.nio.ByteBuffer;
 
 import static org.fusesource.lmdbjni.JNI.*;
@@ -28,7 +29,7 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  *
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
-public class Transaction extends NativeObject {
+public class Transaction extends NativeObject implements Closeable {
   private DirectBuffer buffer;
   private boolean readOnly;
 
@@ -119,4 +120,10 @@ public class Transaction extends NativeObject {
     }
     return buffer.addressOffset();
   }
+
+  @Override
+  public void close() {
+    abort();
+  }
+
 }

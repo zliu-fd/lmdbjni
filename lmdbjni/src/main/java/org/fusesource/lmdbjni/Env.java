@@ -525,11 +525,10 @@ public class Env extends NativeObject implements AutoCloseable {
    * @see org.fusesource.lmdbjni.Env#open(String, int, int)
    */
   public Database openDatabase(String name, int flags) {
-    Transaction tx = createTransaction();
-    try {
-      return openDatabase(tx, name, flags);
-    } finally {
+    try (Transaction tx = createTransaction()) {
+      Database db= openDatabase(tx, name, flags);
       tx.commit();
+      return db;
     }
   }
 
