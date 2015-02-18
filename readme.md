@@ -133,20 +133,11 @@ try (EntryIterator it = db.seekBackward(key))) {
 Performing [transactional](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Transaction.html) updates.
 
 ```java
- Transaction tx = env.createTransaction();
- boolean ok = false;
- try {
+ try (Transaction tx = env.createTransaction()) {
    db.delete(tx, bytes("Denver"));
    db.put(tx, bytes("Tampa"), bytes("green"));
    db.put(tx, bytes("London"), bytes("red"));
-   ok = true;
- } finally {
-   // Make sure you either commit or rollback to avoid resource leaks.
-   if (ok) {
-     tx.commit();
-   } else {
-     tx.abort();
-   }
+   tx.commit();  // if commit is not called, the transaction is aborted
  }
 ```
 
@@ -154,17 +145,12 @@ Working against a snapshot view of the database.
 
 ```java
  // create a read-only transaction...
- Transaction tx = env.createTransaction(true);
- try {
+ try (Transaction tx = env.createTransaction(true)) {
    
    // All read operations will now use the same 
    // consistent view of the data.
    ... = db.db.openCursor(tx);
    ... = db.get(tx, bytes("Tampa"));
-
- } finally {
-   // Make sure you commit the transaction to avoid resource leaks.
-   tx.commit();
  }
 ```
 Atomic hot [backup](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Env.html#copy-java.lang.String-).
