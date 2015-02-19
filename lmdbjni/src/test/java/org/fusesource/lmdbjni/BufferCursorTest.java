@@ -377,43 +377,25 @@ public class BufferCursorTest {
   @Test
   public void testWriteToReadOnlyBuffer() {
     try (Transaction tx = env.createReadTransaction(); final BufferCursor cursor = db.bufferCursor(tx)) {
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteByte(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteInt(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteLong(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteFloat(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteDouble(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteUtf8(""); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteUtf8(new ByteString("")); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWriteBytes(new byte[]{0});}});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.keyWrite(new DirectBuffer(new byte[0]), 0);}});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteByte(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteInt(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteLong(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteFloat(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteDouble(0); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteUtf8(""); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteUtf8(new ByteString("")); }});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWriteBytes(new byte[]{0});}});
-      assertEACCES(new Runnable() { @Override
-      public void run() { cursor.valWrite(new DirectBuffer(new byte[0]), 0);}});
-    }
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteByte(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteInt(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteLong(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteFloat(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteDouble(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteUtf8(""); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteUtf8(new ByteString("")); }});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWriteBytes(new byte[]{0});}});
+        assertEACCES(new Runnable() { public void run() { cursor.keyWrite(new DirectBuffer(new byte[0]), 0);}});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteByte(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteInt(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteLong(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteFloat(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteDouble(0); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteUtf8(""); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteUtf8(new ByteString("")); }});
+        assertEACCES(new Runnable() { public void run() { cursor.valWriteBytes(new byte[]{0});}});
+        assertEACCES(new Runnable() { public void run() { cursor.valWrite(new DirectBuffer(new byte[0]), 0);}});
+      }
   }
 
   private void debug(BufferCursor cursor) {
