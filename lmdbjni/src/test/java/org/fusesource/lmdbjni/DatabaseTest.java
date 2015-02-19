@@ -13,7 +13,6 @@ import static org.fusesource.lmdbjni.Bytes.fromLong;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertThat;
 
 public class DatabaseTest {
   static {
@@ -37,7 +36,7 @@ public class DatabaseTest {
   }
 
   @After
-  public void after() throws IOException {
+  public void after() {
     db.close();
     env.close();
   }

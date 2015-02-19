@@ -32,54 +32,56 @@ public class TransactionTest {
   }
 
   @After
-  public void after() throws IOException {
+  public void after() {
     db.close();
     env.close();
   }
 
   @Test
   public void testCommit() {
-    Transaction tx = env.createTransaction(false);
-    db.put(tx, data, data);
-    tx.commit();
+    try (Transaction tx = env.createWriteTransaction()) {
+      db.put(tx, data, data);
+      tx.commit();
+    }
     assertArrayEquals(data, db.get(data));
 
-    tx = env.createTransaction(false);
-    db.delete(tx, data);
-    tx.commit();
+    try (Transaction tx = env.createWriteTransaction()) {
+      db.delete(tx, data);
+      tx.commit();
+    }
     assertNull(db.get(data));
   }
 
   @Test
   public void testAbort() {
-    Transaction tx = env.createTransaction(false);
-    db.put(tx, data, data);
-    tx.abort();
+    try (Transaction tx = env.createWriteTransaction()) {
+      db.put(tx, data, data);
+    }
     assertNull(db.get(data));
 
     db.put(data, data);
 
-    tx = env.createTransaction(false);
-    db.delete(tx, data);
-    tx.abort();
+    try (Transaction tx = env.createWriteTransaction()) {
+      db.delete(tx, data);
+    }
     assertArrayEquals(data, db.get(data));
   }
 
   @Test
   public void testResetRenew() {
     db.put(data, data);
-    Transaction tx = env.createTransaction(true);
-    assertArrayEquals(data, db.get(tx, data));
-    tx.reset();
-    try {
-      db.get(tx, data);
-      fail("should fail since transaction was committed");
-    } catch (LMDBException e) {
-      // ok
+    try (Transaction tx = env.createReadTransaction()) {
+      assertArrayEquals(data, db.get(tx, data));
+      tx.reset();
+      try {
+        db.get(tx, data);
+        fail("should fail since transaction was reset");
+      } catch (LMDBException e) {
+        // ok
+      }
+      tx.renew();
+      assertArrayEquals(data, db.get(tx, data));
     }
-    tx.renew();
-    assertArrayEquals(data, db.get(tx, data));
-    tx.commit();
   }
 
 }

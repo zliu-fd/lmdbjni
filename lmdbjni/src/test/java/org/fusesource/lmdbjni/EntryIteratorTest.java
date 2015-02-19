@@ -44,75 +44,65 @@ public class EntryIteratorTest {
   }
 
   @Test
-  public void testIterateForward() throws IOException {
-    Transaction tx = env.createReadTransaction();
-    try (EntryIterator it = db.iterate(tx)) {
+  public void testIterateForward() {
+    try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.iterate(tx)) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
-    tx.commit();
   }
 
   @Test
-  public void testIterateBackward() throws IOException {
-    Transaction tx = env.createReadTransaction();
-    try (EntryIterator it = db.iterateBackward(tx)) {
+  public void testIterateBackward() {
+    try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.iterateBackward(tx)) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
-    tx.commit();
   }
 
   @Test
-  public void testSeekForward() throws IOException {
+  public void testSeekForward() {
     keys.pollFirst();
     keys.pollFirst();
     keys.pollFirst();
     keys.pollFirst();
     keys.pollFirst();
-    Transaction tx = env.createReadTransaction();
-    try (EntryIterator it = db.seek(tx, new byte[]{5})) {
+    try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.seek(tx, new byte[]{5})) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
-    tx.commit();
   }
 
   @Test
-  public void testSeekBackward() throws IOException {
+  public void testSeekBackward() {
     keys.pollLast();
     keys.pollLast();
     keys.pollLast();
     keys.pollLast();
-    Transaction tx = env.createReadTransaction();
-    try (EntryIterator it = db.seekBackward(tx, new byte[]{5})) {
+    try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.seekBackward(tx, new byte[]{5})) {
       while (it.hasNext()) {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
       assertTrue(keys.isEmpty());
     }
-    tx.commit();
   }
 
   @Test
-  public void testIterable() throws IOException {
-    Transaction tx = env.createReadTransaction();
-    try (EntryIterator it = db.iterate(tx)) {
+  public void testIterable() {
+    try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.iterate(tx)) {
       for (Entry next : it.iterable()) {
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
     }
     assertTrue(keys.isEmpty());
-    tx.commit();
   }
 }
