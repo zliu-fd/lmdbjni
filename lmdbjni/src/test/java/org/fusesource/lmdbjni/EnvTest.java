@@ -51,10 +51,10 @@ public class EnvTest {
     String path = tmp.newFolder().getCanonicalPath();
     try (Env env = new Env()) {
       env.open(path);
-      env.pushMemoryPool(10);
-      env.pushMemoryPool(10);
-      env.popMemoryPool();
-      env.popMemoryPool();
+      Env.pushMemoryPool(10);
+      Env.pushMemoryPool(10);
+      Env.popMemoryPool();
+      Env.popMemoryPool();
       try (Database db = env.openDatabase()) {
         doTest(env, db);
       }
@@ -166,22 +166,17 @@ public class EnvTest {
     assertArrayEquals(db.get(bytes("London")), bytes("red"));
     assertArrayEquals(db.get(bytes("New York")), bytes("blue"));
 
-    Transaction tx = env.createTransaction();
-    try {
+
+    try (Transaction tx = env.createReadTransaction(); Cursor cursor = db.openCursor(tx)) {
       // Lets verify cursoring works..
       LinkedList<String> keys = new LinkedList<>();
       LinkedList<String> values = new LinkedList<>();
-
-      try (Cursor cursor = db.openCursor(tx)) {
-        for (Entry entry = cursor.get(FIRST); entry != null; entry = cursor.get(NEXT)) {
-          keys.add(string(entry.getKey()));
-          values.add(string(entry.getValue()));
-        }
+      for (Entry entry = cursor.get(FIRST); entry != null; entry = cursor.get(NEXT)) {
+        keys.add(string(entry.getKey()));
+        values.add(string(entry.getValue()));
       }
       assertEquals(Arrays.asList(new String[]{"London", "New York", "Tampa"}), keys);
       assertEquals(Arrays.asList(new String[]{"red", "blue", "green"}), values);
-    } finally {
-      tx.commit();
     }
 
     assertTrue(db.delete(bytes("New York")));
@@ -191,8 +186,7 @@ public class EnvTest {
     assertFalse(db.delete(bytes("New York")));
 
     // put /w readonly transaction should fail.
-    tx = env.createTransaction(true);
-    try {
+    try (Transaction tx = env.createReadTransaction()) {
       db.put(tx, bytes("New York"), bytes("silver"));
       fail("Expected LMDBException");
     } catch (LMDBException e) {
