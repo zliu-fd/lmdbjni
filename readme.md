@@ -133,7 +133,7 @@ try (EntryIterator it = db.seekBackward(key))) {
 Performing [transactional](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Transaction.html) updates.
 
 ```java
- try (Transaction tx = env.createTransaction()) {
+ try (Transaction tx = env.createWriteTransaction()) {
    db.delete(tx, bytes("Denver"));
    db.put(tx, bytes("Tampa"), bytes("green"));
    db.put(tx, bytes("London"), bytes("red"));
@@ -145,7 +145,7 @@ Working against a snapshot view of the database.
 
 ```java
  // create a read-only transaction...
- try (Transaction tx = env.createTransaction(true)) {
+ try (Transaction tx = env.createReadTransaction()) {
    
    // All read operations will now use the same 
    // consistent view of the data.
