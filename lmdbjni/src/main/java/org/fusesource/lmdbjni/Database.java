@@ -66,7 +66,7 @@ public class Database extends NativeObject implements AutoCloseable {
    * @return Statistics for a database.
    */
   public Stat stat() {
-    try (Transaction tx = env.createTransaction(true)) {
+    try (Transaction tx = env.createReadTransaction()) {
       return new Stat(stat(tx));
     }
   }
@@ -82,7 +82,7 @@ public class Database extends NativeObject implements AutoCloseable {
    * @see org.fusesource.lmdbjni.Database#drop(Transaction, boolean)
    */
   public void drop(boolean delete) {
-    try (Transaction tx = env.createTransaction()) {
+    try (Transaction tx = env.createWriteTransaction()) {
       drop(tx, delete);
       tx.commit();
     }
@@ -109,7 +109,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public int get(DirectBuffer key, DirectBuffer value) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction(true)) {
+    try (Transaction tx = env.createReadTransaction()) {
       return get(tx, key, value);
     }
   }
@@ -137,7 +137,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public byte[] get(byte[] key) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction(true)) {
+    try (Transaction tx = env.createReadTransaction()) {
       return get(tx, key);
     }
   }
@@ -295,7 +295,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public int put(DirectBuffer key, DirectBuffer value, int flags) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction()) {
+    try (Transaction tx = env.createWriteTransaction()) {
       int ret = put(tx, key, value, flags);
       tx.commit();
       return ret;
@@ -338,7 +338,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public byte[] put(byte[] key, byte[] value, int flags) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction()) {
+    try (Transaction tx = env.createWriteTransaction()) {
       byte[] ret = put(tx, key, value, flags);
       tx.commit();
       return ret;
@@ -451,7 +451,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public boolean delete(DirectBuffer key, DirectBuffer value) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction()) {
+    try (Transaction tx = env.createWriteTransaction()) {
       boolean ret = delete(tx, key, value);
       tx.commit();
       return ret;
@@ -484,7 +484,7 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   public boolean delete(byte[] key, byte[] value) {
     checkArgNotNull(key, "key");
-    try (Transaction tx = env.createTransaction()) {
+    try (Transaction tx = env.createWriteTransaction()) {
       boolean ret = delete(tx, key, value);
       tx.commit();
       return ret;

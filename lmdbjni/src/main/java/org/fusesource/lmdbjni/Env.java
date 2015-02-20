@@ -375,6 +375,7 @@ public class Env extends NativeObject implements AutoCloseable {
   /**
    * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
    */
+  @Deprecated
   public Transaction createTransaction() {
     return createTransaction(null, false);
   }
@@ -382,6 +383,7 @@ public class Env extends NativeObject implements AutoCloseable {
   /**
    * @see org.fusesource.lmdbjni.Env#createTransaction(Transaction, boolean)
    */
+  @Deprecated
   public Transaction createTransaction(boolean readOnly) {
     return createTransaction(null, readOnly);
   }
@@ -525,7 +527,7 @@ public class Env extends NativeObject implements AutoCloseable {
    * @see org.fusesource.lmdbjni.Env#open(String, int, int)
    */
   public Database openDatabase(String name, int flags) {
-    try (Transaction tx = createTransaction()) {
+    try (Transaction tx = createWriteTransaction()) {
       Database db= openDatabase(tx, name, flags);
       tx.commit();
       return db;
