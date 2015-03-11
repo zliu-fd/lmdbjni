@@ -29,8 +29,8 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 * [LMDB JNI Microbenchmark](http://pastebin.com/3huizUps), February 2015 ([source](https://github.com/deephacks/lmdbjni/blob/master/jmh/src/main/java/org/fusesource/lmdbjni/Iteration.java))
    
-  Iteration speed compared with [RocksDB](https://github.com/facebook/rocksdb), [LevelDB](https://github.com/dain/leveldb) and [MapDB](https://github.com/jankotek/MapDB).
-   Mongodb is difficult to setup in JMH but [de.flapdoodle.embed.mongo](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo) indicate that it is around 50x slower than lmdb_zero_copy. 
+  Row scanning speed per second compared with [RocksDB](https://github.com/facebook/rocksdb), [LevelDB](https://github.com/dain/leveldb) and [MapDB](https://github.com/jankotek/MapDB).
+   Mongodb is difficult to setup in JMH but [de.flapdoodle.embed.mongo](https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo) indicate that it is around 50x slower than lmdb_zero_copy.
    ```bash
   Benchmark                    Mode  Cnt         Score         Error  Units
   Iteration.leveldb           thrpt   10   6965637.351 ±  784589.894  ops/s
@@ -39,7 +39,6 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
   Iteration.mapdb             thrpt   10   1358748.670 ±   87502.413  ops/s
   Iteration.rocksdb           thrpt   10   1311441.804 ±  176129.883  ops/s
    ```
-   
 
 ### Maven
 
