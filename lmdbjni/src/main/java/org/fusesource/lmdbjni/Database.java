@@ -581,15 +581,45 @@ public class Database extends NativeObject implements AutoCloseable {
     return new Cursor(cursor[0], tx.isReadOnly());
   }
 
-  public void setComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
-    Callback callback = new Callback(new NativeComparator(comparator), "compare", 2);
+  public void setComparator(Transaction tx, Comparator<byte[]> comparator) {
+    Callback callback = new Callback(new ByteArrayComparator(comparator), "compare", 2);
     JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
   }
 
-  private static final class NativeComparator {
+  public void setDirectComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
+    Callback callback = new Callback(new DiredtBufferComparator(comparator), "compare", 2);
+    JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
+  }
+
+  private static final class ByteArrayComparator {
+    Comparator<byte[]> comparator;
+
+    public ByteArrayComparator(Comparator<byte[]> comparator) {
+      this.comparator = comparator;
+    }
+
+    public long compare(long ptr1, long ptr2) {
+      int size = (int) Unsafe.getLong(ptr1, 0);
+      long address = Unsafe.getAddress(ptr1, 1);
+      DirectBuffer key1 = new DirectBuffer();
+      key1.wrap(address, size);
+      byte[] key1Bytes = new byte[size];
+      key1.getBytes(0, key1Bytes);
+      size = (int) Unsafe.getLong(ptr2, 0);
+      address = Unsafe.getAddress(ptr2, 1);
+      DirectBuffer key2 = new DirectBuffer();
+      key2.wrap(address, size);
+      byte[] key2Bytes = new byte[size];
+      key2.getBytes(0, key2Bytes);
+      return comparator.compare(key1Bytes, key2Bytes);
+    }
+  }
+
+
+  private static final class DiredtBufferComparator {
     Comparator<DirectBuffer> comparator;
 
-    public NativeComparator(Comparator<DirectBuffer> comparator) {
+    public DiredtBufferComparator(Comparator<DirectBuffer> comparator) {
       this.comparator = comparator;
     }
 
@@ -605,4 +635,5 @@ public class Database extends NativeObject implements AutoCloseable {
       return comparator.compare(key1, key2);
     }
   }
+
 }

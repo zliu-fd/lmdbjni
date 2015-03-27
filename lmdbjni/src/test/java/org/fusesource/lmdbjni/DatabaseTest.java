@@ -98,9 +98,70 @@ public class DatabaseTest {
   }
 
   @Test
-  public void testSetCompareAsc() {
+  public void testSetComparatorAsc() {
     Transaction writeTransaction = env.createWriteTransaction();
-    db.setComparator(writeTransaction, new Comparator<DirectBuffer>() {
+    db.setComparator(writeTransaction, new Comparator<byte[]>() {
+      @Override
+      public int compare(byte[] key1, byte[] key2) {
+        return (int) (Bytes.getLong(key1) - Bytes.getLong(key2));
+      }
+    });
+    writeTransaction.commit();
+    writeTransaction = env.createWriteTransaction();
+
+    for (int i = 0; i < 1000; i++) {
+      db.put(writeTransaction, Bytes.fromLong(i), Bytes.fromLong(i));
+    }
+    writeTransaction.commit();
+    try (EntryIterator it = db.iterate(env.createReadTransaction()) ){
+      long prev = -1;
+      while(it.hasNext()) {
+        if (prev == -1) {
+          prev = Bytes.getLong(it.next().getKey());
+        } else {
+          long now = Bytes.getLong(it.next().getKey());
+          assertThat((prev+1), is(now));
+          prev = now;
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testSetComparatorDesc() {
+    Transaction writeTransaction = env.createWriteTransaction();
+    db.setComparator(writeTransaction, new Comparator<byte[]>() {
+      @Override
+      public int compare(byte[] key1, byte[] key2) {
+        return (int) (Bytes.getLong(key2) - Bytes.getLong(key1));
+      }
+    });
+    writeTransaction.commit();
+    writeTransaction = env.createWriteTransaction();
+
+    for (int i = 0; i < 1000; i++) {
+      db.put(writeTransaction, Bytes.fromLong(i), Bytes.fromLong(i));
+    }
+    writeTransaction.commit();
+    try (EntryIterator it = db.iterate(env.createReadTransaction()) ){
+      long prev = -1;
+      while(it.hasNext()) {
+        if (prev == -1) {
+          prev = Bytes.getLong(it.next().getKey());
+        } else {
+          long now = Bytes.getLong(it.next().getKey());
+          assertThat((prev-1), is(now));
+          prev = now;
+        }
+      }
+    }
+  }
+
+
+  @Test
+  public void testSetDirectComparatorAsc() {
+    Transaction writeTransaction = env.createWriteTransaction();
+    db.setDirectComparator(writeTransaction, new Comparator<DirectBuffer>() {
       @Override
       public int compare(DirectBuffer key1, DirectBuffer key2) {
         return (int) (key1.getLong(0) - key2.getLong(0));
@@ -128,9 +189,9 @@ public class DatabaseTest {
   }
 
   @Test
-  public void testSetCompareDesc() {
+  public void testSetDirectComparatorDesc() {
     Transaction writeTransaction = env.createWriteTransaction();
-    db.setComparator(writeTransaction, new Comparator<DirectBuffer>() {
+    db.setDirectComparator(writeTransaction, new Comparator<DirectBuffer>() {
       @Override
       public int compare(DirectBuffer key1, DirectBuffer key2) {
         return (int) (key2.getLong(0) - key1.getLong(0));
