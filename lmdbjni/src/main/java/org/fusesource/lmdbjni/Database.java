@@ -580,11 +580,17 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
-   * Set a custom key comparison function for this database. The comparison
-   * function is called wheneverit is necessary to compare a key specified by
+   * <p>
+   * Set a custom key comparison function for this database.
+   * </p>
+   *
+   * The comparison function is called wheneverit is necessary to compare a key specified by
    * the application with a key currently stored in the database. If no comparison
    * function is specified, and no special key flags were specified with mdb_dbi_open(),
    * the keys are compared lexically, with shorter keys collating before longer keys.
+   *
+   * Keep in mind that the comparator is called a huge number of times in any db operation which
+   * will degrade performance substantially.
    *
    * @param tx Transaction handle.
    * @param comparator a byte array comparator
@@ -595,11 +601,17 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
-   * Set a custom key zero copy comparison function for this database. The comparison
-   * function is called whenever it is necessary to compare a key specified by the
-   * application with a key currently stored in the database. If no comparison function
+   * <p>
+   * Set a custom key zero copy comparison function for this database.
+   * </p>
+   *
+   * The comparison function is called whenever it is necessary to compare a key specified by
+   * the application with a key currently stored in the database. If no comparison function
    * is specified, and no special key flags were specified with mdb_dbi_open(),
    * the keys are compared lexically, with shorter keys collating before longer keys.
+   *
+   * Keep in mind that the comparator is called a huge number of times in any db operation which
+   * will degrade performance substantially.
    *
    * @param tx Transaction handle.
    * @param comparator a zero copy comparator
