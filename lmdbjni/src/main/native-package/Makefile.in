@@ -123,7 +123,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 liblmdbjni_la_LIBADD =
-am_liblmdbjni_la_OBJECTS = mdb.lo midl.lo buffer.lo hawtjni.lo lmdbjni.lo \
+am_liblmdbjni_la_OBJECTS = mdb.lo midl.lo buffer.lo hawtjni.lo hawtjni-callback.lo lmdbjni.lo \
 	lmdbjni_stats.lo lmdbjni_structs.lo
 liblmdbjni_la_OBJECTS = $(am_liblmdbjni_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src
@@ -291,6 +291,7 @@ lib_LTLIBRARIES = liblmdbjni.la
 #liblmdbjni_la_LDFLAGS = 
 liblmdbjni_la_SOURCES = src/buffer.c\
   src/hawtjni.c\
+  src/hawtjni-callback.c\
   src/lmdbjni.c\
   src/lmdbjni_stats.c\
   src/lmdbjni_structs.c\
@@ -404,6 +405,9 @@ distclean-compile:
 
 buffer.lo: src/buffer.c
 	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o buffer.lo `test -f 'src/buffer.c' || echo '$(srcdir)/'`src/buffer.c
+
+hawtjni-callback.lo: src/hawtjni-callback.c
+	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hawtjni-callback.lo `test -f 'src/hawtjni-callback.c' || echo '$(srcdir)/'`src/hawtjni-callback.c
 
 mdb.lo: src/mdb.c
 	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mdb.lo `test -f 'src/mdb.c' || echo '$(srcdir)/'`src/mdb.c

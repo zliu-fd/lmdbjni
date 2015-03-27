@@ -19,7 +19,12 @@
 package org.fusesource.lmdbjni;
 
 
+import org.fusesource.hawtjni.runtime.Callback;
 import org.fusesource.lmdbjni.EntryIterator.IteratorType;
+
+import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.Comparator;
 
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkArgNotNull;
@@ -576,4 +581,28 @@ public class Database extends NativeObject implements AutoCloseable {
     return new Cursor(cursor[0], tx.isReadOnly());
   }
 
+  public void setComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
+    Callback callback = new Callback(new NativeComparator(comparator), "compare", 2);
+    JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
+  }
+
+  private static final class NativeComparator {
+    Comparator<DirectBuffer> comparator;
+
+    public NativeComparator(Comparator<DirectBuffer> comparator) {
+      this.comparator = comparator;
+    }
+
+    public long compare(long ptr1, long ptr2) {
+      int size = (int) Unsafe.getLong(ptr1, 0);
+      long address = Unsafe.getAddress(ptr1, 1);
+      DirectBuffer key1 = new DirectBuffer();
+      key1.wrap(address, size);
+      size = (int) Unsafe.getLong(ptr2, 0);
+      address = Unsafe.getAddress(ptr2, 1);
+      DirectBuffer key2 = new DirectBuffer();
+      key2.wrap(address, size);
+      return comparator.compare(key1, key2);
+    }
+  }
 }
