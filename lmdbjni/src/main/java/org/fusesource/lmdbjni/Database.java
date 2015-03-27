@@ -22,8 +22,6 @@ package org.fusesource.lmdbjni;
 import org.fusesource.hawtjni.runtime.Callback;
 import org.fusesource.lmdbjni.EntryIterator.IteratorType;
 
-import java.io.IOException;
-import java.nio.ByteOrder;
 import java.util.Comparator;
 
 import static org.fusesource.lmdbjni.JNI.*;
@@ -581,13 +579,31 @@ public class Database extends NativeObject implements AutoCloseable {
     return new Cursor(cursor[0], tx.isReadOnly());
   }
 
+  /**
+   * Set a custom key comparison function for this database. The comparison function is called whenever
+   * it is necessary to compare a key specified by the application with a key currently stored in the database.
+   * If no comparison function is specified, and no special key flags were specified with mdb_dbi_open(),
+   * the keys are compared lexically, with shorter keys collating before longer keys.
+   *
+   * @param tx Transaction handle.
+   * @param comparator a byte array comparator
+   */
   public void setComparator(Transaction tx, Comparator<byte[]> comparator) {
     Callback callback = new Callback(new ByteArrayComparator(comparator), "compare", 2);
     JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
   }
 
+  /**
+   * Set a custom key zero copy comparison function for this database. The comparison function is called whenever
+   * it is necessary to compare a key specified by the application with a key currently stored in the database.
+   * If no comparison function is specified, and no special key flags were specified with mdb_dbi_open(),
+   * the keys are compared lexically, with shorter keys collating before longer keys.
+   *
+   * @param tx Transaction handle.
+   * @param comparator a zero copy comparator
+   */
   public void setDirectComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
-    Callback callback = new Callback(new DiredtBufferComparator(comparator), "compare", 2);
+    Callback callback = new Callback(new DirectBufferComparator(comparator), "compare", 2);
     JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
   }
 
@@ -615,11 +631,10 @@ public class Database extends NativeObject implements AutoCloseable {
     }
   }
 
-
-  private static final class DiredtBufferComparator {
+  private static final class DirectBufferComparator {
     Comparator<DirectBuffer> comparator;
 
-    public DiredtBufferComparator(Comparator<DirectBuffer> comparator) {
+    public DirectBufferComparator(Comparator<DirectBuffer> comparator) {
       this.comparator = comparator;
     }
 
@@ -635,5 +650,4 @@ public class Database extends NativeObject implements AutoCloseable {
       return comparator.compare(key1, key2);
     }
   }
-
 }
