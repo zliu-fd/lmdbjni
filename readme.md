@@ -152,6 +152,18 @@ Working against a snapshot view of the database.
    ... = db.get(tx, bytes("Tampa"));
  }
 ```
+
+Set a custom key comparison function for a database. 
+
+```java
+ db.setComparator(tx, new Comparator<byte[]>() {
+      @Override
+      public int compare(byte[] key1, byte[] key2) {
+        // do compare
+      }
+    });
+```
+
 Atomic hot [backup](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Env.html#copy-java.lang.String-).
 
 ```java
