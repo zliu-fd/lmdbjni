@@ -183,6 +183,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include=".\src\buffer.c"/>
+    <ClCompile Include=".\src\hawtjni-callback.c"/>
     <ClCompile Include=".\src\hawtjni.c"/>
     <ClCompile Include=".\src\lmdbjni.c"/>
     <ClCompile Include=".\src\lmdbjni_stats.c"/>
