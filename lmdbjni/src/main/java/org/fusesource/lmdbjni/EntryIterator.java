@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 /**
  * Iterator for entries.
- *
+ * <p/>
  * <pre>
  * {@code
  * try (EntryIterator it = db.iterate()) {
@@ -18,13 +18,11 @@ import java.util.NoSuchElementException;
 public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   private final Cursor cursor;
   private final IteratorType type;
-  private final Transaction tx;
   private final byte[] key;
 
-  EntryIterator(Cursor cursor, Transaction tx, byte[] key, IteratorType type) {
+  EntryIterator(Cursor cursor, byte[] key, IteratorType type) {
     this.cursor = cursor;
     this.type = type;
-    this.tx = tx;
     this.key = key;
   }
 
@@ -73,17 +71,6 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Close the cursor and the transaction.
-   */
-  @Override
-  public void close() {
-    if (tx != null) {
-      tx.commit();
-    }
-    cursor.close();
-  }
-
   public Iterable<Entry> iterable() {
     return new Iterable<Entry>() {
       @Override
@@ -91,6 +78,11 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
         return EntryIterator.this;
       }
     };
+  }
+
+  @Override
+  public void close() {
+    cursor.close();
   }
 
   static enum IteratorType {

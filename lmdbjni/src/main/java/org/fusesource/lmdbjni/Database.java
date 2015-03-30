@@ -239,7 +239,7 @@ public class Database extends NativeObject implements AutoCloseable {
 
   private EntryIterator iterate(Transaction tx, byte[] key, IteratorType type) {
     Cursor cursor = openCursor(tx);
-    return new EntryIterator(cursor, tx, key, type);
+    return new EntryIterator(cursor, key, type);
   }
 
   /**
