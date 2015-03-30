@@ -51,7 +51,7 @@ class Util {
     }
   }
 
-  private static boolean isAndroid() {
+  static boolean isAndroid() {
     try {
       Class.forName("android.os.Process");
       return true;

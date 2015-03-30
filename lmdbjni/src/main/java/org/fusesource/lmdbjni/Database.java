@@ -592,6 +592,10 @@ public class Database extends NativeObject implements AutoCloseable {
    * Keep in mind that the comparator is called a huge number of times in any db operation which
    * will degrade performance substantially.
    *
+   * <p>
+   *   Does not work on Android at the moment (related to hawtjni-callback).
+   * </p>
+   *
    * @param tx Transaction handle.
    * @param comparator a byte array comparator
    */
@@ -612,6 +616,10 @@ public class Database extends NativeObject implements AutoCloseable {
    *
    * Keep in mind that the comparator is called a huge number of times in any db operation which
    * will degrade performance substantially.
+   *
+   * <p>
+   *   Does not work on Android at the moment (related to hawtjni-callback).
+   * </p>
    *
    * @param tx Transaction handle.
    * @param comparator a zero copy comparator
