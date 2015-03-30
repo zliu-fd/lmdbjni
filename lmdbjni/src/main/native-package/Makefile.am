@@ -22,6 +22,7 @@ lib_LTLIBRARIES = liblmdbjni.la
 #liblmdbjni_la_LDFLAGS = 
 
 liblmdbjni_la_SOURCES =  src/buffer.c\
+  src/hawtjni-callback.c\
   src/hawtjni.c\
   src/lmdbjni.c\
   src/lmdbjni_stats.c\
