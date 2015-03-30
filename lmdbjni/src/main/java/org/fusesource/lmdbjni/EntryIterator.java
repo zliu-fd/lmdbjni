@@ -33,7 +33,7 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   public boolean hasNext() {
     if (first) {
       if (key != null) {
-        this.entry = cursor.seek(SeekOp.KEY, key);
+        this.entry = cursor.seek(SeekOp.RANGE, key);
       } else {
         if (type == IteratorType.FORWARD) {
           this.entry = cursor.get(GetOp.FIRST);
