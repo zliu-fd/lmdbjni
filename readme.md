@@ -189,8 +189,8 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
 
 ```java
  // read only
- try (BufferCursor cursor = db.bufferCursor()) {
-
+ try (Transaction tx = env.createReadTransaction(); 
+      BufferCursor cursor = db.bufferCursor(tx)) {
    // iterate from first item and forwards
    cursor.first();
    while(cursor.next()) {
@@ -215,7 +215,8 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
  }
  
  // open for write
- try (BufferCursor cursor = db.bufferCursorWriter()) {
+ try (Transaction tx = env.createWriteTransaction(); 
+      BufferCursor cursor = db.bufferCursor(tx)) {
    cursor.first();
    // write utf-8 ending with NULL byte
    cursor.keyWriteUtf8("England");
@@ -228,6 +229,8 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
    cursor.first();
    // delete current cursor position
    curstor.delete();
+   // commit changes or try-with-resources will auto-abort
+   tx.commit();
  } 
 
 ```
