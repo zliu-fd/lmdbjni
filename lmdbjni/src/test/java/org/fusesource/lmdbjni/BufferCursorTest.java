@@ -8,6 +8,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -300,6 +301,7 @@ public class BufferCursorTest {
       assertThat(cursor.keyDouble(17), is(2.0));
       assertArrayEquals(cursor.keyBytes(25, 3), new byte[]{1,2,3});
       assertThat(cursor.keyUtf8(28).getString(), is("abc"));
+      assertThat(cursor.keyDirectBuffer().getDouble(17, ByteOrder.BIG_ENDIAN), is(2.0d));
       assertThat(cursor.valByte(0), is((byte)112));
       assertThat(cursor.valInt(1), is(3));
       assertThat(cursor.valLong(5), is(4L));
@@ -307,6 +309,7 @@ public class BufferCursorTest {
       assertThat(cursor.valDouble(17), is(6.0));
       assertArrayEquals(cursor.valBytes(25, 3), new byte[]{1,2,3});
       assertThat(cursor.valUtf8(28), is(new ByteString("cba")));
+      assertThat(cursor.valDirectBuffer().getDouble(17, ByteOrder.BIG_ENDIAN), is(6.0d));
       tx.commit();
     }
   }

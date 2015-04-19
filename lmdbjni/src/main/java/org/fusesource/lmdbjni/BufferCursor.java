@@ -538,6 +538,13 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * @return the key direct buffer at current position.
+   */
+  public DirectBuffer keyDirectBuffer() {
+    return key;
+  }
+
+  /**
    * Write data to value at current cursor position and
    * move write index forward.
    *
@@ -773,6 +780,13 @@ public class BufferCursor implements AutoCloseable {
    */
   public ByteString valUtf8(int pos) {
     return this.value.getString(pos);
+  }
+
+  /**
+   * @return the direct buffer at the current position.
+   */
+  public DirectBuffer valDirectBuffer() {
+    return this.value;
   }
 
   /**
