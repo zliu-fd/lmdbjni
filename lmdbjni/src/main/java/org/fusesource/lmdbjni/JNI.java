@@ -664,13 +664,14 @@ class JNI {
     //   MDB_SET:
     //   MDB_SET_KEY:
     //   MDB_SET_RANGE:
+	//	 MDB_LAST_DUP:
+	//	 MDB_FIRST_DUP:
+	
     // In order to be future proof, we assume that unknown ops all need to copy in.
     boolean copyIn = !(op == MDB_FIRST ||
-      op == MDB_FIRST_DUP ||
       op == MDB_GET_CURRENT ||
       op == MDB_GET_MULTIPLE ||
       op == MDB_LAST ||
-      op == MDB_LAST_DUP ||
       op == MDB_NEXT ||
       op == MDB_NEXT_DUP ||
       op == MDB_NEXT_MULTIPLE ||
