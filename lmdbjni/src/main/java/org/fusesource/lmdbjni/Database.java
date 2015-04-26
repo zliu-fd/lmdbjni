@@ -108,7 +108,8 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
-   * @see org.fusesource.lmdbjni.Database#get(Transaction, byte[])
+   * @see org.fusesource.lmdbjni.Database#get(Transaction,
+   * org.fusesource.lmdbjni.DirectBuffer, org.fusesource.lmdbjni.DirectBuffer )
    */
   public int get(DirectBuffer key, DirectBuffer value) {
     checkArgNotNull(key, "key");
@@ -118,7 +119,21 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
-   * @see org.fusesource.lmdbjni.Database#get(Transaction, byte[])
+   * <p>
+   *   Get items from a database.
+   * </p>
+   *
+   * This function retrieves key/data pairs from the database. The address
+   * and length of the data associated with the specified \b key are returned
+   * in the structure to which \b data refers.
+   * If the database supports duplicate keys ({@link org.fusesource.lmdbjni.Constants#DUPSORT})
+   * then the first data item for the key will be returned. Retrieval of other
+   * items requires the use of #mdb_cursor_get().
+   *
+   * @param tx transaction handle
+   * @param key The key to search for in the database
+   * @param value A value placeholder for the memory address to be wrapped if found by key.
+   * @return the response code.
    */
   public int get(Transaction tx, DirectBuffer key, DirectBuffer value) {
     checkArgNotNull(key, "key");
@@ -126,9 +141,10 @@ public class Database extends NativeObject implements AutoCloseable {
     long address = tx.getBufferAddress();
     Unsafe.putLong(address, 0, key.capacity());
     Unsafe.putLong(address, 1, key.addressOffset());
-
     int rc = mdb_get_address(tx.pointer(), pointer(), address, address + 2 * Unsafe.ADDRESS_SIZE);
-    checkErrorCode(rc);
+    if (rc == MDB_NOTFOUND) {
+      return MDB_NOTFOUND;
+    }
     int valSize = (int) Unsafe.getLong(address, 2);
     long valAddress = Unsafe.getAddress(address, 3);
     value.wrap(valAddress, valSize);
