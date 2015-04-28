@@ -315,6 +315,122 @@ public class BufferCursorTest {
   }
 
   @Test
+  public void testValueBufferExpansionByte() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteByte(112).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valByte(0), is((byte) 112));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionInt() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteInt(3).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valInt(0), is(3));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionLong() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteLong(3).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valLong(0), is(3L));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionFloat() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteFloat(3.0f).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valFloat(0), is(3.0f));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionDouble() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteDouble(3.0d).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valDouble(0), is(3.0d));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionBytes() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteBytes(new byte[]{1, 2, 3}).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertArrayEquals(cursor.valBytes(), new byte[] {1,2,3});
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionUtf8() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      cursor.keyWriteByte(111).valWriteUtf8("abc").overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      assertThat(cursor.valUtf8(0).getString(), is("abc"));
+    }
+  }
+
+  @Test
+  public void testValueBufferExpansionDirectBuffer() {
+    try (Transaction tx = env.createWriteTransaction(); BufferCursor cursor = db.bufferCursor(tx, 1)) {
+      cursor.first();
+      DirectBuffer directBuffer = new DirectBuffer(ByteBuffer.allocateDirect(10));
+      directBuffer.putLong(0, 111L);
+      cursor.keyWriteByte(111).valWrite(directBuffer, 8).overwrite();
+      tx.commit();
+    }
+    try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
+      cursor.last();
+      assertThat(cursor.keyByte(0), is((byte) 111));
+      DirectBuffer directBuffer = cursor.valDirectBuffer();
+      assertThat(directBuffer.capacity(), is(8));
+      assertThat(directBuffer.getLong(0), is(111L));
+    }
+  }
+
+  @Test
   public void testByteString() {
     ByteString string = new ByteString("cba");
     assertThat(string.length(), is(3));
