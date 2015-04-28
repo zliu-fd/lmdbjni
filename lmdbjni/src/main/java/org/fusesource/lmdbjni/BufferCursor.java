@@ -27,8 +27,9 @@ import java.nio.ByteOrder;
  * is not written into database until {@link BufferCursor#put()} or
  * {@link BufferCursor#overwrite()} is called and no updates are visible
  * outside the transaction until the transaction is committed. The
- * value byte buffers expand as data written into it. The key buffer
- * is 511 by default which is the max key size in LMDB.
+ * value byte buffer expand as data is written into it. The key buffer
+ * capacity is 511 which is the max key size in LMDB (unless recompiled
+ * from source with other capacity).
  * </p>
  * <p>
  * As soon as a key or value is written, the cursor still maintain its
@@ -51,7 +52,8 @@ import java.nio.ByteOrder;
  * {@code
  *
  * // read only
- * try (BufferCursor cursor = db.bufferCursor()) {
+ * try (Transaction tx = env.createReadTransaction();
+ *      BufferCursor cursor = db.bufferCursor(tx)) {
  *   cursor.first();
  *   while(cursor.next()) {
  *     cursor.keyByte(0);
@@ -70,7 +72,8 @@ import java.nio.ByteOrder;
  * }
  *
  * // open for write
- * try (BufferCursor cursor = db.bufferCursorWriter()) {
+ * try (Transaction tx = env.createWriteTransaction();
+ *      BufferCursor cursor = db.bufferCursor(tx)) {
  *   cursor.first();
  *   cursor.keyWriteUtf8("England");
  *   cursor.valWriteUtf8("London");
