@@ -3,6 +3,8 @@ package org.fusesource.lmdbjni;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import static org.fusesource.lmdbjni.JNI.mdb_strerror;
+
 /**
  * Cursor mode that allow for zero-copy lookup, navigation and modification
  * by using addresses provided by LMDB instead of copying data for each
@@ -259,14 +261,14 @@ public class BufferCursor implements AutoCloseable {
       new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
-    try {
-      return cursor.put(k, v, Constants.NOOVERWRITE) == 0;
-    } catch (LMDBException e) {
-      if (e.getErrorCode() == LMDBException.KEYEXIST) {
-        return false;
-      } else {
-        throw e;
-      }
+    int rc = cursor.put(k, v, Constants.NOOVERWRITE);
+    if (rc == 0) {
+      return true;
+    } else if (rc == LMDBException.KEYEXIST) {
+      return false;
+    } else {
+      String msg = Util.string(mdb_strerror(rc));
+      throw new LMDBException(msg, rc);
     }
   }
 
@@ -281,7 +283,15 @@ public class BufferCursor implements AutoCloseable {
       new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
-    return cursor.put(k, v, 0) == 0;
+    int rc = cursor.put(k, v, 0);
+    if (rc == 0) {
+      return true;
+    } else if (rc == LMDBException.KEYEXIST) {
+      return false;
+    } else {
+      String msg = Util.string(mdb_strerror(rc));
+      throw new LMDBException(msg, rc);
+    }
   }
 
   /**
@@ -298,7 +308,13 @@ public class BufferCursor implements AutoCloseable {
       new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
-    cursor.put(k, v, Constants.APPEND);
+    int rc = cursor.put(k, v, Constants.APPEND);
+    if (rc == 0) {
+      return;
+    } else {
+      String msg = Util.string(mdb_strerror(rc));
+      throw new LMDBException(msg, rc);
+    }
   }
 
   /**
@@ -801,7 +817,7 @@ public class BufferCursor implements AutoCloseable {
 
   /**
    * Prepare cursor for write.
-   *
+   * <p/>
    * Only needed by users that manage DirectBuffer on their own.
    */
   public void setWriteMode() {
@@ -843,7 +859,7 @@ public class BufferCursor implements AutoCloseable {
     } else {
       newCapacity = valueByteBuffer.capacity();
     }
-    int minNewCapacity =  valWriteIndex + minWritableBytes;
+    int minNewCapacity = valWriteIndex + minWritableBytes;
     while (newCapacity < minNewCapacity) {
       newCapacity <<= 1;
       // exceeded maximum size of 2gb, then newCapacity == 0

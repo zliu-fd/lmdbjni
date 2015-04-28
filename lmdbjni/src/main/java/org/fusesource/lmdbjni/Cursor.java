@@ -255,10 +255,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
     Unsafe.putLong(bufferAddress, 1, key.addressOffset());
     Unsafe.putLong(bufferAddress, 2, value.capacity());
     Unsafe.putLong(bufferAddress, 3, value.addressOffset());
-
-    int rc = mdb_cursor_put_address(pointer(), bufferAddress, bufferAddress + 2 * Unsafe.ADDRESS_SIZE, flags);
-    checkErrorCode(rc);
-    return rc;
+    return mdb_cursor_put_address(pointer(), bufferAddress, bufferAddress + 2 * Unsafe.ADDRESS_SIZE, flags);
   }
 
   private byte[] put(NativeBuffer keyBuffer, NativeBuffer valueBuffer, int flags) {
