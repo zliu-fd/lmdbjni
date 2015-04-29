@@ -473,6 +473,14 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * @see org.fusesource.lmdbjni.BufferCursor#keyWrite(DirectBuffer, int)
+   */
+  public BufferCursor keyWrite(DirectBuffer buffer) {
+    keyWrite(buffer, buffer.capacity());
+    return this;
+  }
+
+  /**
    * Get data from key at current cursor position.
    *
    * @param pos byte position
@@ -722,6 +730,14 @@ public class BufferCursor implements AutoCloseable {
     ensureValueWritableBytes(capacity);
     this.value.putBytes(valWriteIndex, buffer, 0, capacity);
     valWriteIndex += capacity;
+    return this;
+  }
+
+  /**
+   * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int)
+   */
+  public BufferCursor valWrite(DirectBuffer buffer) {
+    keyWrite(buffer, buffer.capacity());
     return this;
   }
 
