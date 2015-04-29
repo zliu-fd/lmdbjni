@@ -476,6 +476,7 @@ public class BufferCursorTest {
       key.putString(0, stringKey);
       // remember NULL byte
       cursor.keyWrite(key, stringKey.size() + 1);
+      cursor.valWriteInt(12);
       DirectBuffer value = new DirectBuffer();
       value.putString(0, stringValue);
       // remember NULL byte
@@ -488,8 +489,8 @@ public class BufferCursorTest {
       cursor.last();
       ByteString string = cursor.keyUtf8(0);
       assertThat(string.getString(), is("key"));
-      string = cursor.valUtf8(0);
-      assertThat(string.getString(), is("value"));
+      assertThat(cursor.valInt(0), is(12));
+      assertThat(cursor.valUtf8(4).getString(), is("value"));
     }
   }
 

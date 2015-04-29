@@ -455,7 +455,7 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
-   * Overwrite key data at current cursor position and
+   * Write data to key at current cursor position and
    * move write index forward.
    *
    * @param buffer   buffer
@@ -466,9 +466,9 @@ public class BufferCursor implements AutoCloseable {
     if (isReadOnly) {
       throw new LMDBException("Read only transaction", LMDBException.EACCES);
     }
-    keyDatbaseMemoryLocation = false;
-    this.key.wrap(buffer.addressOffset(), capacity);
-    keyWriteIndex = capacity;
+    setSafeKeyMemoryLocation();
+    this.key.putBytes(keyWriteIndex, buffer, 0, capacity);
+    keyWriteIndex += capacity;
     return this;
   }
 
@@ -707,7 +707,7 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
-   * Overwrite value data at current cursor position and
+   * Write data to value at current cursor position and
    * move write index forward.
    *
    * @param buffer   buffer
@@ -718,10 +718,10 @@ public class BufferCursor implements AutoCloseable {
     if (isReadOnly) {
       throw new LMDBException("Read only transaction", LMDBException.EACCES);
     }
-    valDatbaseMemoryLocation = false;
+    setSafeValMemoryLocation();
     ensureValueWritableBytes(capacity);
-    this.value.wrap(buffer.addressOffset(), capacity);
-    valWriteIndex = capacity;
+    this.value.putBytes(valWriteIndex, buffer, 0, capacity);
+    valWriteIndex += capacity;
     return this;
   }
 
