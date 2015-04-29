@@ -418,15 +418,21 @@ public class BufferCursorTest {
       cursor.first();
       DirectBuffer directBuffer = new DirectBuffer(ByteBuffer.allocateDirect(10));
       directBuffer.putLong(0, 111L);
-      cursor.keyWriteByte(111).valWrite(directBuffer, 8).overwrite();
+      cursor.keyWriteByte(111)
+        .valWrite(directBuffer, 8)
+        .valWrite(directBuffer, 8)
+        .valWrite(directBuffer, 8)
+        .overwrite();
       tx.commit();
     }
     try (Transaction tx = env.createReadTransaction(); BufferCursor cursor = db.bufferCursor(tx)) {
       cursor.last();
       assertThat(cursor.keyByte(0), is((byte) 111));
       DirectBuffer directBuffer = cursor.valDirectBuffer();
-      assertThat(directBuffer.capacity(), is(8));
+      assertThat(directBuffer.capacity(), is(8 * 3));
       assertThat(directBuffer.getLong(0), is(111L));
+      assertThat(directBuffer.getLong(8), is(111L));
+      assertThat(directBuffer.getLong(16), is(111L));
     }
   }
 
