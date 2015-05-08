@@ -737,7 +737,7 @@ public class BufferCursor implements AutoCloseable {
    * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int)
    */
   public BufferCursor valWrite(DirectBuffer buffer) {
-    keyWrite(buffer, buffer.capacity());
+    valWrite(buffer, buffer.capacity());
     return this;
   }
 
