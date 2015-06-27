@@ -25,11 +25,11 @@ limitations under the License.
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.4.1</version>
   </parent>
 
   <artifactId>lmdbjni-linux64</artifactId>
-  <version>0.4.1-SNAPSHOT</version>
+  <version>0.4.1</version>
 
   <name>${project.artifactId}</name>
   <description>The lmdbjni linux 64 bit native libraries</description>
@@ -42,7 +42,7 @@ limitations under the License.
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.4.1-SNAPSHOT</version>
+      <version>0.4.1</version>
     </dependency>
   </dependencies>
 
