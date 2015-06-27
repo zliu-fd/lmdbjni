@@ -563,6 +563,15 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * Here be dragons, use with caution!
+   *
+   * @return underlying buffer
+   */
+  public DirectBuffer keyBuffer() {
+    return key;
+  }
+
+  /**
    * @return the key direct buffer at current position.
    */
   public DirectBuffer keyDirectBuffer() {
@@ -791,6 +800,15 @@ public class BufferCursor implements AutoCloseable {
     byte[] v = new byte[value.capacity()];
     value.getBytes(0, v);
     return v;
+  }
+
+  /**
+   * Here be dragons, use with caution!
+   *
+   * @return underlying buffer
+   */
+  public DirectBuffer valBuffer() {
+    return value;
   }
 
   /**
