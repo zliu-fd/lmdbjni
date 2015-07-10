@@ -184,9 +184,9 @@ Using a memory pool to make native memory allocations more efficient:
 
 ### Zero copy usage
 
-The safest (and least efficient) approach for interacting with LMDB JNI is using buffer copy using JNI as shown above. [BufferCursor](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/BufferCursor.html) is an advanced, more efficient, zero copy mode. This mode is not available on Android.
+The safest (and least efficient) approach for interacting with LMDB JNI is using buffer copy as shown above. [BufferCursor](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/BufferCursor.html) is an advanced, more efficient, zero copy mode. This mode is not available on Android.
 
-*There is also DirectBuffer which is even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc.*
+*There are also a methods that give access to DirectBuffer which are even more advanced but users should avoid interacting directly with these and use the BufferCursor API instead. Otherwise take extra care of buffer memory address+size and byte ordering. Mistakes may lead to SIGSEGV or unpredictable key ordering etc.*
 
 ```java
  // read only
