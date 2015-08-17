@@ -142,7 +142,7 @@ Performing [transactional](http://deephacks.org/lmdbjni/apidocs/org/fusesource/l
  }
 ```
 
-Working against a snapshot view of the database.
+Working against a snapshot view of the database using cursors.
 
 ```java
  // create a read-only transaction...
@@ -150,8 +150,40 @@ Working against a snapshot view of the database.
    
    // All read operations will now use the same 
    // consistent view of the data.
-   ... = db.db.openCursor(tx);
+   ... = db.openCursor(tx);
    ... = db.get(tx, bytes("Tampa"));
+ }
+```
+
+A cursor in a write-transaction can be closed before its
+transaction ends, and will otherwise be closed when its
+transaction ends. A cursor must not be used after its transaction
+is closed. Both these try blocks may SIGSEGV.
+
+```java
+ try (Transaction tx = env.createWriteTransaction();
+      Cursor cursor = db.openCursor(tx)) {
+   ...
+   tx.commit();
+ }
+
+ try (Transaction tx = env.createWriteTransaction();
+      EntryIterator it = db.iterate(tx)) {
+   ...
+   tx.commit();
+ }
+```
+
+A cursor in a read-only transaction must be closed explicitly,
+before or after its transaction ends. Both these try blocks are fine.
+
+```java
+ try (Transaction tx = env.createReadTransaction();
+      Cursor cursor = db.openCursor(tx)) {
+ }
+
+ try (Transaction tx = env.createReadTransaction();
+      EntryIterator it = db.iterate(tx)) {
  }
 ```
 
