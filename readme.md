@@ -158,7 +158,7 @@ Working against a snapshot view of the database using cursors.
 A cursor in a write-transaction can be closed before its
 transaction ends, and will otherwise be closed when its
 transaction ends. A cursor must not be used after its transaction
-is closed. Both these try blocks may SIGSEGV.
+is closed. Both these try blocks are ***unsafe*** and may SIGSEGV.
 
 ```java
  try (Transaction tx = env.createWriteTransaction();
@@ -175,7 +175,7 @@ is closed. Both these try blocks may SIGSEGV.
 ```
 
 A cursor in a read-only transaction must be closed explicitly,
-before or after its transaction ends. Both these try blocks are fine.
+before or after its transaction ends. Both these try blocks are safe.
 
 ```java
  try (Transaction tx = env.createReadTransaction();
