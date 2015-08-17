@@ -107,27 +107,28 @@ Recommended package imports.
 Iterating and seeking key/values forward and backward.
 
 ```java
-try (EntryIterator it = db.iterate()) {
+Transaction tx = env.createReadTransaction();
+try (EntryIterator it = db.iterate(tx)) {
   for (Entry next : it.iterable()) {
   }
 }
 
-try (EntryIterator it = db.iterateBackward()) {
+try (EntryIterator it = db.iterateBackward(tx)) {
   for (Entry next : it.iterable()) {
   }
 }
 
 byte[] key = bytes("London");
-try (EntryIterator it = db.seek(key)) {
+try (EntryIterator it = db.seek(tx, key)) {
   for (Entry next : it.iterable()) {
   }
 }
 
-try (EntryIterator it = db.seekBackward(key))) {
+try (EntryIterator it = db.seekBackward(tx, key))) {
   for (Entry next : it.iterable()) {
   }
 }
-
+tx.abort();
 ```
 
 Performing [transactional](http://deephacks.org/lmdbjni/apidocs/org/fusesource/lmdbjni/Transaction.html) updates.
@@ -216,20 +217,22 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
  }
  
  // open for write
- try (Transaction tx = env.createWriteTransaction(); 
-      BufferCursor cursor = db.bufferCursor(tx)) {
-   cursor.first();
-   // write utf-8 ending with NULL byte
-   cursor.keyWriteUtf8("England");
-   cursor.valWriteUtf8("London");
-   // overwrite existing item if any. Data is not written
-   // into database before this operation is called and
-   // no updates are visible outside this transaction until
-   // the transaction is committed
-   cursor.overwrite();
-   cursor.first();
-   // delete current cursor position
-   curstor.delete();
+ try (Transaction tx = env.createWriteTransaction()) {
+   // cursors must close before write transactions!
+   try (BufferCursor cursor = db.bufferCursor(tx)) {
+     cursor.first();
+     // write utf-8 ending with NULL byte
+     cursor.keyWriteUtf8("England");
+     cursor.valWriteUtf8("London");
+     // overwrite existing item if any. Data is not written
+     // into database before this operation is called and
+     // no updates are visible outside this transaction until
+     // the transaction is committed
+     cursor.overwrite();
+     cursor.first();
+     // delete current cursor position
+     cursor.delete();
+   }
    // commit changes or try-with-resources will auto-abort
    tx.commit();
  } 
