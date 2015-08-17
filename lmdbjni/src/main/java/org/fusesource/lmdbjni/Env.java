@@ -416,6 +416,10 @@ public class Env extends NativeObject implements AutoCloseable {
    * <p/>
    * The transaction handle may be discarded using #mdb_txn_abort() or #mdb_txn_commit().
    *
+   * A transaction and its cursors must only be used by a single thread, and a thread may
+   * only have a single transaction at a time. If MDB_NOTLS is in use, this does not apply
+   * to read-only transactions. Cursors may not span transactions.
+   *
    * @param parent   If this parameter is non-NULL, the new transaction
    *                 will be a nested transaction, with the transaction indicated by \b parent
    *                 as its parent. Transactions may be nested to any level. A parent
