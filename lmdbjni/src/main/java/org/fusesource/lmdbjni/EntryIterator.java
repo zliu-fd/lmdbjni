@@ -85,7 +85,7 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
     cursor.close();
   }
 
-  static enum IteratorType {
+  enum IteratorType {
     FORWARD, BACKWARD
   }
 }

@@ -50,7 +50,6 @@ public class ByteString {
 
   @Override
   public int hashCode() {
-    int result = getString() != null ? getString().hashCode() : 0;
-    return result;
+    return getString() != null ? getString().hashCode() : 0;
   }
 }

@@ -309,9 +309,7 @@ public class BufferCursor implements AutoCloseable {
     keyWriteIndex = 0;
     valWriteIndex = 0;
     int rc = cursor.put(k, v, Constants.APPEND);
-    if (rc == 0) {
-      return;
-    } else {
+    if (rc != 0) {
       String msg = Util.string(mdb_strerror(rc));
       throw new LMDBException(msg, rc);
     }

@@ -7,12 +7,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Comparator;
 
-import static org.fusesource.lmdbjni.Bytes.fromLong;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 
 public class ComparatorTest {

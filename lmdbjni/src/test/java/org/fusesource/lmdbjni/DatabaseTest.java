@@ -8,8 +8,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Comparator;
 
 import static org.fusesource.lmdbjni.Bytes.fromLong;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,7 +24,6 @@ public class DatabaseTest {
 
   Env env;
   Database db;
-  byte[] data = new byte[] {1,2,3};
 
   @Before
   public void before() throws IOException {
