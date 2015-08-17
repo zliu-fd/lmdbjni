@@ -4,7 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Iterator for entries.
+ * Iterator for entries that follow the same semantics as Cursors
+ * with regards to read and write transactions and how they are closed.
  * <p/>
  * <pre>
  * {@code
