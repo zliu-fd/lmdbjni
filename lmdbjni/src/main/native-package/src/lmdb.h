@@ -49,11 +49,16 @@
  *	  stale locks can block further operation.
  *
  *	  Fix: Check for stale readers periodically, using the
- *	  #mdb_reader_check function or the \ref mdb_stat_1 "mdb_stat" tool. Or just
- *	  make all programs using the database close it; the lockfile
- *	  is always reset on first open of the environment.
+ *	  #mdb_reader_check function or the \ref mdb_stat_1 "mdb_stat" tool.
+ *	  Stale writers will be cleared automatically on most systems:
+ *	  - Windows - automatic
+ *	  - BSD, systems using SysV semaphores - automatic
+ *	  - Linux, systems using POSIX mutexes with Robust option - automatic
+ *	  Otherwise just make all programs using the database close it;
+ *	  the lockfile is always reset on first open of the environment.
  *
- *	- On BSD systems or others configured with MDB_USE_POSIX_SEM,
+ *	- On BSD systems or others configured with MDB_USE_SYSV_SEM or
+ *	  MDB_USE_POSIX_SEM,
  *	  startup can fail due to semaphores owned by another userid.
  *
  *	  Fix: Open and close the database as the user which owns the
@@ -105,6 +110,9 @@
  *	  The transaction becomes "long-lived" as above until a check
  *	  for stale readers is performed or the lockfile is reset,
  *	  since the process may not remove it from the lockfile.
+ *
+ *	  This does not apply to write transactions if the system clears
+ *	  stale writers, see above.
  *
  *	- If you do that anyway, do a periodic check for stale readers. Or
  *	  close the environment once in a while, so the lockfile can get reset.
@@ -184,7 +192,7 @@ typedef int mdb_filehandle_t;
 /** Library minor version */
 #define MDB_VERSION_MINOR	9
 /** Library patch version */
-#define MDB_VERSION_PATCH	15
+#define MDB_VERSION_PATCH	16
 
 /** Combine args a,b,c into a single integer for easy version comparisons */
 #define MDB_VERINT(a,b,c)	(((a) << 24) | ((b) << 16) | (c))
@@ -194,7 +202,7 @@ typedef int mdb_filehandle_t;
 	MDB_VERINT(MDB_VERSION_MAJOR,MDB_VERSION_MINOR,MDB_VERSION_PATCH)
 
 /** The release date of this library version */
-#define MDB_VERSION_DATE	"June 19, 2015"
+#define MDB_VERSION_DATE	"August 14, 2015"
 
 /** A stringifier for the version info */
 #define MDB_VERSTR(a,b,c,d)	"LMDB " #a "." #b "." #c ": (" d ")"
@@ -391,7 +399,7 @@ typedef enum MDB_cursor_op {
 #define MDB_PAGE_NOTFOUND	(-30797)
 	/** Located page was wrong type */
 #define MDB_CORRUPTED	(-30796)
-	/** Update of meta page failed, probably I/O error */
+	/** Update of meta page failed or environment had fatal error */
 #define MDB_PANIC		(-30795)
 	/** Environment version mismatch */
 #define MDB_VERSION_MISMATCH	(-30794)
@@ -413,11 +421,18 @@ typedef enum MDB_cursor_op {
 #define MDB_PAGE_FULL	(-30786)
 	/** Database contents grew beyond environment mapsize */
 #define MDB_MAP_RESIZED	(-30785)
-	/** MDB_INCOMPATIBLE: Operation and DB incompatible, or DB flags changed */
+	/** Operation and DB incompatible, or DB type changed. This can mean:
+	 *	<ul>
+	 *	<li>The operation expects an #MDB_DUPSORT / #MDB_DUPFIXED database.
+	 *	<li>Opening a named DB when the unnamed DB has #MDB_DUPSORT / #MDB_INTEGERKEY.
+	 *	<li>Accessing a data record as a database, or vice versa.
+	 *	<li>The database was dropped and recreated with different flags.
+	 *	</ul>
+	 */
 #define MDB_INCOMPATIBLE	(-30784)
 	/** Invalid reuse of reader locktable slot */
 #define MDB_BAD_RSLOT		(-30783)
-	/** Transaction cannot recover - it must be aborted */
+	/** Transaction must abort, has a child, or is invalid */
 #define MDB_BAD_TXN			(-30782)
 	/** Unsupported size of key/DB name/data, or wrong DUPFIXED size */
 #define MDB_BAD_VALSIZE		(-30781)
@@ -923,6 +938,10 @@ int  mdb_env_set_assert(MDB_env *env, MDB_assert_func *func);
 	 * <ul>
 	 *	<li>#MDB_RDONLY
 	 *		This transaction will not perform any write operations.
+	 *	<li>#MDB_NOSYNC
+	 *		Don't flush system buffers to disk when committing this transaction.
+	 *	<li>#MDB_NOMETASYNC
+	 *		Flush system buffers but omit metadata flush when committing this transaction.
 	 * </ul>
 	 * @param[out] txn Address where the new #MDB_txn handle will be stored
 	 * @return A non-zero error value on failure and 0 on success. Some possible
@@ -945,6 +964,17 @@ int  mdb_txn_begin(MDB_env *env, MDB_txn *parent, unsigned int flags, MDB_txn **
 	 * @param[in] txn A transaction handle returned by #mdb_txn_begin()
 	 */
 MDB_env *mdb_txn_env(MDB_txn *txn);
+
+	/** @brief Return the transaction's ID.
+	 *
+	 * This returns the identifier associated with this transaction. For a
+	 * read-only transaction, this corresponds to the snapshot being read;
+	 * concurrent readers will frequently have the same transaction ID.
+	 *
+	 * @param[in] txn A transaction handle returned by #mdb_txn_begin()
+	 * @return A transaction ID, valid if input is an active transaction.
+	 */
+size_t mdb_txn_id(MDB_txn *txn);
 
 	/** @brief Commit all the operations of a transaction into the database.
 	 *
@@ -1034,8 +1064,9 @@ int  mdb_txn_renew(MDB_txn *txn);
 	 * any other transaction in the process may use this function.
 	 *
 	 * To use named databases (with name != NULL), #mdb_env_set_maxdbs()
-	 * must be called before opening the environment.  Database names
-	 * are kept as keys in the unnamed database.
+	 * must be called before opening the environment.  Database names are
+	 * keys in the unnamed database, and may be read but not written.
+	 *
 	 * @param[in] txn A transaction handle returned by #mdb_txn_begin()
 	 * @param[in] name The name of the database to open. If only a single
 	 * 	database is needed in the environment, this value may be NULL.
