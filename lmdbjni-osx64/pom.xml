@@ -25,11 +25,11 @@ limitations under the License.
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.4.3-SNAPSHOT</version>
+    <version>0.4.3</version>
   </parent>
 
   <artifactId>lmdbjni-osx64</artifactId>
-  <version>0.4.3-SNAPSHOT</version>
+  <version>0.4.3</version>
 
   <name>${project.artifactId}</name>
   <description>The lmdbjni osx 64 bit native libraries</description>
@@ -38,7 +38,7 @@ limitations under the License.
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
-      <version>0.4.3-SNAPSHOT</version>
+      <version>0.4.3</version>
     </dependency>
   </dependencies>
 
@@ -71,7 +71,7 @@ limitations under the License.
           <nativeSrcDependency>
             <groupId>org.deephacks.lmdbjni</groupId>
             <artifactId>lmdbjni</artifactId>
-            <version>0.4.3-SNAPSHOT</version>
+            <version>0.4.3</version>
             <classifier>native-src</classifier>
             <type>zip</type>
           </nativeSrcDependency>
