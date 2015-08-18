@@ -40,6 +40,21 @@ public class Transaction extends NativeObject implements Closeable {
 
   /**
    * <p>
+   *  Return the transaction's ID.
+   * </p>
+   *
+   * This returns the identifier associated with this transaction. For a
+   * read-only transaction, this corresponds to the snapshot being read;
+   * concurrent readers will frequently have the same transaction ID.
+   *
+   * @return A transaction ID, valid if input is an active transaction.
+   */
+  public long getId() {
+    return mdb_txn_id(pointer());
+  }
+
+  /**
+   * <p>
    *  Renew a read-only transaction.
    * </p>
    *

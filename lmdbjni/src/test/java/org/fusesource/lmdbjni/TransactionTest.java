@@ -7,10 +7,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 public class TransactionTest {
   static {
@@ -22,7 +23,7 @@ public class TransactionTest {
 
   Env env;
   Database db;
-  byte[] data = new byte[] {1,2,3};
+  byte[] data = new byte[]{1, 2, 3};
 
   @Before
   public void before() throws IOException {
@@ -35,6 +36,21 @@ public class TransactionTest {
   public void after() {
     db.close();
     env.close();
+  }
+
+  @Test
+  public void testGetId() throws Exception {
+    final AtomicLong tx1 = new AtomicLong();
+    final AtomicLong tx2 = new AtomicLong();
+    try (Transaction tx = env.createReadTransaction()) {
+      tx1.set(tx.getId());
+    }
+    db.put(new byte[] {1}, new byte[]{2});
+    try (Transaction tx = env.createReadTransaction()) {
+      tx2.set(tx.getId());
+    }
+    // should not see the same snapshot
+    assertThat(tx1.get(), is(not(tx2.get())));
   }
 
   @Test
