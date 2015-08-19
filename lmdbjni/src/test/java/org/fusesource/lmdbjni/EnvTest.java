@@ -119,7 +119,7 @@ public class EnvTest {
         assertThat(info.getNumReaders(), is(0L));
 
         assertThat(env.getMaxReaders(), is(126L));
-        assertThat(env.getFlags(), is(Constants.CREATE));
+        assertThat(env.getFlags(), is(0b11_0000_0000_0100_0000_0000_0000_0000));
       }
     }
   }
