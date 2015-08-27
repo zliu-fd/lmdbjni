@@ -24,6 +24,10 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
    Multithreaded read performance for a purely in-memory database.
 
+* [In-Memory Microbenchmark (Scaling/NUMA)](http://symas.com/mdb/inmem/scale2/), September 2014
+ 
+   Same as above showing performance improvements with  `numactl --interleave=all` enabled.
+
 * [On-Disk Microbenchmark](http://symas.com/mdb/ondisk), November 2014
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
