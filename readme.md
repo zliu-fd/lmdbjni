@@ -14,6 +14,10 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
  * [LMDB source code](https://gitorious.org/mdb/mdb/source/libraries/liblmdb)
  * [LMDB JNI JavaDoc](http://deephacks.org/lmdbjni/apidocs/index.html)
 
+### Google groups
+
+* https://groups.google.com/forum/#!forum/lmdbjni
+
 ### Presentations
  * [LDAP at Lightning Speed, Jul 05, 2015](http://www.infoq.com/presentations/lmdb)
  * [The Lightning Memory-Mapped Database, Jun 24, 2013](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
@@ -274,11 +278,6 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
  } 
 
 ```
-
-### Google groups
-
-* https://groups.google.com/forum/#!forum/lmdbjni
-
 ### License
 
 This project is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) but the binary jar it produces also includes `liblmdb` library version 0.9.14 of the OpenLDAP project which is licensed under the [The OpenLDAP Public License](http://www.openldap.org/software/release/license.html).
