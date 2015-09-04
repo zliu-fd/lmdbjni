@@ -38,7 +38,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 * [RxLMDB benchmarks] (https://github.com/deephacks/RxLMDB), July 2015
 
-   Benchmarks using [RxJava](https://github.com/ReactiveX/RxJava) and LMDB comparing zero copy and various serialization mechanisms.
+   Benchmarks using [RxJava](https://github.com/ReactiveX/RxJava) and LMDB comparing zero copy, various serialization mechanisms and parallel scans.
 
 * [LMDB JNI Microbenchmark](http://pastebin.com/3huizUps), February 2015 ([source](https://github.com/deephacks/lmdbjni/blob/master/jmh/src/main/java/org/fusesource/lmdbjni/Iteration.java))
    
