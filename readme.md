@@ -36,6 +36,10 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
    Multithreaded read performance for a database that is over 5 times larger than the size of RAM.
 
+* [RxLMDB benchmarks] (https://github.com/deephacks/RxLMDB), July 2015
+
+   Benchmarks using RxJava and LMDB comparing zero copy and various serialization mechanisms.
+
 * [LMDB JNI Microbenchmark](http://pastebin.com/3huizUps), February 2015 ([source](https://github.com/deephacks/lmdbjni/blob/master/jmh/src/main/java/org/fusesource/lmdbjni/Iteration.java))
    
   Row scanning speed per second compared with the Java ports of [RocksDB](https://github.com/facebook/rocksdb), [LevelDB](https://github.com/dain/leveldb) and [MapDB](https://github.com/jankotek/MapDB).
