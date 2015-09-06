@@ -87,10 +87,13 @@ public class Constants {
    */
   public static final int DUPFIXED = MDB_DUPFIXED;
 
-  /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT}, use reverse string dups */
+  /**
+   * with {@link org.fusesource.lmdbjni.Constants#DUPSORT}, dups are
+   * {@link org.fusesource.lmdbjni.Constants#INTEGERKEY}-style integers
+   */
   public static final int INTEGERDUP = MDB_INTEGERDUP;
 
-  /** create DB if not already existing */
+  /** with {@link org.fusesource.lmdbjni.Constants#DUPSORT}, use reverse string dups */
   public static final int REVERSEDUP = MDB_REVERSEDUP;
 
   /** create DB if not already existing */
