@@ -31,15 +31,13 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
  * @author <a href="http://hiramchirino.com">Hiram Chirino</a>
  */
 public class Cursor extends NativeObject implements AutoCloseable {
-  final DirectBuffer buffer;
-  final long bufferAddress;
-  final boolean isReadOnly;
+  DirectBuffer buffer;
+  long bufferAddress;
+  boolean isReadOnly;
 
   Cursor(long self, boolean isReadOnly) {
     super(self);
     this.isReadOnly = isReadOnly;
-    this.buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
-    this.bufferAddress = buffer.addressOffset();
   }
 
   /**
@@ -90,6 +88,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
    */
   public Entry get(GetOp op) {
     checkArgNotNull(op, "op");
+
     Value key = new Value();
     Value value = new Value();
     int rc = mdb_cursor_get(pointer(), key, value, op.getValue());
@@ -104,6 +103,10 @@ public class Cursor extends NativeObject implements AutoCloseable {
    * @see org.fusesource.lmdbjni.Cursor#get(GetOp)
    */
   public int position(DirectBuffer key, DirectBuffer value, GetOp op) {
+    if (buffer == null) {
+      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      bufferAddress = buffer.addressOffset();
+    }
     checkArgNotNull(op, "op");
     int rc = mdb_cursor_get_address(pointer(), bufferAddress, bufferAddress + 2 * Unsafe.ADDRESS_SIZE, op.getValue());
     if (rc == MDB_NOTFOUND) {
@@ -122,6 +125,10 @@ public class Cursor extends NativeObject implements AutoCloseable {
     checkArgNotNull(key, "key");
     checkArgNotNull(value, "value");
     checkArgNotNull(op, "op");
+    if (buffer == null) {
+      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      bufferAddress = buffer.addressOffset();
+    }
     Unsafe.putLong(bufferAddress, 0, key.capacity());
     Unsafe.putLong(bufferAddress, 1, key.addressOffset());
 
@@ -240,6 +247,10 @@ public class Cursor extends NativeObject implements AutoCloseable {
   public int put(DirectBuffer key, DirectBuffer value, int flags) {
     checkArgNotNull(key, "key");
     checkArgNotNull(value, "value");
+    if (buffer == null) {
+      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      bufferAddress = buffer.addressOffset();
+    }
     Unsafe.putLong(bufferAddress, 0, key.capacity());
     Unsafe.putLong(bufferAddress, 1, key.addressOffset());
     Unsafe.putLong(bufferAddress, 2, value.capacity());
