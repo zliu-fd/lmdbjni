@@ -19,6 +19,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 * https://groups.google.com/forum/#!forum/lmdbjni
 
 ### Presentations
+ * [Databaseology lecture series at Carnegie-Mellon University, Oct 08, 2015](http://cmudb.io/lectures2015-lmdb)
  * [LDAP at Lightning Speed, Jul 05, 2015](http://www.infoq.com/presentations/lmdb)
  * [The Lightning Memory-Mapped Database, Jun 24, 2013](https://www.parleys.com/play/517f58f9e4b0c6dcd95464ae/)
 
