@@ -95,14 +95,8 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 ### Build from source
 
-- Debian
+See [building from source](https://github.com/deephacks/lmdbjni/wiki/Building-from-source) on wiki.
 
-```bash 
-$ sudo apt-get install build-essential automake1.10 libtool
-$ sudo apt-get update
-$ git clone https://github.com/deephacks/lmdbjni
-$ cd lmdbjni && mvn clean install -P linux64
-```
 ### Usage
 
 Recommended package imports.
