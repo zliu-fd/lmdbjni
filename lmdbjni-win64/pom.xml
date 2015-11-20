@@ -14,17 +14,7 @@
   <name>${project.artifactId}</name>
   <description>The lmdbjni Windows 64 bit native libraries</description>
 
-  <properties>
-    <lmdb-home>${project.build.directory}/lmdb/META-INF/native/lmdb-win64</lmdb-home>
-  </properties>
-
   <dependencies>
-    <dependency>
-      <groupId>org.deephacks.lmdb</groupId>
-      <artifactId>lmdb-win64</artifactId>
-      <version>0.1.2</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.deephacks.lmdbjni</groupId>
       <artifactId>lmdbjni</artifactId>
@@ -34,56 +24,13 @@
 
   <build>
     <testSourceDirectory>${basedir}/../lmdbjni/src/test/java</testSourceDirectory>
-
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.8</version>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.deephacks.lmdb</groupId>
-                  <artifactId>lmdb-win64</artifactId>
-                  <version>0.1.2</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/lmdb</outputDirectory>
-                  <includes>META-INF/**</includes>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.1</version>
         <configuration>
           <classesDirectory>${basedir}/target/generated-sources/hawtjni/lib</classesDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkMode>once</forkMode>
-          <environmentVariables>
-            <LD_LIBRARY_PATH>${lmdb-home}</LD_LIBRARY_PATH>
-          </environmentVariables>
-          <systemProperties>
-            <property>
-              <name>java.library.tmpdir</name>
-              <value>${lmdb-home}</value>
-            </property>
-          </systemProperties>
         </configuration>
       </plugin>
       <plugin>
