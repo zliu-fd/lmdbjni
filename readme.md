@@ -12,7 +12,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 ### Documentation
  * [LMDB C API reference](http://symas.com/mdb/doc/group__internal.html)
  * [LMDB source code](https://github.com/LMDB/lmdb)
- * [LMDB JNI JavaDoc](http://deephacks.org/lmdbjni/apidocs/index.html)
+ * [LMDB JNI JavaDoc](http://deephacks.github.io/lmdbjni/)
 
 ### Google groups
 
