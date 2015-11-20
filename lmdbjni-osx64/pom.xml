@@ -44,7 +44,7 @@ limitations under the License.
 
   <build>
     <testSourceDirectory>${basedir}/../lmdbjni/src/test/java</testSourceDirectory>
-
+    <sourceDirectory>${basedir}/../lmdbjni/src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
