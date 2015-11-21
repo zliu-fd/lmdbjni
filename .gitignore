@@ -17,3 +17,4 @@ test-data
 release.properties
 cov-int
 *.tgz
+dependency-reduced-pom.xml
