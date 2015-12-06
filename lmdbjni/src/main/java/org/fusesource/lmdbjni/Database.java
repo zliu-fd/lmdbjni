@@ -74,11 +74,11 @@ public class Database extends NativeObject implements AutoCloseable {
     }
   }
 
-  public MDB_stat stat(Transaction tx) {
+  public Stat stat(Transaction tx) {
     checkArgNotNull(tx, "tx");
     MDB_stat rc = new MDB_stat();
     mdb_stat(tx.pointer(), pointer(), rc);
-    return rc;
+    return new Stat(rc);
   }
 
   /**
