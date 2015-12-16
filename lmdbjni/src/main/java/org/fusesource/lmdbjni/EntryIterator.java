@@ -20,6 +20,7 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
   private final Cursor cursor;
   private final IteratorType type;
   private final byte[] key;
+  private State state = State.NOT_READY;
 
   EntryIterator(Cursor cursor, byte[] key, IteratorType type) {
     this.cursor = cursor;
@@ -27,11 +28,26 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
     this.key = key;
   }
 
+  private enum State {
+    READY, NOT_READY, DONE, FAILED,
+  }
+
   private Entry entry;
   private boolean first = true;
 
   @Override
   public boolean hasNext() {
+    switch (state) {
+      case DONE:
+        return false;
+      case READY:
+        return true;
+      default:
+    }
+    return tryToComputeNext();
+  }
+
+  private boolean tryToComputeNext() {
     if (first) {
       if (key != null) {
         this.entry = cursor.seek(SeekOp.RANGE, key);
@@ -44,6 +60,7 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
       }
       first = false;
       if (entry == null) {
+        state = State.DONE;
         return false;
       }
     } else {
@@ -53,18 +70,23 @@ public class EntryIterator implements Iterator<Entry>, AutoCloseable {
         this.entry = cursor.get(GetOp.PREV);
       }
       if (entry == null) {
+        state = State.DONE;
         return false;
       }
     }
+    state = State.READY;
     return true;
   }
 
   @Override
   public Entry next() throws NoSuchElementException {
-    if (entry == null) {
+    if (!hasNext()) {
       throw new NoSuchElementException();
     }
-    return entry;
+    state = State.NOT_READY;
+    Entry result = entry;
+    entry = null;
+    return result;
   }
 
   @Override
