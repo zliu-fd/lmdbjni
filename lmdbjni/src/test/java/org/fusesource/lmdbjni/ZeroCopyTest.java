@@ -8,7 +8,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.fusesource.lmdbjni.Constants.FIRST;
@@ -16,6 +15,7 @@ import static org.fusesource.lmdbjni.Constants.NEXT;
 import static org.fusesource.lmdbjni.LMDBException.NOTFOUND;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class ZeroCopyTest {
@@ -165,8 +165,8 @@ public class ZeroCopyTest {
 
   @Test
   public void testReserve() {
-    byte[] key = new byte[] {1,2,3};
-    byte[] val = new byte[] {3,2,1};
+    byte[] key = new byte[]{1, 2, 3};
+    byte[] val = new byte[]{3, 2, 1};
 
     try (Transaction tx = env.createWriteTransaction()) {
       DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
@@ -180,5 +180,43 @@ public class ZeroCopyTest {
       byte[] result = db.get(tx, key);
       assertArrayEquals(result, val);
     }
+  }
+
+  @Test
+  public void testReserveCursor() {
+    byte[] key = new byte[]{1, 1, 1};
+    byte[] val = new byte[]{3, 3, 3};
+
+    try (Transaction tx = env.createWriteTransaction()) {
+      try (Cursor cursor = db.openCursor(tx)) {
+        DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
+        keyBuf.putBytes(0, key);
+        DirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
+        valBuf.putBytes(0, val);
+      }
+      tx.commit();
+    }
+
+    try (Transaction tx = env.createReadTransaction()) {
+      byte[] result = db.get(tx, key);
+      assertArrayEquals(result, val);
+    }
+  }
+
+  @Test
+  public void testReserveCursorRollback() {
+    byte[] key = new byte[]{1, 1, 1};
+    byte[] val = new byte[]{3, 3, 3};
+
+    Transaction tx = env.createWriteTransaction();
+    Cursor cursor = db.openCursor(tx);
+    DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
+    keyBuf.putBytes(0, key);
+    DirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
+    valBuf.putBytes(0, val);
+    tx.abort();
+
+    byte[] result = db.get(key);
+    assertNull(result);
   }
 }
