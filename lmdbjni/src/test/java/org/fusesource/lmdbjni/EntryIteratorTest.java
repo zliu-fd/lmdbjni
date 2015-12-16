@@ -7,9 +7,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class EntryIteratorTest {
@@ -50,6 +52,7 @@ public class EntryIteratorTest {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
+      assertFalse(it.hasNext());
       assertTrue(keys.isEmpty());
     }
   }
@@ -61,6 +64,7 @@ public class EntryIteratorTest {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
+      assertFalse(it.hasNext());
       assertTrue(keys.isEmpty());
     }
   }
@@ -77,6 +81,7 @@ public class EntryIteratorTest {
         Entry next = it.next();
         assertArrayEquals(keys.pollFirst(), next.getKey());
       }
+      assertFalse(it.hasNext());
       assertTrue(keys.isEmpty());
     }
   }
@@ -92,6 +97,7 @@ public class EntryIteratorTest {
         Entry next = it.next();
         assertArrayEquals(keys.pollLast(), next.getKey());
       }
+      assertFalse(it.hasNext());
       assertTrue(keys.isEmpty());
     }
   }
@@ -99,9 +105,11 @@ public class EntryIteratorTest {
   @Test
   public void testIterable() {
     try (Transaction tx = env.createReadTransaction(); EntryIterator it = db.iterate(tx)) {
-      for (Entry next : it.iterable()) {
-        assertArrayEquals(keys.pollFirst(), next.getKey());
+      Iterator<Entry> iterator = it.iterable().iterator();
+      while (iterator.hasNext()) {
+        assertArrayEquals(keys.pollFirst(), iterator.next().getKey());
       }
+      assertFalse(iterator.hasNext());
     }
     assertTrue(keys.isEmpty());
   }
