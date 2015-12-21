@@ -243,44 +243,56 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
  try (Transaction tx = env.createReadTransaction(); 
       BufferCursor cursor = db.bufferCursor(tx)) {
    // iterate from first item and forwards
-   cursor.first();
-   while(cursor.next()) {
-     // read a position in buffer
-     cursor.keyByte(0);
-     cursor.valByte(0);
+   if (cursor.first()) {
+     do {
+       // read a position in buffer
+       cursor.keyByte(0);
+       cursor.valByte(0);
+     } while(cursor.next());
    }
 
    // iterate from last item and backwards
-   cursor.last();
-   while(cursor.prev()) {
-     // copy entire buffer
-     cursor.keyBytes();
-     cursor.valBytes();
+   if (cursor.last()) {
+     do {
+       // copy entire buffer
+       cursor.keyBytes();
+       cursor.valBytes();
+     } while(cursor.prev());
+   }
+   
+   // find entry matching exactly the provided key
+   cursor.keyWriteBytes(bytes("Paris"));
+   if (cursor.seekKey()) {
+     // read utf-8 string from position until NULL byte
+     cursor.valUtf8(0);
    }
 
    // find first key greater than or equal to specified key.
-   cursor.seek(bytes("London"));
-   // read utf-8 string from position until NULL byte
-   cursor.keyUtf8(0);
-   cursor.valUtf8(0);
+   cursor.keyWriteBytes(bytes("London"));
+   if (cursor.seekRange()) {
+     // read utf-8 string from position until NULL byte
+     cursor.keyUtf8(0);
+     cursor.valUtf8(0);
+   }
  }
  
  // open for write
  try (Transaction tx = env.createWriteTransaction()) {
    // cursors must close before write transactions!
    try (BufferCursor cursor = db.bufferCursor(tx)) {
-     cursor.first();
-     // write utf-8 ending with NULL byte
-     cursor.keyWriteUtf8("England");
-     cursor.valWriteUtf8("London");
-     // overwrite existing item if any. Data is not written
-     // into database before this operation is called and
-     // no updates are visible outside this transaction until
-     // the transaction is committed
-     cursor.overwrite();
-     cursor.first();
-     // delete current cursor position
-     cursor.delete();
+     if (cursor.first()) {
+       // write utf-8 ending with NULL byte
+       cursor.keyWriteUtf8("England");
+       cursor.valWriteUtf8("London");
+       // overwrite existing item if any. Data is not written
+       // into database before this operation is called and
+       // no updates are visible outside this transaction until
+       // the transaction is committed
+       cursor.overwrite();
+       cursor.first();
+       // delete current cursor position
+       cursor.delete();
+     }
    }
    // commit changes or try-with-resources will auto-abort
    tx.commit();
