@@ -154,6 +154,24 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
+   * Returns the current length of the cursor key (the key being written, before overwriting the database one)
+   *
+   * @return the current length of the cursor key (the key being written, before overwriting the database one)
+   */
+  public int cursorKeyIndex() {
+	  return keyWriteIndex;
+  }
+
+  /**
+   * Returns the current length of the cursor value (the value being written, before overwriting the database one)
+   *
+   * @return the current length of the cursor value (the value being written, before overwriting the database one)
+   */
+  public int cursorValIndex() {
+	  return valWriteIndex;
+  }
+
+  /**
    * Position at the exact provided key.
    *
    * @return true if a key was found.
@@ -383,6 +401,20 @@ public class BufferCursor implements AutoCloseable {
    * Write data to key at current cursor position and
    * move write index forward.
    *
+   * @param data boolean
+   * @return this
+   */
+  public BufferCursor keyWriteBoolean(boolean data) {
+    setSafeKeyMemoryLocation();
+    this.key.putByte(keyWriteIndex, data ? (byte)1 : (byte)0);
+    keyWriteIndex += 1;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
    * @param data byte
    * @return this
    */
@@ -496,6 +528,22 @@ public class BufferCursor implements AutoCloseable {
    * Write data to key at current cursor position and
    * move write index forward.
    *
+   * @param data byte array
+   * @param offset the start offset in the data
+   * @param length the number of bytes to write
+   * @return this
+   */
+  public BufferCursor keyWriteBytes(byte[] data, int offset, int length) {
+    setSafeKeyMemoryLocation();
+    this.key.putBytes(keyWriteIndex, data, offset, length);
+    keyWriteIndex += length;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
    * @param buffer   buffer
    * @param capacity capacity
    * @return this
@@ -526,6 +574,17 @@ public class BufferCursor implements AutoCloseable {
     } else {
       return 0;
     }
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
+   * @return boolean
+   */
+  public boolean keyBoolean(int pos) {
+    checkForValidPosition();
+    return this.key.getByte(pos) == (byte)1;
   }
 
   /**
@@ -633,6 +692,24 @@ public class BufferCursor implements AutoCloseable {
   public DirectBuffer keyDirectBuffer() {
     checkForValidPosition();
     return key;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
+   * @param data boolean
+   * @return this
+   */
+  public BufferCursor valWriteBoolean(boolean data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
+    setSafeValMemoryLocation();
+    ensureValueWritableBytes(1);
+    this.value.putByte(valWriteIndex, data ? (byte)1 : (byte)0);
+    valWriteIndex += 1;
+    return this;
   }
 
   /**
@@ -784,6 +861,28 @@ public class BufferCursor implements AutoCloseable {
    * Write data to value at current cursor position and
    * move write index forward.
    *
+   * @param data byte array
+  * @param offset the start offset in the data
+  * @param length the number of bytes to write
+   * @return this
+   */
+  public BufferCursor valWriteBytes(byte[] data, int offset, int length) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
+    setSafeValMemoryLocation();
+    ensureValueWritableBytes(length);
+    this.value.putBytes(valWriteIndex, data, offset, length);
+    valWriteIndex += length;
+    return this;
+  }
+
+
+  
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
    * @param buffer   buffer
    * @param capacity capacity
    * @return this
@@ -818,6 +917,17 @@ public class BufferCursor implements AutoCloseable {
     } else {
       return 0;
     }
+  }
+
+  /**
+   * Get data from value at current cursor position.
+   *
+   * @param pos byte position
+   * @return boolean
+   */
+  public boolean valBoolean(int pos) {
+    checkForValidPosition();
+    return this.value.getByte(pos) == (byte)1;
   }
 
   /**
