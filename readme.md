@@ -85,6 +85,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
   <version>${lmdbjni.version}</version>
 </dependency>
 
+<!-- Android 5.0 (API level 21) 64-bit ARM -->
 <dependency>
   <groupId>org.deephacks.lmdbjni</groupId>
   <artifactId>lmdbjni-android</artifactId>
