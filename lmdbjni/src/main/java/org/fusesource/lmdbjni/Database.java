@@ -347,7 +347,9 @@ public class Database extends NativeObject implements AutoCloseable {
   }
 
   /**
-   * Just reserve space for data in the database, don't copy it. Return a pointer to the reserved space.
+   * Just reserve space for data in the database, don't copy it.
+   * 
+   * @return a pointer to the reserved space.
    */
   public DirectBuffer reserve(Transaction tx, DirectBuffer key, int size) {
     checkArgNotNull(key, "key");

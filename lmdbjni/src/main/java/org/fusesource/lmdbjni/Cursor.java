@@ -269,10 +269,9 @@ public class Cursor extends NativeObject implements AutoCloseable {
 
 
   /**
+   * Just reserve space for data in the database, don't copy it.
    *
-   * @param key
-   * @param size
-   * @return
+   * @return a pointer to the reserved space.
    */
   public DirectBuffer reserve(DirectBuffer key, int size) {
     checkArgNotNull(key, "key");
