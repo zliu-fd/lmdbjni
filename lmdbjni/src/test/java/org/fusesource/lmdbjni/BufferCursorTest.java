@@ -495,8 +495,8 @@ public class BufferCursorTest {
           .valWriteBytes(new byte[]{1, 2, 3})
           .valWriteBytes(new byte[]{4, 5, 6}, 1, 1)
           .valWriteUtf8("cba");
-        assertThat(cursor.cursorKeyIndex(), is(34));
-        assertThat(cursor.cursorValIndex(), is(34));
+        assertThat(cursor.keyWriteIndex(), is(34));
+        assertThat(cursor.valWriteIndex(), is(34));
         cursor.overwrite();
       }
       tx.commit();
