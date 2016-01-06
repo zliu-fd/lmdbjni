@@ -879,26 +879,34 @@ public class BufferCursor implements AutoCloseable {
    * Write data to value at current cursor position and
    * move write index forward.
    *
-   * @param buffer   buffer
-   * @param capacity capacity
+   * @param buffer to write from
+   * @param srcIndex position to start in buffer
+   * @param length how many bytes to write
    * @return this
    */
-  public BufferCursor valWrite(DirectBuffer buffer, int capacity) {
+  public BufferCursor valWrite(DirectBuffer buffer, int srcIndex, int length) {
     if (isReadOnly) {
       throw new LMDBException("Read only transaction", LMDBException.EACCES);
     }
     setSafeValMemoryLocation();
-    ensureValueWritableBytes(capacity);
-    this.value.putBytes(valWriteIndex, buffer, 0, capacity);
-    valWriteIndex += capacity;
+    ensureValueWritableBytes(length);
+    this.value.putBytes(valWriteIndex, buffer, srcIndex, length);
+    valWriteIndex += length;
     return this;
+  }
+
+  /**
+   * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int, int)
+   */
+  public BufferCursor valWrite(DirectBuffer buffer, int length) {
+    return valWrite(buffer, 0, length);
   }
 
   /**
    * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int)
    */
   public BufferCursor valWrite(DirectBuffer buffer) {
-    valWrite(buffer, buffer.capacity());
+    valWrite(buffer, 0, buffer.capacity());
     return this;
   }
 
