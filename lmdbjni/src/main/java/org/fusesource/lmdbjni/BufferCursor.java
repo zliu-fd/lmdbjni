@@ -154,20 +154,16 @@ public class BufferCursor implements AutoCloseable {
   }
 
   /**
-   * Returns the current length of the cursor key (the key being written, before overwriting the database one)
-   *
-   * @return the current length of the cursor key (the key being written, before overwriting the database one)
+   * @return the write position of the key
    */
-  public int cursorKeyIndex() {
+  public int keyWriteIndex() {
 	  return keyWriteIndex;
   }
 
   /**
-   * Returns the current length of the cursor value (the value being written, before overwriting the database one)
-   *
-   * @return the current length of the cursor value (the value being written, before overwriting the database one)
+   * @return the write position of the value
    */
-  public int cursorValIndex() {
+  public int valWriteIndex() {
 	  return valWriteIndex;
   }
 
