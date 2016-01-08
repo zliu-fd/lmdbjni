@@ -275,6 +275,9 @@ public class Cursor extends NativeObject implements AutoCloseable {
    */
   public DirectBuffer reserve(DirectBuffer key, int size) {
     checkArgNotNull(key, "key");
+    if (key.byteArray() != null || !key.byteBuffer().isDirect()) {
+      throw new IllegalArgumentException("Key buffer is not direct.");
+    }
     if (buffer == null) {
       buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
       bufferAddress = buffer.addressOffset();
