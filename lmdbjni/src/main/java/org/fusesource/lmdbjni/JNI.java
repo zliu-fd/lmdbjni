@@ -762,4 +762,7 @@ class JNI {
     @JniArg(cast = "MDB_env *") long env);
 
 
+  @JniMethod
+  public static final native int mdb_reader_check(
+    @JniArg(cast = "MDB_env *") long env, @JniArg(cast = "int *") int[] dead);
 }
