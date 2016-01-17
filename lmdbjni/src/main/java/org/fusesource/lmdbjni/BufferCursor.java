@@ -425,6 +425,20 @@ public class BufferCursor implements AutoCloseable {
    * Write data to key at current cursor position and
    * move write index forward.
    *
+   * @param data short
+   * @return this
+   */
+  public BufferCursor keyWriteShort(short data) {
+    setSafeKeyMemoryLocation();
+    this.key.putShort(keyWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    keyWriteIndex += 2;
+    return this;
+  }
+
+  /**
+   * Write data to key at current cursor position and
+   * move write index forward.
+   *
    * @param data int
    * @return this
    */
@@ -598,6 +612,17 @@ public class BufferCursor implements AutoCloseable {
    * Get data from key at current cursor position.
    *
    * @param pos byte position
+   * @return short
+   */
+  public short keyShort(int pos) {
+    checkForValidPosition();
+    return this.key.getShort(pos, ByteOrder.BIG_ENDIAN);
+  }
+
+  /**
+   * Get data from key at current cursor position.
+   *
+   * @param pos byte position
    * @return int
    */
   public int keyInt(int pos) {
@@ -723,6 +748,24 @@ public class BufferCursor implements AutoCloseable {
     ensureValueWritableBytes(1);
     this.value.putByte(valWriteIndex, (byte) data);
     valWriteIndex += 1;
+    return this;
+  }
+
+  /**
+   * Write data to value at current cursor position and
+   * move write index forward.
+   *
+   * @param data short
+   * @return this
+   */
+  public BufferCursor valWriteShort(short data) {
+    if (isReadOnly) {
+      throw new LMDBException("Read only transaction", LMDBException.EACCES);
+    }
+    setSafeValMemoryLocation();
+    ensureValueWritableBytes(4);
+    this.value.putShort(valWriteIndex, data, ByteOrder.BIG_ENDIAN);
+    valWriteIndex += 2;
     return this;
   }
 
@@ -949,6 +992,17 @@ public class BufferCursor implements AutoCloseable {
     if (!validPosition) {
       throw new IndexOutOfBoundsException("Cursor is in an unpositioned state");
     }
+  }
+
+  /**
+   * Get data from value at current cursor position.
+   *
+   * @param pos byte position
+   * @return short
+   */
+  public short valShort(int pos) {
+    checkForValidPosition();
+    return this.value.getShort(pos, ByteOrder.BIG_ENDIAN);
   }
 
   /**
