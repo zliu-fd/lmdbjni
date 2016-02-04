@@ -19,7 +19,7 @@ public enum ByteUnit {
       return sourceUnit.toBytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return count;
     }
 
@@ -50,7 +50,7 @@ public enum ByteUnit {
       return sourceUnit.toKibibytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return multiply(count, KB / B, MAX / (KB / B));
     }
 
@@ -81,7 +81,7 @@ public enum ByteUnit {
       return sourceUnit.toMebibytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return multiply(count, MB / B, MAX / (MB / B));
     }
 
@@ -112,7 +112,7 @@ public enum ByteUnit {
       return sourceUnit.toGibibytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return multiply(count, GB / B, MAX / (GB / B));
     }
 
@@ -143,7 +143,7 @@ public enum ByteUnit {
       return sourceUnit.toTebibytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return multiply(count, TB / B, MAX / (TB / B));
     }
 
@@ -174,7 +174,7 @@ public enum ByteUnit {
       return sourceUnit.toPebibytes(sourceCount);
     }
 
-    public long toBytes(long count) {
+    @Override public long toBytes(long count) {
       return multiply(count, PB / B, MAX / (PB / B));
     }
 
@@ -199,6 +199,15 @@ public enum ByteUnit {
     }
   };
 
+  private static final long B = 1L;
+  private static final long KB = B * 1024L;
+  private static final long MB = KB * 1024L;
+  private static final long GB = MB * 1024L;
+  private static final long TB = GB * 1024L;
+  private static final long PB = TB * 1024L;
+
+  private static final long MAX = Long.MAX_VALUE;
+
   /**
    * Converts the given size in the given unit to bytes. Conversions with arguments that would
    * numerically overflow saturate to {@code Long.MIN_VALUE} if negative or {@code Long.MAX_VALUE}
@@ -208,16 +217,7 @@ public enum ByteUnit {
    * @return the converted count, or {@code Long.MIN_VALUE} if conversion would negatively
    * overflow, or {@code Long.MAX_VALUE} if it would positively overflow.
    */
-  abstract long toBytes(long count);
-
-  private static final long B = 1L;
-  private static final long KB = B * 1024L;
-  private static final long MB = KB * 1024L;
-  private static final long GB = MB * 1024L;
-  private static final long TB = GB * 1024L;
-  private static final long PB = TB * 1024L;
-
-  private static final long MAX = Long.MAX_VALUE;
+  public long toBytes(long count) { throw new AbstractMethodError(); }
 
   /**
    * Converts the given size in the given unit to this unit. Conversions from finer to coarser
