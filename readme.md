@@ -53,6 +53,26 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
   Iteration.mapdb             thrpt   10   1358748.670 ±   87502.413  ops/s
   Iteration.rocksdb           thrpt   10   1311441.804 ±  176129.883  ops/s
    ```
+* LMDB JNI microbenchmark, February 2016
+
+  Random gets on a database with 370 million entries of 30GiB. Keys 29 bytes and values 8 bytes. The target machine was busy serving traffic and this was the memory usage *before* executing the test.
+  
+  ```bash
+  $ free -m
+               total       used       free     shared    buffers     cached
+  Mem:         32126      31890        235          0         55       9476
+  -/+ buffers/cache:      22359       9767
+  Swap:         7627       2350       5277
+
+  ```
+  Percentiles measured in nanoseconds using HdrHistogram.
+  
+  ```bash
+   min       0.50        .90        0.99      0.999     0.9999        max
+  5376      10367      12991      30335      51967      83967      83967
+  4608      10175      12799      34559      84991     946175     946175
+  3568      10239      12991      33791      70655     107007     107007
+```
 
 ### Maven
 
