@@ -55,7 +55,7 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
    ```
 * LMDB JNI microbenchmark, February 2016
 
-  Random gets on a database with 370 million entries of 30GiB. Keys 29 bytes and values 8 bytes. The target machine was busy serving traffic and this was the memory usage *before* executing the test.
+  Random gets on a database with 370 million entries of 30GiB on a *non-SSD* drive. Keys 29 bytes and values 8 bytes. The target machine was busy serving traffic and this was the memory usage *before* executing the test.
   
   ```bash
   $ free -m
