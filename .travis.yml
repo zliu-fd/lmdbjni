@@ -8,6 +8,9 @@ branches:
     - /.*test$/
 
 env:
+  global:
+    - secure: "HZ7J4B0hSDB2H6ljNXYp7LKgFAA3TUFF22qlSVBiI8Qb3dChwM6t/sNVhQnMKfTREOinpvLOt9rDwHBz1ysPtP+r0iqQyDo5GQDTyTXkFskQFO4myelOamZguJQu+bNTQgKHoF1vbFTysC5mpcInYhcu5veLkgH1PRgNFQcqles="
+    - secure: "CVY1NoFW3e3Hfvgvu2mMC4vaQdmPmyHvuFzqqGlpdH3fdMdqG1xzHi+oXv0gK3tbxB0JNfXXvIiNXpGZ06nGcvQYGIRdRU3armJ3P3zv8KXrhitiv1HS08K4pMzgv9+uVwTdxgC0np5tVWQDvV2MSd424ykZrvR07tm2JWxIybU="
   matrix:
     - CUSTOM_JDK="default"
     - CUSTOM_JDK="oraclejdk8"
