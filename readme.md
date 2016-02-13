@@ -114,10 +114,6 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 ```
 
-### Build from source
-
-See [building from source](https://github.com/deephacks/lmdbjni/wiki/Building-from-source) on wiki.
-
 ### Usage
 
 Recommended package imports.
