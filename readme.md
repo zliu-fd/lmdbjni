@@ -269,7 +269,7 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
        // read a position in buffer
        cursor.keyByte(0);
        cursor.valByte(0);
-     } while(cursor.next());
+     } while (cursor.next());
    }
 
    // iterate from last item and backwards
@@ -278,7 +278,7 @@ The safest (and least efficient) approach for interacting with LMDB JNI is using
        // copy entire buffer
        cursor.keyBytes();
        cursor.valBytes();
-     } while(cursor.prev());
+     } while (cursor.prev());
    }
    
    // find entry matching exactly the provided key
