@@ -14,10 +14,6 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
  * [LMDB source code](https://github.com/LMDB/lmdb)
  * [LMDB JNI JavaDoc](http://deephacks.github.io/lmdbjni/)
 
-### Google groups
-
-* https://groups.google.com/forum/#!forum/lmdbjni
-
 ### Presentations
  * [Databaseology lecture series at Carnegie-Mellon University, Oct 08, 2015](http://cmudb.io/lectures2015-lmdb)
  * [LDAP at Lightning Speed, Jul 05, 2015](http://www.infoq.com/presentations/lmdb)
