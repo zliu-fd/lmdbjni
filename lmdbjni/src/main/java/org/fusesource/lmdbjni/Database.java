@@ -37,6 +37,8 @@ import static org.fusesource.lmdbjni.Util.checkErrorCode;
 public class Database extends NativeObject implements AutoCloseable {
 
   private final Env env;
+  private Callback comparatorCallback;
+  private Callback directComparatorCallback;
 
   Database(Env env, long self) {
     super(self);
@@ -60,6 +62,14 @@ public class Database extends NativeObject implements AutoCloseable {
    */
   @Override
   public void close() {
+    if (comparatorCallback != null) {
+      comparatorCallback.dispose();
+      comparatorCallback = null;
+    }
+    if (directComparatorCallback != null) {
+      directComparatorCallback.dispose();
+      directComparatorCallback = null;
+    }
     if (self != 0) {
       mdb_dbi_close(env.pointer(), self);
       self = 0;
@@ -242,6 +252,7 @@ public class Database extends NativeObject implements AutoCloseable {
   public EntryIterator iterate(Transaction tx) {
     return iterate(tx, null, IteratorType.FORWARD);
   }
+
   /**
    * <p>
    *   Creates a backward sequential iterator from the last key.
@@ -348,7 +359,7 @@ public class Database extends NativeObject implements AutoCloseable {
 
   /**
    * Just reserve space for data in the database, don't copy it.
-   * 
+   *
    * @return a pointer to the reserved space.
    */
   public DirectBuffer reserve(Transaction tx, DirectBuffer key, int size) {
@@ -638,8 +649,11 @@ public class Database extends NativeObject implements AutoCloseable {
    * @param comparator a byte array comparator
    */
   public void setComparator(Transaction tx, Comparator<byte[]> comparator) {
-    Callback callback = new Callback(new ByteArrayComparator(comparator), "compare", 2);
-    JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
+    if (comparatorCallback != null) {
+      comparatorCallback.dispose();
+    }
+    comparatorCallback = new Callback(new ByteArrayComparator(comparator), "compare", 2);
+    JNI.mdb_set_compare(tx.pointer(), this.pointer(), comparatorCallback.getAddress());
   }
 
   /**
@@ -663,8 +677,11 @@ public class Database extends NativeObject implements AutoCloseable {
    * @param comparator a zero copy comparator
    */
   public void setDirectComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
-    Callback callback = new Callback(new DirectBufferComparator(comparator), "compare", 2);
-    JNI.mdb_set_compare(tx.pointer(), this.pointer(), callback.getAddress());
+    if (directComparatorCallback != null) {
+      directComparatorCallback.dispose();
+    }
+    directComparatorCallback = new Callback(new DirectBufferComparator(comparator), "compare", 2);
+    JNI.mdb_set_compare(tx.pointer(), this.pointer(), directComparatorCallback.getAddress());
   }
 
   private static final class ByteArrayComparator {
