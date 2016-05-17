@@ -2,6 +2,7 @@ package org.fusesource.lmdbjni;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.JNI.mdb_strerror;
 
@@ -120,15 +121,15 @@ public class BufferCursor implements AutoCloseable {
   private final ByteBuffer keyByteBuffer;
   private ByteBuffer valueByteBuffer;
   private final boolean isReadOnly;
-  private DirectBuffer key;
-  private DirectBuffer value;
+  private MutableDirectBuffer key;
+  private MutableDirectBuffer value;
   private boolean keyDatbaseMemoryLocation = false;
   private boolean valDatbaseMemoryLocation = false;
   private int keyWriteIndex = 0;
   private int valWriteIndex = 0;
   private boolean validPosition = false;
 
-  BufferCursor(Cursor cursor, DirectBuffer key, DirectBuffer value) {
+  BufferCursor(Cursor cursor, MutableDirectBuffer key, MutableDirectBuffer value) {
     this.cursor = cursor;
     this.isReadOnly = cursor.isReadOnly();
     if (key.byteBuffer() == null) {
@@ -150,7 +151,7 @@ public class BufferCursor implements AutoCloseable {
   }
 
   BufferCursor(Cursor cursor, int maxValueSize) {
-    this(cursor, new DirectBuffer(), new DirectBuffer(ByteBuffer.allocateDirect(maxValueSize)));
+    this(cursor, Buffers.buffer(), Buffers.buffer(maxValueSize));
   }
 
   /**
@@ -333,10 +334,8 @@ public class BufferCursor implements AutoCloseable {
    * previously existing key.
    */
   public boolean put() {
-    DirectBuffer k = (keyWriteIndex != 0) ?
-      new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
-    DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
+    MutableDirectBuffer k = (keyWriteIndex != 0) ? Buffers.bufferSlice(key, keyWriteIndex) : key;
+    MutableDirectBuffer v = (valWriteIndex != 0) ? Buffers.bufferSlice(value, valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     int rc = cursor.put(k, v, Constants.NOOVERWRITE);
@@ -355,10 +354,8 @@ public class BufferCursor implements AutoCloseable {
    * previously existing key. Also used for adding duplicates.
    */
   public boolean overwrite() {
-    DirectBuffer k = (keyWriteIndex != 0) ?
-      new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
-    DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
+    MutableDirectBuffer k = (keyWriteIndex != 0) ? Buffers.bufferSlice(key, keyWriteIndex) : key;
+    MutableDirectBuffer v = (valWriteIndex != 0) ? Buffers.bufferSlice(value, valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     int rc = cursor.put(k, v, 0);
@@ -380,10 +377,8 @@ public class BufferCursor implements AutoCloseable {
    * data corruption.
    */
   public void append() {
-    DirectBuffer k = (keyWriteIndex != 0) ?
-      new DirectBuffer(key.addressOffset(), keyWriteIndex) : key;
-    DirectBuffer v = (valWriteIndex != 0) ?
-      new DirectBuffer(value.addressOffset(), valWriteIndex) : value;
+    MutableDirectBuffer k = (keyWriteIndex != 0) ? Buffers.bufferSlice(key, keyWriteIndex) : key;
+    MutableDirectBuffer v = (valWriteIndex != 0) ? Buffers.bufferSlice(value, valWriteIndex) : value;
     keyWriteIndex = 0;
     valWriteIndex = 0;
     int rc = cursor.put(k, v, Constants.APPEND);
@@ -500,7 +495,7 @@ public class BufferCursor implements AutoCloseable {
    */
   public BufferCursor keyWriteUtf8(ByteString data) {
     setSafeKeyMemoryLocation();
-    this.key.putString(keyWriteIndex, data);
+    Util.putString(this.key, keyWriteIndex, data);
     keyWriteIndex += data.size() + 1;
     return this;
   }
@@ -515,7 +510,7 @@ public class BufferCursor implements AutoCloseable {
   public BufferCursor keyWriteUtf8(String data) {
     setSafeKeyMemoryLocation();
     ByteString bytes = new ByteString(data);
-    this.key.putString(keyWriteIndex, bytes);
+    Util.putString(this.key, keyWriteIndex, bytes);
     keyWriteIndex += bytes.size() + 1;
     return this;
   }
@@ -558,7 +553,7 @@ public class BufferCursor implements AutoCloseable {
    * @param capacity capacity
    * @return this
    */
-  public BufferCursor keyWrite(DirectBuffer buffer, int capacity) {
+  public BufferCursor keyWrite(MutableDirectBuffer buffer, int capacity) {
     setSafeKeyMemoryLocation();
     this.key.putBytes(keyWriteIndex, buffer, 0, capacity);
     keyWriteIndex += capacity;
@@ -568,7 +563,7 @@ public class BufferCursor implements AutoCloseable {
   /**
    * @see org.fusesource.lmdbjni.BufferCursor#keyWrite(DirectBuffer, int)
    */
-  public BufferCursor keyWrite(DirectBuffer buffer) {
+  public BufferCursor keyWrite(MutableDirectBuffer buffer) {
     keyWrite(buffer, buffer.capacity());
     return this;
   }
@@ -672,7 +667,7 @@ public class BufferCursor implements AutoCloseable {
    */
   public ByteString keyUtf8(int pos) {
     checkForValidPosition();
-    return this.key.getString(pos);
+    return Util.getString(key, pos);
   }
 
   /**
@@ -703,14 +698,14 @@ public class BufferCursor implements AutoCloseable {
    *
    * @return underlying buffer
    */
-  public DirectBuffer keyBuffer() {
+  public MutableDirectBuffer keyBuffer() {
     return key;
   }
 
   /**
    * @return the key direct buffer at current position.
    */
-  public DirectBuffer keyDirectBuffer() {
+  public MutableDirectBuffer keyDirectBuffer() {
     checkForValidPosition();
     return key;
   }
@@ -855,7 +850,7 @@ public class BufferCursor implements AutoCloseable {
     setSafeValMemoryLocation();
     ByteString bytes = new ByteString(data);
     ensureValueWritableBytes(bytes.size() + 1);
-    this.value.putString(valWriteIndex, bytes);
+    Util.putString(this.value, valWriteIndex, bytes);
     valWriteIndex += bytes.size() + 1;
     return this;
   }
@@ -873,7 +868,7 @@ public class BufferCursor implements AutoCloseable {
     }
     setSafeValMemoryLocation();
     ensureValueWritableBytes(data.size() + 1);
-    this.value.putString(valWriteIndex, data);
+    Util.putString(this.value, valWriteIndex, data);
     valWriteIndex += data.size() + 1;
     return this;
   }
@@ -927,7 +922,7 @@ public class BufferCursor implements AutoCloseable {
    * @param length how many bytes to write
    * @return this
    */
-  public BufferCursor valWrite(DirectBuffer buffer, int srcIndex, int length) {
+  public BufferCursor valWrite(MutableDirectBuffer buffer, int srcIndex, int length) {
     if (isReadOnly) {
       throw new LMDBException("Read only transaction", LMDBException.EACCES);
     }
@@ -941,14 +936,14 @@ public class BufferCursor implements AutoCloseable {
   /**
    * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int, int)
    */
-  public BufferCursor valWrite(DirectBuffer buffer, int length) {
+  public BufferCursor valWrite(MutableDirectBuffer buffer, int length) {
     return valWrite(buffer, 0, length);
   }
 
   /**
    * @see org.fusesource.lmdbjni.BufferCursor#valWrite(DirectBuffer, int)
    */
-  public BufferCursor valWrite(DirectBuffer buffer) {
+  public BufferCursor valWrite(MutableDirectBuffer buffer) {
     valWrite(buffer, 0, buffer.capacity());
     return this;
   }
@@ -1056,7 +1051,7 @@ public class BufferCursor implements AutoCloseable {
    *
    * @return underlying buffer
    */
-  public DirectBuffer valBuffer() {
+  public MutableDirectBuffer valBuffer() {
     return value;
   }
 
@@ -1091,13 +1086,13 @@ public class BufferCursor implements AutoCloseable {
    */
   public ByteString valUtf8(int pos) {
     checkForValidPosition();
-    return this.value.getString(pos);
+    return Util.getString(this.value, pos);
   }
 
   /**
    * @return the direct buffer at the current position.
    */
-  public DirectBuffer valDirectBuffer() {
+  public MutableDirectBuffer valDirectBuffer() {
     checkForValidPosition();
     return this.value;
   }

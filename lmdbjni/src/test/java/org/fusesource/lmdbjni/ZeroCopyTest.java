@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.Constants.FIRST;
 import static org.fusesource.lmdbjni.Constants.NEXT;
@@ -29,10 +30,10 @@ public class ZeroCopyTest {
   private Database db;
   private Env env;
 
-  private DirectBuffer k1 = new DirectBuffer();
-  private DirectBuffer v1 = new DirectBuffer();
-  private DirectBuffer k2 = new DirectBuffer();
-  private DirectBuffer v2 = new DirectBuffer();
+  private MutableDirectBuffer k1 = Buffers.buffer();
+  private MutableDirectBuffer v1 = Buffers.buffer();
+  private MutableDirectBuffer k2 = Buffers.buffer();
+  private MutableDirectBuffer v2 = Buffers.buffer();
 
   @Before
   public void before() throws IOException {
@@ -58,8 +59,8 @@ public class ZeroCopyTest {
     db.put(k1, v1);
     db.put(k2, v2);
 
-    DirectBuffer k = new DirectBuffer();
-    DirectBuffer v = new DirectBuffer();
+    MutableDirectBuffer k = Buffers.buffer();
+    MutableDirectBuffer v = Buffers.buffer();
     k.putLong(0, 10);
     db.get(k, v);
     assertThat(v.getLong(0), is(11L));
@@ -87,8 +88,8 @@ public class ZeroCopyTest {
       tx.commit();
     }
 
-    DirectBuffer k = new DirectBuffer();
-    DirectBuffer v = new DirectBuffer();
+    MutableDirectBuffer k = Buffers.buffer();
+    MutableDirectBuffer v = Buffers.buffer();
 
     try (Transaction tx = env.createReadTransaction()) {
       try (Cursor cursor = db.openCursor(tx)) {
@@ -122,8 +123,9 @@ public class ZeroCopyTest {
 
     try (Transaction tx = env.createReadTransaction()) {
       try (Cursor cursor = db.openCursor(tx)) {
-        DirectBuffer k = new DirectBuffer(byteBuffer);
-        DirectBuffer v = new DirectBuffer();
+        MutableDirectBuffer k = Buffers.buffer(0);
+        k.wrap(byteBuffer);
+        MutableDirectBuffer v = Buffers.buffer();
         k.putLong(0, 10);
 
         cursor.seekPosition(k, v, SeekOp.RANGE);
@@ -150,8 +152,8 @@ public class ZeroCopyTest {
     List<Long> result = new ArrayList<>();
     try (Transaction tx = env.createWriteTransaction()) {
       try (Cursor cursor = db.openCursor(tx)) {
-        DirectBuffer k = new DirectBuffer();
-        DirectBuffer v = new DirectBuffer();
+        MutableDirectBuffer k = Buffers.buffer();
+        MutableDirectBuffer v = Buffers.buffer();
         for (int rc = cursor.position(k, v, FIRST); rc != NOTFOUND; rc = cursor.position(k, v, NEXT)) {
           result.add(k.getLong(0));
         }
@@ -169,9 +171,9 @@ public class ZeroCopyTest {
     byte[] val = new byte[]{3, 2, 1};
 
     try (Transaction tx = env.createWriteTransaction()) {
-      DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
+      MutableDirectBuffer keyBuf = Buffers.buffer(key.length);
       keyBuf.putBytes(0, key);
-      DirectBuffer valBuf = db.reserve(tx, keyBuf, val.length);
+      MutableDirectBuffer valBuf = db.reserve(tx, keyBuf, val.length);
       valBuf.putBytes(0, val);
       tx.commit();
     }
@@ -189,9 +191,9 @@ public class ZeroCopyTest {
 
     try (Transaction tx = env.createWriteTransaction()) {
       try (Cursor cursor = db.openCursor(tx)) {
-        DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
+        MutableDirectBuffer keyBuf = Buffers.buffer(key.length);
         keyBuf.putBytes(0, key);
-        DirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
+        MutableDirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
         valBuf.putBytes(0, val);
       }
       tx.commit();
@@ -210,9 +212,9 @@ public class ZeroCopyTest {
 
     Transaction tx = env.createWriteTransaction();
     Cursor cursor = db.openCursor(tx);
-    DirectBuffer keyBuf = new DirectBuffer(ByteBuffer.allocateDirect(key.length));
+    MutableDirectBuffer keyBuf = Buffers.buffer(key.length);
     keyBuf.putBytes(0, key);
-    DirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
+    MutableDirectBuffer valBuf = cursor.reserve(keyBuf, val.length);
     valBuf.putBytes(0, val);
     tx.abort();
 

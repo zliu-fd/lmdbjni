@@ -141,7 +141,7 @@ public class EnvTest {
     String path = tmp.newFolder().getCanonicalPath();
     try (Env env = new Env()) {
       env.open(path);
-      assertThat(env.getMaxKeySize(), is(511L));
+      assertThat(env.getMaxKeySize(), is((long)Env.MAX_KEY_SIZE));
     }
   }
 
