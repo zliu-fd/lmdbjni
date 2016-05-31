@@ -20,6 +20,7 @@ package org.fusesource.lmdbjni;
 
 import java.io.Closeable;
 import java.nio.ByteBuffer;
+import org.agrona.DirectBuffer;
 
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkErrorCode;
@@ -131,7 +132,7 @@ public class Transaction extends NativeObject implements Closeable {
 
   long getBufferAddress() {
     if (buffer == null) {
-      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      buffer = Buffers.buffer(Unsafe.ADDRESS_SIZE * 4);
     }
     return buffer.addressOffset();
   }

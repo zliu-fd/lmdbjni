@@ -8,6 +8,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.Bytes.fromLong;
 import static org.hamcrest.CoreMatchers.is;
@@ -88,7 +89,7 @@ public class DatabaseTest {
   @Test
   public void testDeleteBuffer() {
     db.put(new byte[]{1}, new byte[]{1});
-    DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(1));
+    MutableDirectBuffer key = Buffers.buffer(1);
     key.putByte(0, (byte) 1);
     db.delete(key);
     assertNull(db.get(new byte[]{1}));

@@ -20,6 +20,8 @@ package org.fusesource.lmdbjni;
 
 
 import java.nio.ByteBuffer;
+import org.agrona.DirectBuffer;
+import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkArgNotNull;
@@ -104,7 +106,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
    */
   public int position(DirectBuffer key, DirectBuffer value, GetOp op) {
     if (buffer == null) {
-      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      buffer = Buffers.buffer(Unsafe.ADDRESS_SIZE * 4);
       bufferAddress = buffer.addressOffset();
     }
     checkArgNotNull(op, "op");
@@ -126,7 +128,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
     checkArgNotNull(value, "value");
     checkArgNotNull(op, "op");
     if (buffer == null) {
-      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      buffer = Buffers.buffer(Unsafe.ADDRESS_SIZE * 4);
       bufferAddress = buffer.addressOffset();
     }
     Unsafe.putLong(bufferAddress, 0, key.capacity());
@@ -248,7 +250,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
     checkArgNotNull(key, "key");
     checkArgNotNull(value, "value");
     if (buffer == null) {
-      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      buffer = Buffers.buffer(Unsafe.ADDRESS_SIZE * 4);
       bufferAddress = buffer.addressOffset();
     }
     Unsafe.putLong(bufferAddress, 0, key.capacity());
@@ -273,13 +275,13 @@ public class Cursor extends NativeObject implements AutoCloseable {
    *
    * @return a pointer to the reserved space.
    */
-  public DirectBuffer reserve(DirectBuffer key, int size) {
+  public MutableDirectBuffer reserve(DirectBuffer key, int size) {
     checkArgNotNull(key, "key");
     if (key.byteArray() != null || !key.byteBuffer().isDirect()) {
       throw new IllegalArgumentException("Key buffer is not direct.");
     }
     if (buffer == null) {
-      buffer = new DirectBuffer(ByteBuffer.allocateDirect(Unsafe.ADDRESS_SIZE * 4));
+      buffer = Buffers.buffer(Unsafe.ADDRESS_SIZE * 4);
       bufferAddress = buffer.addressOffset();
     }
     Unsafe.putLong(bufferAddress, 0, key.capacity());
@@ -289,7 +291,7 @@ public class Cursor extends NativeObject implements AutoCloseable {
     checkErrorCode(rc);
     int valSize = (int) Unsafe.getLong(bufferAddress, 2);
     long valAddress = Unsafe.getAddress(bufferAddress, 3);
-    DirectBuffer empty = new DirectBuffer(0, 0);
+    MutableDirectBuffer empty = Buffers.buffer(0);
     empty.wrap(valAddress, valSize);
     return empty;
   }

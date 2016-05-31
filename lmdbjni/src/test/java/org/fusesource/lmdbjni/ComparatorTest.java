@@ -8,6 +8,8 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.util.Comparator;
+import org.agrona.DirectBuffer;
+import org.agrona.MutableDirectBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
