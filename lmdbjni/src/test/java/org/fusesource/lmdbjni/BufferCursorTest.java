@@ -7,11 +7,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import org.agrona.MutableDirectBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -382,13 +382,13 @@ public class BufferCursorTest {
 
   @Test
   public void testDirectBuffer() {
-    MutableDirectBuffer key = Buffers.buffer(10);
-    MutableDirectBuffer value = Buffers.buffer(10);
+    DirectBuffer key = new DirectBuffer(ByteBuffer.allocateDirect(10));
+    DirectBuffer value = new DirectBuffer(ByteBuffer.allocateDirect(10));
     try (Transaction tx = env.createWriteTransaction()) {
       try (BufferCursor cursor = db.bufferCursor(tx, key, value)) {
         cursor.setWriteMode();
-        Util.putString(key, 0, new ByteString("a"));
-        Util.putString(value, 0, new ByteString("a"));
+        key.putString(0, new ByteString("a"));
+        value.putString(0, new ByteString("a"));
         cursor.put();
         cursor.last();
         assertThat(cursor.keyUtf8(0).getString(), is("a"));
@@ -396,8 +396,8 @@ public class BufferCursorTest {
       }
       tx.commit();
     }
-    key = Buffers.buffer(10);
-    value = Buffers.buffer(10);
+    key = new DirectBuffer(ByteBuffer.allocateDirect(10));
+    value = new DirectBuffer(ByteBuffer.allocateDirect(10));
     try (Transaction tx = env.createReadTransaction()) {
       try (BufferCursor cursor = db.bufferCursor(tx, key, value)) {
         assertTrue(cursor.last());
@@ -408,7 +408,7 @@ public class BufferCursorTest {
         assertThat(cursor.valUtf8(0).getString(), is("a"));
         cursor.setWriteMode();
         // Position at key = 'Z\0'
-        Util.putString(key, 0, new ByteString("Z"));
+        key.putString(0, new ByteString("Z"));
         assertThat(cursor.seekKey(), is(false));
         // Position at key >= 'Z\0'
         assertThat(cursor.seekRange(), is(true));
@@ -695,7 +695,7 @@ public class BufferCursorTest {
     try (Transaction tx = env.createWriteTransaction()) {
       try (BufferCursor cursor = db.bufferCursor(tx, 1)) {
         cursor.first();
-        MutableDirectBuffer directBuffer = Buffers.buffer(10);
+        DirectBuffer directBuffer = new DirectBuffer(ByteBuffer.allocateDirect(10));
         directBuffer.putLong(0, 111L);
         cursor.keyWriteByte(111)
           .valWrite(directBuffer, 8)
@@ -709,7 +709,7 @@ public class BufferCursorTest {
       try (BufferCursor cursor = db.bufferCursor(tx)) {
         cursor.last();
         assertThat(cursor.keyByte(0), is((byte) 111));
-        MutableDirectBuffer directBuffer = cursor.valDirectBuffer();
+        DirectBuffer directBuffer = cursor.valDirectBuffer();
         assertThat(directBuffer.capacity(), is(8 * 3));
         assertThat(directBuffer.getLong(0), is(111L));
         assertThat(directBuffer.getLong(8), is(111L));
@@ -765,13 +765,13 @@ public class BufferCursorTest {
     try (Transaction tx = env.createWriteTransaction()) {
       try (BufferCursor cursor = db.bufferCursor(tx)) {
         cursor.first();
-        MutableDirectBuffer key = Buffers.buffer();
-        Util.putString(key, 0, stringKey);
+        DirectBuffer key = new DirectBuffer();
+        key.putString(0, stringKey);
         // remember NULL byte
         cursor.keyWrite(key, stringKey.size() + 1);
         cursor.valWriteInt(12);
-        MutableDirectBuffer value = Buffers.buffer();
-        Util.putString(value, 0, stringValue);
+        DirectBuffer value = new DirectBuffer();
+        value.putString(0, stringValue);
         // remember NULL byte
         cursor.valWrite(value, stringValue.size() + 1);
         cursor.put();
@@ -803,7 +803,7 @@ public class BufferCursorTest {
         cursor.keyWriteUtf8("");
         cursor.keyWriteUtf8(new ByteString(""));
         cursor.keyWriteBytes(new byte[]{0});
-        cursor.keyWrite(Buffers.buffer(0));
+        cursor.keyWrite(new DirectBuffer(new byte[0]), 0);
         assertEACCES(new Runnable() { public void run() { cursor.valWriteByte(0); }});
         assertEACCES(new Runnable() { public void run() { cursor.valWriteShort((short) 0); }});
         assertEACCES(new Runnable() { public void run() { cursor.valWriteInt(0); }});
@@ -813,7 +813,7 @@ public class BufferCursorTest {
         assertEACCES(new Runnable() { public void run() { cursor.valWriteUtf8(""); }});
         assertEACCES(new Runnable() { public void run() { cursor.valWriteUtf8(new ByteString("")); }});
         assertEACCES(new Runnable() { public void run() { cursor.valWriteBytes(new byte[]{0});}});
-        assertEACCES(new Runnable() { public void run() { cursor.valWrite(Buffers.buffer(0));}});
+        assertEACCES(new Runnable() { public void run() { cursor.valWrite(new DirectBuffer(new byte[0]), 0);}});
       }
     }
   }

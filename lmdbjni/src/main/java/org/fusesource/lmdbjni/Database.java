@@ -22,9 +22,8 @@ package org.fusesource.lmdbjni;
 import org.fusesource.hawtjni.runtime.Callback;
 import org.fusesource.lmdbjni.EntryIterator.IteratorType;
 
+import java.nio.ByteBuffer;
 import java.util.Comparator;
-import org.agrona.DirectBuffer;
-import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.JNI.*;
 import static org.fusesource.lmdbjni.Util.checkArgNotNull;
@@ -310,7 +309,7 @@ public class Database extends NativeObject implements AutoCloseable {
    * @param value A DirectBuffer must be backed by a direct ByteBuffer.
    * @return a closable cursor handle.
    */
-  public BufferCursor bufferCursor(Transaction tx, MutableDirectBuffer key, MutableDirectBuffer value) {
+  public BufferCursor bufferCursor(Transaction tx, DirectBuffer key, DirectBuffer value) {
     Cursor cursor = openCursor(tx);
     return new BufferCursor(cursor, key, value);
   }
@@ -363,7 +362,7 @@ public class Database extends NativeObject implements AutoCloseable {
    *
    * @return a pointer to the reserved space.
    */
-  public MutableDirectBuffer reserve(Transaction tx, DirectBuffer key, int size) {
+  public DirectBuffer reserve(Transaction tx, DirectBuffer key, int size) {
     checkArgNotNull(key, "key");
     long address = tx.getBufferAddress();
     Unsafe.putLong(address, 0, key.capacity());
@@ -374,7 +373,7 @@ public class Database extends NativeObject implements AutoCloseable {
     checkErrorCode(rc);
     int valSize = (int) Unsafe.getLong(address, 2);
     long valAddress = Unsafe.getAddress(address, 3);
-    MutableDirectBuffer empty = Buffers.buffer(0);
+    DirectBuffer empty = new DirectBuffer(0, 0);
     empty.wrap(valAddress, valSize);
     return empty;
   }
@@ -695,13 +694,13 @@ public class Database extends NativeObject implements AutoCloseable {
     public long compare(long ptr1, long ptr2) {
       int size = (int) Unsafe.getLong(ptr1, 0);
       long address = Unsafe.getAddress(ptr1, 1);
-      DirectBuffer key1 = Buffers.buffer();
+      DirectBuffer key1 = new DirectBuffer();
       key1.wrap(address, size);
       byte[] key1Bytes = new byte[size];
       key1.getBytes(0, key1Bytes);
       size = (int) Unsafe.getLong(ptr2, 0);
       address = Unsafe.getAddress(ptr2, 1);
-      DirectBuffer key2 = Buffers.buffer();
+      DirectBuffer key2 = new DirectBuffer();
       key2.wrap(address, size);
       byte[] key2Bytes = new byte[size];
       key2.getBytes(0, key2Bytes);
@@ -719,11 +718,11 @@ public class Database extends NativeObject implements AutoCloseable {
     public long compare(long ptr1, long ptr2) {
       int size = (int) Unsafe.getLong(ptr1, 0);
       long address = Unsafe.getAddress(ptr1, 1);
-      DirectBuffer key1 = Buffers.buffer();
+      DirectBuffer key1 = new DirectBuffer();
       key1.wrap(address, size);
       size = (int) Unsafe.getLong(ptr2, 0);
       address = Unsafe.getAddress(ptr2, 1);
-      DirectBuffer key2 = Buffers.buffer();
+      DirectBuffer key2 = new DirectBuffer();
       key2.wrap(address, size);
       return comparator.compare(key1, key2);
     }

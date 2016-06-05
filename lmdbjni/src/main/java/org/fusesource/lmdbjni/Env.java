@@ -28,8 +28,6 @@ import static org.fusesource.lmdbjni.Util.*;
  */
 public class Env extends NativeObject implements AutoCloseable {
 
-  public static final int MAX_KEY_SIZE = 511;
-
   public static String version() {
     return string(JNI.MDB_VERSION_STRING);
   }

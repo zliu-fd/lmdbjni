@@ -19,8 +19,6 @@
 package org.fusesource.lmdbjni;
 
 import java.nio.charset.Charset;
-import org.agrona.DirectBuffer;
-import org.agrona.MutableDirectBuffer;
 
 import static org.fusesource.lmdbjni.JNI.mdb_strerror;
 import static org.fusesource.lmdbjni.JNI.strlen;
@@ -60,39 +58,5 @@ class Util {
     } catch (Throwable ignored) {
       return false;
     }
-  }
-  
-  /**
-   * Fetches a C-style null terminated char[] from the specified buffer, returning
-   * a {@link ByteString} representation.
-   *
-   * @param buffer to fetch the string from
-   * @param offset index within the buffer to commence the null character search
-   * @return the located string
-   */
-  public static ByteString getString(final DirectBuffer buffer,
-                                     final int offset) {
-    byte terminator = 1;
-    int index = offset;
-    while (terminator != (byte) 0) {
-      terminator = buffer.getByte(index++);
-    }
-    byte[] bytes = new byte[index - offset - 1];
-    buffer.getBytes(offset, bytes);
-    return new ByteString(bytes);
-  }
-
-  /**
-   * Stores a C-style null terminated char[] in the specified buffer.
-   *
-   * @param buffer to store the string in
-   * @param offset index within the buffer to commence writing the value
-   * @param value to store (should not contain any null character)
-   */
-  public static void putString(final MutableDirectBuffer buffer,
-                               final int offset, final ByteString value) {
-    final byte[] bytes = value.getBytes();
-    buffer.putBytes(offset, bytes);
-    buffer.putByte(offset + bytes.length, (byte) 0);
   }
 }
