@@ -10,7 +10,7 @@ LMDB JNI provide a Java API to [LMDB](http://symas.com/mdb/) which is an ultra-f
 LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 ### Documentation
- * [LMDB C API reference](http://symas.com/mdb/doc/group__internal.html)
+ * [LMDB C API reference](http://lmdb.tech/doc/index.html)
  * [LMDB source code](https://github.com/LMDB/lmdb)
  * [LMDB JNI JavaDoc](http://deephacks.github.io/lmdbjni/)
 
