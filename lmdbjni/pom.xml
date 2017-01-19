@@ -26,11 +26,11 @@
   <parent>
     <groupId>org.deephacks.lmdbjni</groupId>
     <artifactId>lmdbjni-project</artifactId>
-    <version>0.4.7-SNAPSHOT</version>
+    <version>0.4.7</version>
   </parent>
 
   <artifactId>lmdbjni</artifactId>
-  <version>0.4.7-SNAPSHOT</version>
+  <version>0.4.7</version>
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
