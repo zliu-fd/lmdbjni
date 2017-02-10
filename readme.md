@@ -73,7 +73,9 @@ LMDB JNI is available for 64 bit Linux, OSX, Windows and Android.
 
 ### Maven
 
-*Windows and OSX support has been discontinued in lmdbjni 0.4.7 (LMDB 0.9.19) and onward. Please refer to [lmdbjava](https://github.com/lmdbjava/lmdbjava).*
+*Windows, Android and OSX support has been discontinued in lmdbjni 0.4.7 (LMDB 0.9.19) and onward. Users can still build releases at their own convenience, but no artifacts will be published to Maven Central.*
+
+*Please refer to [lmdbjava](https://github.com/lmdbjava/lmdbjava).*
 
 ```xml
 <!-- required java classes -->
