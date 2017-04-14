@@ -633,7 +633,7 @@ public class Database extends NativeObject implements AutoCloseable {
    * Set a custom key comparison function for this database.
    * </p>
    *
-   * The comparison function is called wheneverit is necessary to compare a key specified by
+   * The comparison function is called whenever it is necessary to compare a key specified by
    * the application with a key currently stored in the database. If no comparison
    * function is specified, and no special key flags were specified with mdb_dbi_open(),
    * the keys are compared lexically, with shorter keys collating before longer keys.
@@ -682,6 +682,66 @@ public class Database extends NativeObject implements AutoCloseable {
     }
     directComparatorCallback = new Callback(new DirectBufferComparator(comparator), "compare", 2);
     JNI.mdb_set_compare(tx.pointer(), this.pointer(), directComparatorCallback.getAddress());
+  }
+
+  /**
+   * <p>
+   * Set a custom data comparison function for a MDB_DUPSORT database.
+   * </p>
+   *
+   * This comparison function is called whenever it is necessary to compare a data item specified by
+   * the application with a data item currently stored in the database. This function only takes effect
+   * if the database was opened with the MDB_DUPSORT flag. If no comparison function is specified,
+   * and no special key flags were specified with mdb_dbi_open(), the data items are compared lexically,
+   * with shorter items collating before longer items.
+   *
+   * This function must be called before any data access functions are used, otherwise data corruption
+   * may occur. The same comparison function must be used by every program accessing the database,
+   * every time the database is used.
+   *
+   * <p>
+   *   Does not work on Android at the moment (related to hawtjni-callback).
+   * </p>
+   *
+   * @param tx Transaction handle.
+   * @param comparator a byte array comparator
+   */
+  public void setDupSortComparator(Transaction tx, Comparator<byte[]> comparator) {
+    if (comparatorCallback != null) {
+      comparatorCallback.dispose();
+    }
+    comparatorCallback = new Callback(new ByteArrayComparator(comparator), "compare", 2);
+    JNI.mdb_set_dupsort(tx.pointer(), this.pointer(), comparatorCallback.getAddress());
+  }
+
+  /**
+   * <p>
+   * Set a custom data comparison function for a MDB_DUPSORT database.
+   * </p>
+   *
+   * This comparison function is called whenever it is necessary to compare a data item specified by
+   * the application with a data item currently stored in the database. This function only takes effect
+   * if the database was opened with the MDB_DUPSORT flag. If no comparison function is specified,
+   * and no special key flags were specified with mdb_dbi_open(), the data items are compared lexically,
+   * with shorter items collating before longer items.
+   *
+   * This function must be called before any data access functions are used, otherwise data corruption
+   * may occur. The same comparison function must be used by every program accessing the database,
+   * every time the database is used.
+   *
+   * <p>
+   *   Does not work on Android at the moment (related to hawtjni-callback).
+   * </p>
+   *
+   * @param tx Transaction handle.
+   * @param comparator a zero copy comparator
+   */
+  public void setDirectDupSortComparator(Transaction tx, Comparator<DirectBuffer> comparator) {
+    if (directComparatorCallback != null) {
+      directComparatorCallback.dispose();
+    }
+    directComparatorCallback = new Callback(new DirectBufferComparator(comparator), "compare", 2);
+    JNI.mdb_set_dupsort(tx.pointer(), this.pointer(), directComparatorCallback.getAddress());
   }
 
   private static final class ByteArrayComparator {
